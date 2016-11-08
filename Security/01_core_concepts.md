@@ -1,4 +1,21 @@
-# The CIA of security
+# Core Concepts
+Big picture
+* Encryption
+  * Symmetric Encryption (DES, 3DES, AES, ...)
+  * Asymmetric Encryption (RSA, ...)
+    * private key
+    * public key
+* Data Integrity
+  * Hashing (MD5, SHA1)
+* Authentication
+  * Pre-shared key
+  * Certificate-Bases (PKI)
+* Key Management
+  * Diffie-Hellman
+  * RSA
+* Certificate
+
+### The CIA of security
 The goal of security is defined as CIA
 
 ### CIA Triad
@@ -28,10 +45,10 @@ We also want to do the process backward which is called decryption by that "ciph
 ## Cryptanalysis
 * **Brute-force attack:** The algorithm is quite easy and limited to the trial and error of as many character combinations as possible
 * **Dictionary attack:** starts by a text file full of dictionary words. Dictionary is a table of commonly used passwords
-* **Rainbow Table Attack:** pregenerated a bunch of hashes and the passwords from which they were calculated; it’s kind of index hash table; rainbow tables are really massive, could be terabytes
+* **Rainbow Table Attack:** pre-generated a bunch of hashes and the passwords from which they were calculated; it’s kind of index hash table; rainbow tables are really massive, could be terabytes
 * **Known Plaintext attack:**
 * **Chosen Plaintext attack:**
-* **Cipthertext attack:** Usually against weakest encryption algorithms
+* **Ciphertext attack:** Usually against weakest encryption algorithms
 
 ## Hashing
 Hash provides Integrity when it comes to the CIA of security
@@ -223,7 +240,7 @@ We want Alice and Bob to have the unique value; so, to do this we actually use a
 #### ElGamal
 * Based on DH
 * Designed to create a complete PKI (cryptosystem)
-* Available publically - not patented
+* Available publicly - not patented
 * Disadvantage: Double the length of the message making large transfers difficult
 
 ### Digital Signature (encrypted hash)
@@ -248,7 +265,7 @@ Public Key + My Digital Signature + 3rd party who we trust's Digital Signature a
 * How do you know you have the real public key?
 
 * How keys are generated?
-  * Modern systems create integers for both symmetric and asummetric keys. Keys can be automatically created by a
+  * Modern systems create integers for both symmetric and asymmetric keys. Keys can be automatically created by a
 computer random number generator.. The computer random number generator is never really that random. So you can inject
 or seed to increase the randomness.
   * Keys can be manually created, such as shared secret like the shared keys in RADUIS
@@ -261,7 +278,7 @@ or seed to increase the randomness.
   * Lifetime of a key
   * Creation, Revocation, Renewal, Deletion
 * Key Storage and Recovery:
-  * Can be stored in software or hadware solution
+  * Can be stored in software or hardware solution
   * Key recovery performed by Key Recovery Agent (Escrow Agent)
 There are 3 ways to do trust:
 * Generate your own certificates (unsigned certificate) fantastic as long as both parties understand that there is no third-party vouching for you
