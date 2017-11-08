@@ -73,3 +73,6 @@ brings GRE tunneling for all captured traffic and allows it to be extended acros
 ERSPAN is a Cisco proprietary feature and is available only to Catalyst 6500, 7600, Nexus,
 and ASR 1000 platforms to date. The ASR 1000 supports ERSPAN source (monitoring) only on
 Fast Ethernet, Gigabit Ethernet, and port-channel interfaces.
+
+#### Example:
+![image_2017-11-08_17-58-54](https://user-images.githubusercontent.com/31813625/32579506-3b6121d0-c4af-11e7-8912-0ea009cdb7a6.png)
