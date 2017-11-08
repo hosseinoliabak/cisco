@@ -2,6 +2,7 @@
 We knew how to configure a range of interfaces:
 ```
 SW1(config)#interface range gigabitEthernet 3/0 - 3 , gigabitEthernet 2/0 - 2
+SW1(config-if-range)#
 
 ```
 
