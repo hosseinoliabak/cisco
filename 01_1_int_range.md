@@ -1,4 +1,10 @@
 # Configuring a range of interfaces
+We knew how to configure a range of interfaces:
+```
+SW1(config)#interface range gigabitEthernet 3/0 - 3 , gigabitEthernet 2/0 - 2
+
+```
+
 If we want to choose a name for a range of interfaces (Ad-Hoc range):
 ```
 SW1(config)#define interface-range MY_PORTS gig 1/0 - 3, gig 3/0 - 3
