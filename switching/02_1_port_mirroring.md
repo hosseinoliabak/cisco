@@ -33,8 +33,6 @@ command. Then destination interface will become trunk as the source interface is
 Switch1(config)# monitor session 1 source interface fastEthernet0/2
 Switch1(config)# monitor session 1 destination interface fastEthernet0/24 replicate
 ```
-#### Ingress/Egress SPAN
-
 
 ### VLAN-Based Span (VSPAN)
 To sniff VLANs on the same switch
