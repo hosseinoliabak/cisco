@@ -55,6 +55,18 @@ Cat4K(config)# monitor session 1 destination interface f3/4
 ```
 ### Remote SPAN (RSPAN)
 To sniff the ports or VLANs on a different switch than the one that the sniffer is on.
+In order to configure RSPAN you need to have an RSPAN VLAN, those VLANs have special properties and can’t be assignedto
+any access ports. We have to define this VLAN on all of the intermediate switches as well to pass the traffic.
+
+The RSPAN VLAN should be allowed in ALL trunks between the involved switches (Source and Destination switches in this
+case); if you have enabled "pruning" in your network, remove the RSPAN VLAN from the pruning, with the command:
+```switchport trunk pruning vlan remove <RSPAN VLAN ID>``` under the interface configure as trunk.
+
+#### Example:
+
+
+![image_2017-11-08_17-05-14](https://user-images.githubusercontent.com/31813625/32577819-251ccbbe-c4a9-11e7-8197-e3169573fc40.png)
+
 
 ### Encapsulated remote SPAN (ERSPAN)
 brings GRE tunneling for all captured traffic and allows it to be extended across Layer 3.  
