@@ -1,0 +1,12 @@
+*.db
+*.db-journal
+*.sqlite
+sample-email.csv
+test*.txt
+*.log
+.idea
+.iml
+misc.xml
+modules.xml
+vcs.xml
+workspace.xml
