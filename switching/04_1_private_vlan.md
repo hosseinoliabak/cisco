@@ -32,8 +32,7 @@ communication in between. There can be only 1 isolated VLAN per PVLAN.
 * **Community (C):** Community ports are allowed to talk to their
 buddies ie. Community ports.
 
-![pvlan](https://user-images.githubusercontent.com/31813625/32690053-e592d2d8-c6bd-11e7-9249-fafe173ce9f4.png)
-
+<img src="https://user-images.githubusercontent.com/31813625/32690053-e592d2d8-c6bd-11e7-9249-fafe173ce9f4.png" width="489" height="439" />
 
 * **Primary VLAN (VLAN 200 in our example):** - simply the original VLAN
 (VLAN 200 in our example). This type of VLAN is used to forward frames
