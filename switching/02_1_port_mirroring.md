@@ -27,7 +27,7 @@ Switch1(config)# monitor session 1 source interface fastEthernet0/4
 
 Switch1(config)# monitor session 1 destination interface fastEthernet0/24
 ```
-* If source ports are not access ports we have to use `replicate` keyword at the end of destination
+* If source ports are not access ports we have to use `encapsulation replicate` keyword at the end of destination
 command. Then destination interface will become trunk as the source interface is.  
 ```
 Switch1(config)# monitor session 1 source interface fastEthernet0/2
@@ -76,3 +76,22 @@ Fast Ethernet, Gigabit Ethernet, and port-channel interfaces.
 
 #### Example:
 ![image_2017-11-08_17-58-54](https://user-images.githubusercontent.com/31813625/32579506-3b6121d0-c4af-11e7-8912-0ea009cdb7a6.png)
+
+### Sample Verification:
+```
+SW1#show interfaces fastEthernet 1/0/24 status
+
+Port      Name               Status       Vlan       Duplex  Speed Type
+Fa1/0/24                     monitoring   1          a-half  a-100 10/100BaseTX
+```
+```
+SW1#show monitor session 1
+Session 1
+---------
+Type                   : Local Session
+Source Ports           :
+    Both               : Fa1/0/12
+Destination Ports      : Fa1/0/24
+    Encapsulation      : Replicate
+          Ingress      : Disabled
+```
