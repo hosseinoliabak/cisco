@@ -41,7 +41,7 @@ Primary VLAN entails all port in domain, but is only used to transport
 frames from router to hosts (P to I and C).
 
 ## Configuration:
-* **Step 1:** issue `vtp mode transparent` as PVLAN doesnt work with VTP.
+* **Step 1:** issue `vtp mode transparent` as the PVLANs don't work with VTP.
 * **Step 2:** Create secondary VLANS
 ```
 SW1(config)#vlan 20
