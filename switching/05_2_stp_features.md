@@ -1,4 +1,43 @@
 # Configuring Spanning Tree PortFast, UplinkFast, and BackboneFast
+## Topology Changes:
+A topology change occurs when a switch either moves a port into the
+Forwarding state or moves a port from the Forwarding or Learning states
+into the Blocking state. In other words, a port on an active switch
+comes up or goes down.
+
+The switch sends a TCN
+BPDU out its root port so that, ultimately, the root bridge receives
+news of the topology change. Notice that the TCN BPDU carries no data
+about the change but informs recipients only that a change has occurred.
+Also notice that the switch will not send TCN BPDUs if the port has been
+configured with PortFast enabled.
+
+### Direct Topology Changes:
+A direct topology change is one that can be detected on a switch
+interface. For example, if a trunk link suddenly goes down, the switch
+on each end of the link can immediately detect a link failure. The
+absence of that link changes the bridging topology, so other switches
+should be notified.
+
+The total time that users lose the connectivity, with the default STP
+timers, is about two times the forward delay period (15 seconds),
+or 30 seconds total.
+
+### Indirect Topology Changes:
+The link failure is in another segment of the network. As a result of
+the indirect link failure, the topology does not change immediately.
+The total time that users lose connectivity is roughly the time until
+the max age timer expired (20 seconds), plus the time until the next
+Configuration BPDU was received (2 seconds) plus the time that port
+spent in the Listening (15 seconds) and Learning (15 seconds) states.
+In other words, 52 seconds elapse if the default timer values are used.
+
+
+### Insignificant Topology Changes:
+For example, powering off the PC. No actual topology change
+occurred because none of the switches had to change port states to reach
+the root bridge
+
 ## PortFast:
 PortFast causes a switch or trunk port to enter the spanning tree
 forwarding state immediately, bypassing the listening and learning states.
@@ -93,3 +132,29 @@ output
 00:41:25: STP: VLAN0001 sent Topology Change Notice on Fa1/0/21
 00:41:25: %LINK-3-UPDOWN: Interface FastEthernet1/0/23, changed state to down
 </pre>
+Let's see Priority and Cost when UplinkFast is configured on the spanning-tree:
+Notice that <i>priority</i> changes from <b>32768</b> to <b>49152</b>,
+and the interfaces' <i>cost</i> sum up with <b>3000</b>
+<pre>
+Access#show spanning-tree
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     001d.707b.4200
+             Cost        <b>3019</b>
+             Port        25 (FastEthernet1/0/23)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    49153  (priority <b>49152</b> sys-id-ext 1)
+             Address     0022.be5a.0680
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+  Uplinkfast enabled
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa1/0/21         Altn BLK 3019      128.23   P2p
+Fa1/0/23         Root FWD 3019      128.25   P2p
+</pre>
+## BackboneFast
