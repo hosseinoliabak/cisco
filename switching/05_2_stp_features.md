@@ -65,5 +65,31 @@ backbone or distribution layer switches.
 
 **Here is an example how UplinkFast works:**
 If Access to Distribution_1 link disconnected, we want to bring the
-link Access to Distribution_2 link up as quick as possible
+link Access to Distribution_2 up as quickly as possible
 <img src="https://user-images.githubusercontent.com/31813625/32703803-2dfa5b16-c7c9-11e7-9b26-3ca502557448.png" width="298" height="271" />
+Without enabling UplinkFast I am going to disconnect Fa1/0/23 and
+see the debug. It will take 30 seconds for Fa1/0/21 to become up/up.
+<pre>
+Access#<b>debug spanning-tree events</b>
+Spanning Tree event debugging is on
+00:26:<b>30</b>: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet1/0/23, changed state to <b>down</b>
+00:26:31: STP: VLAN0001 sent Topology Change Notice on Fa1/0/21
+00:26:44: STP: VLAN0001 Fa1/0/21 -> learning
+00:26:59: STP: VLAN0001 sent Topology Change Notice on Fa1/0/21
+00:26:<b>59</b>: STP: VLAN0001 Fa1/0/21 -> forwarding
+</pre>
+Now this time I am going to put Fa1/0/23 cable back in and configure
+`spanning-tree uplinkfast` on the Access switch:
+<pre>
+Access(config)#<b>spanning-tree uplinkfast</b>
+00:39:30: setting bridge id (which=1) prio 49153 prio cfg 49152 sysid 1 (on) id C001.0022.be5a.0680
+</pre>
+Now let's unplug Fa1/0/23 again and see the `debug spanning-tree events`
+output
+<pre>
+00:41:23: STP: VLAN0001 new root port Fa1/0/21, cost 3038
+00:41:23: %SPANTREE_FAST-7-PORT_FWD_UPLINK: VLAN0001 FastEthernet1/0/21 moved to Forwarding (UplinkFast).
+00:41:24: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet1/0/23, changed state to down
+00:41:25: STP: VLAN0001 sent Topology Change Notice on Fa1/0/21
+00:41:25: %LINK-3-UPDOWN: Interface FastEthernet1/0/23, changed state to down
+</pre>
