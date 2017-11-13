@@ -166,3 +166,7 @@ Distribution_2#show spanning-tree interface fastEthernet 1/0/24 detail
    <span style="background-color: #FFFF00">Loop guard is enabled on the port</span>
    BPDU: sent 48, received 2999
 </pre>
+
+## Unidirectional Link Detection (UDLD):
+* Cisco proprietary
+* Unidirectional link usually occurs in fiber optic
