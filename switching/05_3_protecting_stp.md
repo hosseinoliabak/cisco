@@ -170,3 +170,35 @@ Distribution_2#show spanning-tree interface fastEthernet 1/0/24 detail
 ## Unidirectional Link Detection (UDLD):
 * Cisco proprietary
 * Unidirectional link usually occurs in fiber optic
+
+To simulate unidirectional link:
+```
+Switch(config)#mac access-list extended UDLDTEST
+Switch(config-ext-macl)#deny any any
+Switch(config-ext-macl)#exit
+Switch(config)#interface fastEthernet 1/0/21
+Switch(config-if)#mac access-group UDLDTEST in
+```
+Then a loop occurs.
+By default, UDLD is disabled on all switch ports. To enable it globally,
+use the following global configuration command:
+```
+Switch(config)#udld ?
+  aggressive  Enable UDLD protocol in aggressive mode on fiber ports except where locally configured
+  enable      Enable UDLD protocol on fiber ports except where locally configured
+  message     Set UDLD message parameters
+```
+You also can enable or disable UDLD on individual switch ports, if
+needed, using the following interface configuration command:
+Here, you can use the disable keyword to completely disable UDLD on a
+fiber-optic interface.
+```
+Switch(config-if)# udld { enable | aggressive | disable }
+```
+In order for UDLD to work we have to configure on both ends because UDLD
+is trying to establish a neighbor relationship with the other end.
+
+To verify:
+```
+Switch#show udld fastEthernet 1/0/19
+```
