@@ -97,6 +97,8 @@ SW3#<b>show spanning-tree detail</b>
    BPDU: sent 31, received 0
 </pre>
 ## UplinkFast
+UplinkFast is used to recover from a direct change.
+
 **Note:** Note UplinkFast is most useful in wiring-closet switches that
 have a limited number of active VLANs. This enhancement might not be
 useful for other types of applications and should not be enabled on
@@ -157,4 +159,25 @@ Interface        Role Sts Cost      Prio.Nbr Type
 Fa1/0/21         Altn BLK 3019      128.23   P2p
 Fa1/0/23         Root FWD 3019      128.25   P2p
 </pre>
+
+### Verification:
+```
+Access#show spanning-tree uplinkfast
+UplinkFast is enabled
+
+Station update rate set to 150 packets/sec.
+
+UplinkFast statistics
+-----------------------
+Number of transitions via uplinkFast (all VLANs)            : 2
+Number of proxy multicast addresses transmitted (all VLANs) : 4
+
+Name                 Interface List
+-------------------- ------------------------------------
+VLAN0001             Fa1/0/23(fwd), Fa1/0/21
+```
+
 ## BackboneFast
+Backbone Fast is used to recover from an indirect link failure and
+shorten the STP convergence time to 30 seconds by bypassing the Max Age
+timeout period.
