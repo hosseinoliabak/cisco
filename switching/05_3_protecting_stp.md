@@ -31,13 +31,26 @@ into root-inconsistent state upon receiving a superior BPDU.  When the
 superior BPDU goes away, the port automatically transitions back to
 forwarding.
 ### Configuration and verification example:
-On the STP root bridge [designated] interfaces:
+<img src="https://user-images.githubusercontent.com/31813625/32703803-2dfa5b16-c7c9-11e7-9b26-3ca502557448.png" width="298" height="271" />
+
+Distribution_1 is designated as the root bridge and this is what we want.
+We want to prevent the Access bridge becoming the root bridge when
+something like `spanning-tree vlan 1 root primary` is issued on the
+Access bridge.
+We enable `spanning-tree guard root` on the interfaces facing to the Access
+bridge on both Distributio_1 and Distributio_2:
 <pre>
-Distribution_1(config)#<b>interface range fastEthernet 1/0/23 - 24</b>
-*Mar  1 01:27:59.479: %SPANTREE-2-ROOTGUARD_CONFIG_CHANGE: Root guard enabled on port FastEthernet1/0/23.
+Distribution_1(config)#<b>interface fastEthernet 1/0/23</b>
+Distribution_1(config-if)#<b>spanning-tree guard root</b>
+*Mar  1 00:07:05.168: %SPANTREE-2-ROOTGUARD_CONFIG_CHANGE: Root guard enabled on port FastEthernet1/0/23.
 </pre>
 <pre>
-Distribution_1#show spanning-tree interface fastEthernet 1/0/23 detail
+Distribution_2(config)#<b>interface fastEthernet 1/0/21</b>
+Distribution_2(config-if)#<b>spanning-tree guard root</b>
+00:08:09: %SPANTREE-2-ROOTGUARD_CONFIG_CHANGE: Root guard enabled on port FastEthernet1/0/21.
+</pre>
+<pre>
+Distribution_1#<b>show spanning-tree interface fastEthernet 1/0/23 detail</b>
  Port 25 (FastEthernet1/0/23) of VLAN0001 is broken  (Root Inconsistent)
    Port path cost 19, Port priority 128, Port Identifier 128.25.
    Designated root has priority 32769, address 001d.707b.4200
@@ -49,38 +62,88 @@ Distribution_1#show spanning-tree interface fastEthernet 1/0/23 detail
    <b>Root guard is enabled on the port</b>
    BPDU: sent 2663, received 48
 </pre>
-Now I made Distribution_2 as the STP root bridge, then interfaces Fa1/0/23:
-anf Fa1/0/24 go to ROOT_Inc state.
+Before issuing `spanning-tree vlan 1 root primary` command on the Access
+switch, let's see the output of the `show spanning-tree` command
 <pre>
-Distribution_1#<b>show spanning-tree interface fastEthernet 1/0/23</b>
+Access#<b>show spanning-tree</b>
 
-Vlan                Role Sts Cost      Prio.Nbr Type
-------------------- ---- --- --------- -------- --------------------------------
-VLAN0001            Desg BKN*19        128.25   P2p <b>*ROOT_Inc</b>
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    <span style="font-weight: bold;background-color: #FFFF00">32769</span>
+             Address     001d.707b.4200
+             Cost        19
+             Port        25 (FastEthernet1/0/23)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     0022.be5a.0680
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 300
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa1/0/21         Altn BLK 19        128.23   P2p
+Fa1/0/23         Root FWD 19        128.25   P2p
 </pre>
+Now, I issue `spanning-tree vlan 1 root primary` command on the Access
+switch and compare the output of the `show spanning-tree` command:
 <pre>
-Distribution_1#<b>show spanning-tree interface fastEthernet 1/0/24</b>
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    <span style="font-weight: bold;background-color: #FFFF00">24577</span>
+             Address     0022.be5a.0680
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
 
-Vlan                Role Sts Cost      Prio.Nbr Type
-------------------- ---- --- --------- -------- --------------------------------
-VLAN0001            Desg BKN*19        128.26   P2p <b>*ROOT_Inc</b>
+  Bridge ID  Priority    24577  (priority 24576 sys-id-ext 1)
+             Address     0022.be5a.0680
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 300
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa1/0/21         Desg FWD 19        128.23   P2p
+Fa1/0/23         Desg FWD 19        128.25   P2p
 </pre>
+Now let's see the verification commands on Distribution bridges while
+Access switch is advertising itself as a root brindge.
 <pre>
 Distribution_1#<b>show spanning-tree inconsistentports</b>
 
 Name                 Interface                Inconsistency
 -------------------- ------------------------ ------------------
-VLAN0001             FastEthernet1/0/<b>23</b>       <b>Root Inconsistent</b>
-VLAN0001             FastEthernet1/0/<b>24</b>       <b>Root Inconsistent</b>
+VLAN0001             FastEthernet1/0/23       Root Inconsistent
+
+Number of inconsistent ports (segments) in the system : 1
 </pre>
+<pre>
+Distribution_2#<b>show spanning-tree inconsistentports</b>
+
+Name                 Interface              Inconsistency
+-------------------- ---------------------- ------------------
+VLAN0001             FastEthernet1/0/21     Root Inconsistent
+
+Number of inconsistent ports (segments) in the system : 1
+</pre>
+
 Now I am going to suppress the superior BPDU by giving a higher priority
-to Distribution_2. Then we will issue `show spanning-tree inconsistentports`
-again on Distribution_1
+to Access.
 <pre>
-Distribution_1#<b>show spanning-tree inconsistentports</b>
+*Mar  1 01:27:42.601: %SPANTREE-2-ROOTGUARD_UNBLOCK: Root guard unblocking port FastEthernet1/0/23 on VLAN0001.
+</pre>
+## Loop Guard:
+The blocked ports will remain in the Blocking state as long as a steady
+flow of BPDUs is received. If BPDUs are being sent over a link but the
+flow of BPDUs stops for some reason, the last-known BPDU is kept until
+the Max Age timer expires. Then that BPDU is flushed, and the switch
+thinks there is no longer a need to block the port. The switch then
+moves the port through the STP states until it begins to forward
+traffic and forms a bridging loop.
 
-Name                 Interface                Inconsistency
--------------------- ------------------------ ------------------
-
-Number of inconsistent ports (segments) in the system : 0
-</pre>I
+When enabled, Loop Guard keeps track of the BPDU activity on
+nondesignated ports. While BPDUs are received, the port is allowed to
+behave normally. When BPDUs go missing, Loop Guard moves the port into
+the loop-inconsistent state. The port is effectively blocking at this
+point to prevent a loop from forming and to keep it in the nondesignated
+role. When BPDUs are received on the port again, Loop Guard allows the
+port to move through the normal STP states and become active.
