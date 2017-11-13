@@ -59,7 +59,7 @@ Distribution_1#<b>show spanning-tree interface fastEthernet 1/0/23 detail</b>
    Timers: message age 2, forward delay 0, hold 0
    Number of transitions to forwarding state: 1
    Link type is point-to-point by default
-   <b>Root guard is enabled on the port</b>
+   <span style="background-color: #FFFF00">Root guard is enabled on the port</span>
    BPDU: sent 2663, received 48
 </pre>
 Before issuing `spanning-tree vlan 1 root primary` command on the Access
@@ -131,19 +131,38 @@ to Access.
 <pre>
 *Mar  1 01:27:42.601: %SPANTREE-2-ROOTGUARD_UNBLOCK: Root guard unblocking port FastEthernet1/0/23 on VLAN0001.
 </pre>
+
 ## Loop Guard:
-The blocked ports will remain in the Blocking state as long as a steady
-flow of BPDUs is received. If BPDUs are being sent over a link but the
-flow of BPDUs stops for some reason, the last-known BPDU is kept until
-the Max Age timer expires. Then that BPDU is flushed, and the switch
+
+In STP, the blocked ports will remain in the Blocking state as long as
+a steady flow of BPDUs is received. If BPDUs are being sent over a link
+but the flow of BPDUs stops for some reason, the last-known BPDU is kept
+until the Max Age timer expires. Then that BPDU is flushed, and the switch
 thinks there is no longer a need to block the port. The switch then
 moves the port through the STP states until it begins to forward
 traffic and forms a bridging loop.
 
-When enabled, Loop Guard keeps track of the BPDU activity on
-nondesignated ports. While BPDUs are received, the port is allowed to
-behave normally. When BPDUs go missing, Loop Guard moves the port into
-the loop-inconsistent state. The port is effectively blocking at this
-point to prevent a loop from forming and to keep it in the nondesignated
-role. When BPDUs are received on the port again, Loop Guard allows the
-port to move through the normal STP states and become active.
+if a port enabled with loopguard stops hearing BPDUs from the designated
+port on the segment, instead of transitioning into forwarding, it goes
+into the loop-inconsistent state. When BPDUs are received on the port
+again, Loop Guard allows the port to move through the normal STP states
+and become active.
+
+### Configuration:
+
+If you are configuring this in a real network, you generally want it
+enabled on any port that is non-designated in your topology.
+<pre>
+Distribution_2(config-if)#<b>spanning-tree guard loop</b>
+Distribution_2#show spanning-tree interface fastEthernet 1/0/24 detail
+ Port 26 (FastEthernet1/0/24) of VLAN0001 is forwarding
+   Port path cost 19, Port priority 128, Port Identifier 128.26.
+   Designated root has priority 32769, address 001d.707b.4200
+   Designated bridge has priority 32769, address 001d.707b.4200
+   Designated port id is 128.26, designated path cost 0
+   Timers: message age 1, forward delay 0, hold 0
+   Number of transitions to forwarding state: 2
+   Link type is point-to-point by default
+   <span style="background-color: #FFFF00">Loop guard is enabled on the port</span>
+   BPDU: sent 48, received 2999
+</pre>
