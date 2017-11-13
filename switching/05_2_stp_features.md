@@ -138,7 +138,7 @@ Let's see Priority and Cost when UplinkFast is configured on the spanning-tree:
 Notice that <i>priority</i> changes from <b>32768</b> to <b>49152</b>,
 and the interfaces' <i>cost</i> sum up with <b>3000</b>
 <pre>
-Access#show spanning-tree
+Access#<b>show spanning-tree</b>
 
 VLAN0001
   Spanning tree enabled protocol ieee
@@ -161,8 +161,8 @@ Fa1/0/23         Root FWD 3019      128.25   P2p
 </pre>
 
 ### Verification:
-```
-Access#show spanning-tree uplinkfast
+<pre>
+Access#<b>show spanning-tree uplinkfast</b>
 UplinkFast is enabled
 
 Station update rate set to 150 packets/sec.
@@ -175,9 +175,102 @@ Number of proxy multicast addresses transmitted (all VLANs) : 4
 Name                 Interface List
 -------------------- ------------------------------------
 VLAN0001             Fa1/0/23(fwd), Fa1/0/21
-```
+</pre>
 
 ## BackboneFast
 Backbone Fast is used to recover from an indirect link failure and
 shorten the STP convergence time to 30 seconds by bypassing the Max Age
 timeout period.
+
+A switch detects an indirect link failure when it receives inferior BPDUs
+from its designated bridge on either its root port or a blocked port.
+(Inferior BPDUs are sent from a designated bridge that has lost its
+connection to the root bridge, making it announce itself as the new root.)
+
+### Configuration:
+In the topology above I will disconnect the link between distribution
+switches. First, on the all switches we apply this command:
+
+<pre>
+Access(config)#<b>spanning-tree backbonefast</b>
+Distribution_1(config)#<b>spanning-tree backbonefast</b>
+Distribution_2(config)#<b>spanning-tree backbonefast</b>
+</pre>
+
+Before disconnecting port Fa1/0/24:
+<pre>
+Access#<b>show spanning-tree backbonefast</b>
+BackboneFast is enabled
+
+BackboneFast statistics
+-----------------------
+Number of transition via backboneFast (all VLANs)           : 0
+Number of inferior BPDUs received (all VLANs)               : 0
+Number of RLQ request PDUs received (all VLANs)             : 0
+Number of RLQ response PDUs received (all VLANs)            : 0
+Number of RLQ request PDUs sent (all VLANs)                 : 0
+Number of RLQ response PDUs sent (all VLANs)                : 0
+
+</pre>
+Assume we enabled `debug spanning-tree events` on the Access switch, then
+I disconnect port Fa1/0/24
+<pre>
+Access#
+00:05:26: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:05:26: STP: VLAN0001 Fa1/0/21 -> listening
+00:05:27: STP: VLAN0001 Topology Change rcvd on Fa1/0/21
+00:05:27: STP: VLAN0001 sent Topology Change Notice on Fa1/0/23
+00:05:41: STP: VLAN0001 Fa1/0/21 -> learning
+00:05:56: STP: VLAN0001 sent Topology Change Notice on Fa1/0/23
+00:05:56: STP: VLAN0001 Fa1/0/21 -> forwarding
+</pre>
+Compare to the result of the `debug spanning-tree events` on the Access
+switch when there is **NO BackboneFast** is configured.
+Note that disconnecting the link Fa1/0/24 is an indirect change to the
+Access switch:
+<pre>
+Access#
+00:14:23: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:14:25: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:14:27: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:14:29: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:14:31: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:14:33: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:14:35: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:14:37: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:14:39: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:14:41: STP: VLAN0001 heard root 32769-0022.0dec.1200 on Fa1/0/21
+00:14:41: STP: VLAN0001 Fa1/0/21 -> listening
+00:14:43: STP: VLAN0001 Topology Change rcvd on Fa1/0/21
+00:14:43: STP: VLAN0001 sent Topology Change Notice on Fa1/0/23
+00:14:57: STP: VLAN0001 Fa1/0/21 -> learning
+00:15:12: STP: VLAN0001 sent Topology Change Notice on Fa1/0/23
+00:15:12: STP: VLAN0001 Fa1/0/21 -> forwarding
+</pre>
+Verification:
+<pre>
+Access#<b>show spanning-tree backbonefast</b>
+BackboneFast is enabled
+
+BackboneFast statistics
+-----------------------
+Number of transition via backboneFast (all VLANs)           : 1
+Number of inferior BPDUs received (all VLANs)               : 1
+Number of RLQ request PDUs received (all VLANs)             : 0
+Number of RLQ response PDUs received (all VLANs)            : 1
+Number of RLQ request PDUs sent (all VLANs)                 : 1
+Number of RLQ response PDUs sent (all VLANs)                : 0
+</pre>
+<pre>
+Distribution_1#<b>show spanning-tree backbonefast</b>
+BackboneFast is enabled
+
+BackboneFast statistics
+-----------------------
+Number of transition via backboneFast (all VLANs)           : 0
+Number of inferior BPDUs received (all VLANs)               : 0
+Number of RLQ request PDUs received (all VLANs)             : 1
+Number of RLQ response PDUs received (all VLANs)            : 0
+Number of RLQ request PDUs sent (all VLANs)                 : 0
+Number of RLQ response PDUs sent (all VLANs)                : 1
+</pre>
