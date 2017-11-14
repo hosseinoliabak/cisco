@@ -133,6 +133,15 @@ to Access.
 </pre>
 
 ## Loop Guard:
+If you ever used fiber cables you might have noticed that there is a
+different connector to transmit and receive traffic.
+
+If one of the cables (transmit or receive) fails we’ll have a
+unidirectional link failure and this can cause spanning tree loops.
+There are two protocols that can take care of this problem:
+
+* LoopGuard
+* UDLD ( Unidirectional Link Detection )
 
 In STP, the blocked ports will remain in the Blocking state as long as
 a steady flow of BPDUs is received. If BPDUs are being sent over a link
@@ -149,6 +158,12 @@ again, Loop Guard allows the port to move through the normal STP states
 and become active.
 
 ### Configuration:
+To simulate BPDU transmit, I will use:
+```
+Switch(config)#interface fastEthernet 1/0/24
+Switch(config-if)spanning-tree portfast trunk
+Switch(config-if)#spanning-tree bpdufilter enable
+```
 
 If you are configuring this in a real network, you generally want it
 enabled on any port that is non-designated in your topology.
@@ -168,16 +183,30 @@ Distribution_2#show spanning-tree interface fastEthernet 1/0/24 detail
 </pre>
 
 ## Unidirectional Link Detection (UDLD):
+The other protocol we can use to deal with unidirectional link failures
+is called UDLD (UniDirectional Link Detection). This protocol is not
+part of the spanning tree toolkit but it does help us to prevent loops.
+
+Simply said UDLD is a layer 2 protocol that works like a keepalive
+mechanism. You send hello messages, you receive them and life is good.
+As soon as you still send hello messages but don’t receive them anymore
+you know something is wrong and we’ll block the interface.
+
 * Cisco proprietary
 * Unidirectional link usually occurs in fiber optic
 
-To simulate unidirectional link:
+
+To simulate unidirectional link failure is a tricky part here.
+LoopGuard was easier because it was based on BPDUs. UDLD runs its own
+layer 2 protocol by using the proprietary MAC address 0100.0ccc.cccc.
+We can create a filter to block the UDLD traffic:
 ```
-Switch(config)#mac access-list extended UDLDTEST
-Switch(config-ext-macl)#deny any any
+Switch(config)#mac access-list extended UDLD-FILTER
+Switch(config-ext-macl)#deny any host 0100.0ccc.cccc
+Switch(config-ext-macl)#permit any any
 Switch(config-ext-macl)#exit
-Switch(config)#interface fastEthernet 1/0/21
-Switch(config-if)#mac access-group UDLDTEST in
+Switch(config)#interface fa1/0/19
+Switch(config-if)#mac access-group UDLD-FILTER in
 ```
 Then a loop occurs.
 By default, UDLD is disabled on all switch ports. To enable it globally,
@@ -188,6 +217,14 @@ Switch(config)#udld ?
   enable      Enable UDLD protocol on fiber ports except where locally configured
   message     Set UDLD message parameters
 ```
+When you set UDLD to normal it will mark the port as undetermined but
+it won't shut the interface when something is wrong. This is only used
+to "inform" you but it won't stop loops.
+
+Aggressive is a better solution. When it loses connectivity to a
+neighbor it will send a UDLD frame 8 times in a second. If the neighbor
+does not respond the interface will be put in err-disable mode.
+
 You also can enable or disable UDLD on individual switch ports, if
 needed, using the following interface configuration command:
 Here, you can use the disable keyword to completely disable UDLD on a
@@ -202,3 +239,18 @@ To verify:
 ```
 Switch#show udld fastEthernet 1/0/19
 ```
+```
+Switch#debug udld events
+```
+LoopGuard and UDLD both solve the same problem: Unidirectional Link
+failures. They have some overlap but there are a number of differences,
+here’s an overview:
+
+|   | LoopGuard | UDLD |
+| --- | --- | --- |
+| **Configuration** | Global / per port	 | Global (for fiber) / per port |
+| **Per VLAN?**	| Yes | No, per port |
+| **Autorecovery** | Yes | Yes – requires err-disable timeout. |
+| **Protection against STP failures because of unidirectional link failures** | Yes – need to enable it on all root and alternate ports | Yes – need to enable it on all interfaces |
+| **Protection against STP failures because no BPDUs are sent** | Yes | No |
+| **Protection against miswiring** | No | Yes |
