@@ -18,10 +18,47 @@ SW1#<b>show interfaces status err-disabled</b>
 Port      Name               Status            Reason               Err-disabled Vlans
 Fa1/0/11                     <b>err-disabled  bpduguard</b>
 </pre>
+
+## STP BPDUFilter:
+The spanning-tree BPDUfilter works similar to BPDUGuard as it allows you
+to block malicious BPDUs. The difference is that BPDUguard will put the
+interface that it receives the BPDU on in err-disable mode while
+BPDUfilter just "filters" it. In this lesson we'll take a good look at
+how BPDUfilter works.
+
+BPDUfilter can be configured globally or on the interface level and
+there’s a difference:
+
+* Global: if you enable BPDUfilter globally then any interface with
+portfast enabled will not send or receive any BPDUs. When you receive a
+BPDU on a portfast enabled interface then it will lose its portfast
+status, disables BPDU filtering and acts as a normal interface.
+* Interface: if you enable BPDUfilter on the interface it will ignore
+incoming BPDUs and it will not send any BPDUs. This is the equivalent
+of disabling spanning-tree.
+
+You have to be careful when you enable BPDUfilter on interfaces.
+You can use it on interfaces in access mode that connect to computers
+but make sure you never configure it on interfaces connected to other
+switches; if you do you might end up with a loop.
+
+```
+Switch(config)#interface fa1/0/19
+Switch(config-if)#spanning-tree portfast trunk
+Switch(config-if)#spanning-tree bpdufilter enable
+```
+Or globally:
+```
+Switch(config)#spanning-tree portfast bpdufilter default
+```
+Personally I wouldn't use this and use BPDUguard instead. If you don't
+expect BPDUs on an interface then it's better to get a notification
+(through err-disable) then not seeing what is going on…
+
 ## STP Root Guard:
-RootGuard will make sure you don’t accept a certain switch as a root
+RootGuard will make sure you don't accept a certain switch as a root
 bridge. BPDUs are sent and processed normally but if a switch suddenly
-sends a BPDU with a superior bridge ID you won’t accept it as the root
+sends a BPDU with a superior bridge ID you won't accept it as the root
 bridge.
 
 The rootguard feature is implemented on a per interface basis with the
@@ -136,7 +173,7 @@ to Access.
 If you ever used fiber cables you might have noticed that there is a
 different connector to transmit and receive traffic.
 
-If one of the cables (transmit or receive) fails we’ll have a
+If one of the cables (transmit or receive) fails we'll have a
 unidirectional link failure and this can cause spanning tree loops.
 There are two protocols that can take care of this problem:
 
@@ -189,8 +226,8 @@ part of the spanning tree toolkit but it does help us to prevent loops.
 
 Simply said UDLD is a layer 2 protocol that works like a keepalive
 mechanism. You send hello messages, you receive them and life is good.
-As soon as you still send hello messages but don’t receive them anymore
-you know something is wrong and we’ll block the interface.
+As soon as you still send hello messages but don't receive them anymore
+you know something is wrong and we'll block the interface.
 
 * Cisco proprietary
 * Unidirectional link usually occurs in fiber optic
@@ -244,7 +281,7 @@ Switch#debug udld events
 ```
 LoopGuard and UDLD both solve the same problem: Unidirectional Link
 failures. They have some overlap but there are a number of differences,
-here’s an overview:
+here's an overview:
 
 |   | LoopGuard | UDLD |
 | --- | --- | --- |
