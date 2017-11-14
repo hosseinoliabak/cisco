@@ -1,4 +1,4 @@
-# Rapid (Per-VLAN) Spanning-Tree (RSTP/RPVST+) - IEEE 802.1w standard
+# Rapid (Per-VLAN) Spanning-Tree (RSTP/RPVST+) - IEEE 802.1w
 RSTP is not timer-based unlike 802.1D which is timer-based. RSTP uses a
 proposal and agreement process to build up the spanning tree faster.
 
