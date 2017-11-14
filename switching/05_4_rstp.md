@@ -113,4 +113,3 @@ Now, I am going to connect back the port Fa1/0/23:
 
 
 
-
