@@ -1,5 +1,5 @@
 # Private VLAN
- It’s like the nesting concept – creating VLANs inside a VLAN. As we
+ It's like the nesting concept – creating VLANs inside a VLAN. As we
  know, Ethernet VLANs are not allowed to communicate directly with each
  other; they need some Layer three (L3) devices (like router, multilayer
  switch.etc) to forward packets between the broadcast domains.
