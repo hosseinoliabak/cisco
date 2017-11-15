@@ -53,21 +53,19 @@ Directory of flash:/
 This file contains the password definition. Then boot the system
 <pre>
 switch: <b>rename flash:config.text flash:config.text.old</b>
-switch: <b>boot</b>
-</pre>
+switch: <b>boot</b></pre>
 
 5. When the switch is booted up go to privilege mode and rename the
 configuration file to its original name:
 <pre>
-Switch# <b>rename flash:config.text.old flash:config.text</b>
-</pre>
+Switch#<b>rename flash:config.text.old flash:config.text</b></pre>
 
 Note Before continuing to Step 9, power on any connected stack members
 and wait until they have completely initialized. Failure to follow this step can result in a lost configuration depending on how your switch is set up.
 
 6. Copy the configuration file into memory:
 <pre>
-Switch# <b>copy flash:config.text system:running-config</b>
+Switch#<b>copy flash:config.text system:running-config</b>
 Destination filename [running-config]?
 </pre>
 
@@ -76,15 +74,15 @@ The configuration file is now reloaded, and you can change the password.
 
 7. Enter global configuration mode and change the password:
 <pre>
-HMLADMP01C01# configure terminal
-HMLADMP01C01(config)# enable secret password
-HMLADMP01C01(config)#username test privilege 15 password test
-</pre>
+HMLADMP01C01#<b>configure terminal</b>
+HMLADMP01C01(config)#<b>enable secret test</b>
+HMLADMP01C01(config)#<b>username test privilege 15 password test</b>
+HMLADMP01C01(config)#<b>line console 0</b>
+HMLADMP01C01(config)#<b>password test</b></pre>
 
 8. Write the running configuration to the startup configuration file in
 privilege mode:
 <pre>
-HMLADMP01C01(config)#end
-HMLADMP01C01#copy running-config startup-config
-</pre>
+HMLADMP01C01(config)#<b>end</b>
+HMLADMP01C01#<b>copy running-config startup-config</b></pre>
 The new password is now in the startup configuration.
