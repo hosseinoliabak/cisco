@@ -1,4 +1,4 @@
-# Introduction to Quality of Service (QoS):
+# Quality of Service (QoS):
 Internet is best effort of FIFO (First In First Out). This is not QoS.
 
 QoS controls help you better manage available bandwidth. QoS is about
@@ -31,12 +31,29 @@ trunks. The tag that is added by 802.1Q has a priority field:
   * Most IP phones mark IP packets that they create
   * Network-Based Application Recognition (NBAR): By looking at the
    content of IP packets
-* **Queuing-Congestion Management**
+* **Queuing-Congestion Management:**
   * Round-Robin Scheduling: works very well for data applications as
 it guarantees a certain bandwidth to each queue.
   * Weighted round-robin Scheduling
     * Cisco uses Class-Based Weighted Fair Queuing (CBWFQ)
-  * Low Latency Queuing
+  * Low Latency Queuing: Voice traffic has to be sent immediately and
+  should not wait
+* **Shaping and Policing:** are used to limit the bit rate
+  * Policers do so by discarding traffic. (Policing is often used by
+  ISPs who must limit the bitrate of their customers.)
+  * Shapers will hold packets in a queue, adding delay. This is done on
+  the customer side. The shaper will queue messages, delaying them to a
+  certain CIR rate.
+* **Congestion Avoidance:** The congestion avoidance tool can randomly
+drop packets, or we can configure it to give certain packets a different
+treatment based on their marking.
 
-* Shaping and Policing
-* Congestion Avoidance
+# IP Precedence and DSCP Values
+
+## Type of Service (TOS)
+IP packets have a field called the Type of Service field (also known as
+the TOS byte)
+
+## Class of Service (COS)
+It is found in the header of 802.1Q (layer 2). It’s used for Quality of
+Service on trunk links
