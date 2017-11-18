@@ -113,3 +113,19 @@ Fa1/0/3                      connected    200,20     a-full  a-100 10/100BaseTX
 Fa1/0/4                      connected    200,30     a-full  a-100 10/100BaseTX
 Fa1/0/5                      connected    200,30     a-full  a-100 10/100BaseTX
 ```
+# PVLAN edge (protected port):
+The PVLAN edge (protected port) is a feature that has only local significance to the switch (unlike Private Vlans), and there is no isolation provided between two protected ports located on different switches. A protected port does not forward any traffic (unicast, multicast, or broadcast) to any other port that is also a protected port in the same switch. Traffic cannot be forwarded between protected ports at L2, all traffic passing between protected ports must be forwarded through a Layer 3 (L3) device.
+```
+Switch(config)#interface range fastEthernet 3/0/1 - 12
+Switch(config-if-range)#switchport protected
+```
+Protected ports cannot see each other but the unprotected ports.
+Scenario (Server Room): We don't want clients to see each other but the server.
+
+<img src="https://user-images.githubusercontent.com/31813625/32981232-b7edbea4-cc41-11e7-9fac-d7dc738d29ae.png" width="412" height="317" />
+
+
+```
+Switch#show interfaces status err-disabled
+```
+
