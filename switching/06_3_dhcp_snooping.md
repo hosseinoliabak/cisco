@@ -4,7 +4,7 @@ DHCP spoofing occurs when an attacker attempts to respond to DHCP requests and t
 
 This can be mitigated by configuring DHCP Snooping which enables specific ports only to pass DHCP traffic. All other ports will be untrusted and can only send DHCP requests. If a DHCP offer is detected in a untrusted port, it will be shut down.
 
-<img src="https://user-images.githubusercontent.com/31813625/32983666-288fa36a-cc66-11e7-8079-b7983f185dd0.png" width="607" height="212" />
+<img src="https://user-images.githubusercontent.com/31813625/32983666-288fa36a-cc66-11e7-8079-b7983f185dd0.png" width="733" height="274" />
 
 When we Apply `ip dhcp snooping vlan X` then all interfaces on VLAN X become untrusted.
 
