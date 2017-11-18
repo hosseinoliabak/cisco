@@ -50,7 +50,7 @@ SW1#<b>test aaa group radius admin P@ssw0rd legacy</b></pre>
 # IEEE 802.1X
 Port-based Network Access Control (PNAC)
 
-**Scenario:** If a PC is connected to a switch first authenticate then bring the port up.
+**Scenario:** If a PC is connected to a switch first authenticate then bring the port up/up.
 
 * 802.1X also involves three parties:
   * Authentication server: RADIUS
@@ -67,13 +67,18 @@ does not already have an IP address, it cannot request one. The PC also has no k
 of the switch or its IP address, so any means other than a Layer 2 protocol is not possible.
 This is why the PC must also have an 802.1X-capable application or client software.
 
+The idea behind AAA is that a user has to authenticate before getting access to the network. The fa0/1 interface on SW1 will be blocked and you are not even getting an IP address. The only thing the user is allowed to do is send his/her credentials which will be forwarded to the AAA server. If your credentials are OK the port will be unblocked and you will be granted access to the network.
+
 <img src="https://user-images.githubusercontent.com/31813625/32982677-3fd7e308-cc56-11e7-9198-8cce2f610ee1.png" width="528" height="134" />
 
 <pre>
 SW1(config)#<b>aaa new-model</b>
+SW1(config)#<b>radius-server host 192.168.1.200 key test</b>
 SW1(config)#<b>aaa authentication dot1x default group radius</b>
 SW1(config)#<b>dot1x system-auth-control</b>
 SW1(config)#<b>interface range fastEthernet 3/0/1 - 24</b>
+SW1(config-if-range)#<b>switchport access vlan 10</b>
+SW1(config-if-range)#<b>switchport mode access</b>
 SW1(config-if-range)#<b>dot1x port-control ?</b>
   auto                PortState will be set to AUTO
   force-authorized    PortState set to Authorized
@@ -120,4 +125,16 @@ RateLimitPeriod           = 0
 Dot1x Info for FastEthernet3/0/2
 -----------------------------------
  --More--
+</pre>
+
+<pre>
+SW1#show dot1x interface fastEthernet 3/0/14 statistics
+Dot1x Authenticator Port Statistics for FastEthernet3/0/14
+--------------------------------------------
+RxStart = 2     RxLogoff = 0    RxResp = 0      RxRespID = 2
+RxInvalid = 0   RxLenErr = 0    RxTotal = 4
+
+TxReq = 1       TxReqID = 2     TxTotal = 3
+
+RxVersion = 1   LastRxSrcMAC = a02b.b82f.e9dc
 </pre>
