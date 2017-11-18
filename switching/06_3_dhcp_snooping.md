@@ -1,4 +1,4 @@
-# DHCP Attacks
+# DHCP attacks and mitigation methods
 ## DHCP spoofing:
 DHCP spoofing occurs when an attacker attempts to respond to DHCP requests and trying to list themselves (spoofs) as the default gateway or DNS server, hence, initiating a man in the middle attack.
 
