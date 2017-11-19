@@ -244,3 +244,26 @@ SW1(config)#<b>port-channel load-balance ?</b>
   src-ip       Src IP Addr
   src-mac      Src Mac Addr
 </pre>
+The load is not necessarily balanced equally across all the links.
+Instead, frames are forwarded on a specific link as a result of a hashing algorithm.
+* A 2wo-links bundle requires a 1-bit index. If the index is 0, link 0 is selected; if the index is 1, link 1 is used. Either the lowest-order address bit or the XOR of the last bit of the addresses in the frame is used as the index
+  * Binary Address1: **xxxx0**, Binary Address 2: **xxxx0** -> **XOR = 0** then use **link 0**
+  * Binary Address1: **xxxx1**, Binary Address 2: **xxxx1** -> **XOR = 0** then use **link 0**
+  * Binary Address1: **xxxx0**, Binary Address 2: **xxxx1** -> **XOR = 1** then use **link 1**
+  * Binary Address1: **xxxx1**, Binary Address 2: **xxxx0** -> **XOR = 1** then use **link 1**
+* A four-link bundle uses a hash of the last 2 bits
+* An eight-link bundle uses a hash of the last 3 bits
+
+The XOR operation is performed independently on each bit position in the address value.
+If the two address values have the same bit value, the XOR result is always 0. If the two
+address bits differ, the XOR result is always 1. In this way, frames can be distributed statistically
+among the links with the assumption that MAC or IP addresses themselves are
+distributed statistically throughout the network.
+
+* **Note:** There is no need to have he same load-balancing algorithm on both ends.
+
+## Layer 3 Etherchannel
+* Again, make sure that all interfaces have the exact same configuration
+* Once you use the channel-group command, the port-channel interface will automatically inherit all settings from your physical interface
+* If you didn't run the no switchport command on an interface, your etherchannel will be layer 2 instead of layer 3!
+
