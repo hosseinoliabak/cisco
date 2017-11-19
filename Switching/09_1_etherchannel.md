@@ -265,5 +265,30 @@ distributed statistically throughout the network.
 ## Layer 3 Etherchannel
 * Again, make sure that all interfaces have the exact same configuration
 * Once you use the channel-group command, the port-channel interface will automatically inherit all settings from your physical interface
-* If you didn't run the no switchport command on an interface, your etherchannel will be layer 2 instead of layer 3!
+* If you didn't run the `no switchport` command on an interface, your etherchannel will be layer 2 instead of layer 3!
 
+<pre>
+SW2#show etherchannel 1 summary 
+Flags:  D - down        P - bundled in port-channel
+        I - stand-alone s - suspended
+        H - Hot-standby (LACP only)
+        <b>R</b> - Layer3      S - Layer2
+        U - in use      N - not in use, no aggregation
+        f - failed to allocate aggregator
+
+        M - not in use, minimum links not met
+        m - not in use, port not aggregated due to minimum links not met
+        u - unsuitable for bundling
+        w - waiting to be aggregated
+        d - default port
+
+        A - formed by Auto LAG
+
+
+Number of channel-groups in use: 1
+Number of aggregators:           1
+
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+-----------------------------------------------
+1      Po1(<b>R</b>U)         PAgP      Gi0/1(P)    Gi0/2(P)     
+</pre>
