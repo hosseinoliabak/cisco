@@ -189,3 +189,15 @@ Age of the port in the current state: 0d:00h:02m:29s
 </pre>
 
 ### LACP
+The interface can configured as:
+* **On:** interface becomes member of the etherchannel but does not negotiate
+* **Active:** interface will actively ask the other side to become an etherchannel
+* **Passive:** interface will wait passively for the other side to ask to become an etherchannel
+* **Off:** no etherchannel configured on the interface
+
+| | On | Active | Passive | Off |
+| --- | --- | --- | --- | --- |
+| __On__ | Yes | No | No | No |
+| __Active__ | No | Yes | Yes | No |
+| __Passive__ | No | Yes | No | No
+| __Off__ | No | No | No | No |
