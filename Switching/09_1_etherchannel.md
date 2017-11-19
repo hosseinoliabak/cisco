@@ -188,6 +188,7 @@ Gi0/1     SW2                  0097.8116.2900	Gi0/1       12s SAC	10001
 Age of the port in the current state: 0d:00h:02m:29s
 </pre>
 
+
 ### LACP
 The interface can configured as:
 * **On:** interface becomes member of the etherchannel but does not negotiate
@@ -201,3 +202,45 @@ The interface can configured as:
 | __Active__ | No | Yes | Yes | No |
 | __Passive__ | No | Yes | No | No
 | __Off__ | No | No | No | No |
+
+The same concept as PAgP, but you are dealing with Active and Passive mode as opposed to Desirable and Auto.
+
+In PAgP we can have up to 8 interfaces, but in LACP we can have 16 interfaces from which 8 are standby. How to determine which interfaces be Active and which be standby?
+##### A: Switch priority
+1. Switch priority: The switch with the lower LACP priority makes the decision. Default priority is 32768
+2. If priorities are equal then switch with the lower MAC address makes the decision.
+<pre>
+SW1(config)#<b>lacp system-priority ?</b>
+  <0-65535>  Priority value
+</pre>
+
+##### B: Port priority
+We can determine the priority per ports. If the port priorities are equal, the lower 8 port numbers become active.
+<pre>
+SW1(config-if)#<b>lacp port-priority ?</b>
+  <0-65535>  Priority value
+</pre>
+Default priority is 32768
+
+### Load-balancing
+To see what the default configuration is
+<pre>
+SW1#<b>show etherchannel load-balance</b> 
+EtherChannel Load-Balancing Configuration:
+        <b>src-dst-ip</b>
+
+EtherChannel Load-Balancing Addresses Used Per-Protocol:
+Non-IP: Source XOR Destination MAC address
+  IPv4: Source XOR Destination IP address
+  IPv6: Source XOR Destination IP address
+</pre>
+You can use the global `port-channel load-balance` command to change this behavior.
+<pre>
+SW1(config)#<b>port-channel load-balance ?</b>
+  dst-ip       Dst IP Addr
+  dst-mac      Dst Mac Addr
+  src-dst-ip   Src XOR Dst IP Addr
+  src-dst-mac  Src XOR Dst Mac Addr
+  src-ip       Src IP Addr
+  src-mac      Src Mac Addr
+</pre>
