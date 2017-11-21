@@ -20,3 +20,23 @@ The four links between the switch pairs can be combined into a single etherchann
 
 ##### After:
 <img src="https://user-images.githubusercontent.com/31813625/33031881-85eb4af4-cded-11e7-8801-243a8a560177.png" width="683" height="277" />
+
+# Cisco Stackwise
+Cisco Stackwise allows us to turn multiple physical switches (up to 9 switches) into a single logical switch.
+One switch becomes master and others become members. If master fails, another member becomes the master.
+
+### Election process to choose the master
+1. User priority
+2. Hardware/Software priority (for example IP Service vs IP Base)
+3. Default configuration: The switch which has already the configuration
+4. Longest uptime:
+5. Lowest MAC address:
+
+### Verification
+```
+SW1#show switch
+SW1#show switch stack-ports
+SW1#show switch stack-ring speed
+SW3#show cdp neighbors
+```
+SW3 is another switch which is connected to our stack
