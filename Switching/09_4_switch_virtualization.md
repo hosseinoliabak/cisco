@@ -26,7 +26,7 @@ Cisco Stackwise allows us to turn multiple physical switches (up to 9 switches) 
 One switch becomes master and others become members. If master fails, another member becomes the master.
 
 ### Election process to choose the master
-1. User priority
+1. User priority: `SW1(config)#switch 1 priority <1-15>`
 2. Hardware/Software priority (for example IP Service vs IP Base)
 3. Default configuration: The switch which has already the configuration
 4. Longest uptime:
