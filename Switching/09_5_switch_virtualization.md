@@ -40,3 +40,6 @@ SW1#show switch stack-ring speed
 SW3#show cdp neighbors
 ```
 SW3 is another switch which is connected to our stack
+
+### Notes
+* When a switch is added to a stack, the SDM template on the master will override the SDM template on the new switch
