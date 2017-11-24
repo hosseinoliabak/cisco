@@ -25,10 +25,6 @@ from SW3 Gi3/0 to SW4 Gi3/0
 
 <img src="https://user-images.githubusercontent.com/31813625/33154294-673ae5dc-cfb5-11e7-9b07-1ea68074138d.png" width="652" height="535" />
 
-* Note that:
-  * the identifier is not the HSRP group; it is the Virtual IP address
-  * If the priorities are the same, the switch with higher SVI IP becomes active 
-
 ### Configuration
 * Configure SW1 and SW2 according to the table below
 * Enable IP routing on both switches
@@ -152,9 +148,6 @@ Vlan10 - Group 10
 </pre>
 
 
-* **Note taht**
-  * HSRP and STP do NOT have any negotiation with each other, so to increase the performance, you have to design the HSTP Active to be STP root bridge as well
-
 ### HSRP Timers
 * HSRP routers send Hello to 224.0.0.2 UDP 1985 every 3 seconds. Hold time is 10 seconds.
 * HSRP routers are listening to multicast address 224.0.0.2
@@ -229,6 +222,25 @@ SW1(config-keychain-key)#<b>key-string cisco</b>
 SW1(config)#<b>interface vlan 20</b>
 SW1(config-if)#<b>standby 20 authentication md5 key-chain CHAIN-HSRP-20</b></pre>
 
+* **Note taht**
+  * HSRP and STP do NOT have any negotiation with each other, so to increase the performance, you have to design the HSTP Active to be STP root bridge as well
+  * HSRP version 1 is the default version
+  * the identifier is not the HSRP group; it is the Virtual IP address
+  * If the priorities are the same, the switch with higher SVI IP becomes active
+  * HSRP has 5 states: Initial, listen, speak, standby and active.
+    * **Initial:** This is the beginning state. It indicates HSRP is not running. It happens when the configuration changes or the interface is first turned on
+    * **Learn:** The router has not determined the virtual IP address and has not yet seen an authenticated hello message from the active router. In this state, the router still waits to hear from the active router
+    * **Listen:** The router knows both IP and MAC address of the virtual router but it is not the active or standby router. For example, if there are 3 routers in HSRP group, the router which is not in active or standby state will remain in listen state.
+    * **Speak:** The router sends periodic HSRP hellos and participates in the election of the active or standby router.
+    * **Standby:** In this state, the router monitors hellos from the active router and it will take the active state when the current active router fails (no packets heard from active router)
+    * **Active:** The router forwards packets that are sent to the HSRP group. The router also sends periodic hello messages
+### HSRP Version 2
+  * Supports 4096 group numbers
+  * Virtual MAC address of 0000.0C9F.FXXX (XXX: HSRP group in hexadecimal)
+  * Hello packets are sent to multicast address 224.0.0.102
+  * Is configured by`(config-if)# standby version 2 
+`
+    
 ## Virtual Router Redundancy Protocol (VRRP)
 * VRRP i an open standard protocol defined in RFC 3768
 * Virtual MAC: 0000.5e00.01xx (xx is the group number isn hexadecimal format)
@@ -240,10 +252,11 @@ SW1(config-if)#<b>standby 20 authentication md5 key-chain CHAIN-HSRP-20</b></pre
 * In VRRP -unlike the HSRP - the virtal IP address can be the same as an interface IP
   * Allows new VRRP implementation without changing default gateways of the computers
   * The switch whose interface IP matches the virtual IP will always be the master unless is down
-* VRRP group number: [1-255] (in HSRP: [0-255])
-* Router priority is between and including [1-255] (in HSRP was [0-255])
-  * Note that the default VRRP priority number of Master router is 255
+* VRRP group number: [1-255] (in HSRP: [0-255] in HSRP, 0 is the default group number)
+* Router priority is between and including [0-255] (in HSRP was [0-255])
+  * Note that the default VRRP priority number of Master if chosen by IP address is 255
   * default VRRP priority number if backups are 100
+  * We can NOT configure a router with priority 0. Priority 0 happens when we decrement to 0 by tracking objects
 * Hellos are being sent in a 1-second interval
 * hold time is 3 seconds
 * Mutlicast address: 224.0.0.18 IP protocol number 112
@@ -276,3 +289,68 @@ Vlan34 - Group 34
   Master Advertisement interval is 1.000 sec
   Master Down interval is 3.003 sec
 </pre>
+
+4. Ensure that SW3 takes over as the Master if Gi0/3 on SW4 goes down
+<pre>
+SW4(config)#<b>track 34 interface gigabitEthernet 0/3 line-protocol</b> 
+SW4(config-track)#<b>exit</b>
+SW4(config)#<b>interface vlan 34</b>
+SW4(config-if)#<b>vrrp 34 track 34 decrement 156</b>
+VRRP: Tracking not supported on IP Address owner
+SW4(config-if)#<b>ip address 172.31.34.44 255.255.255.0</b>
+*Nov 24 17:52:36.218: %VRRP-6-STATECHANGE: Vl34 Grp 34 state Master -> Disable
+*Nov 24 17:52:36.219: %VRRP-6-STATECHANGE: Vl34 Grp 34 state Init -> Backup
+*Nov 24 17:52:36.224: %VRRP-6-STATECHANGE: Vl34 Grp 34 state Backup -> Disable
+*Nov 24 17:52:36.225: %VRRP-6-STATECHANGE: Vl34 Grp 34 state Init -> Backup
+*Nov 24 17:52:39.834: %VRRP-6-STATECHANGE: Vl34 Grp 34 state Backup -> Master
+SW4(config-if)#<b>vrrp 34 track 34 decrement 1</b>                       
+</pre>
+<pre>
+SW4#<b>show vrrp</b> 
+Vlan34 - Group 34 
+  <b>State is Master</b>  
+  Virtual IP address is 172.31.34.4
+  Virtual MAC address is 0000.5e00.0122
+  Advertisement interval is 1.000 sec
+  Preemption enabled
+  <b>Priority is 100</b> 
+    Track object 34 state Up decrement 1
+  Master Router is 172.31.34.44 (local), priority is 100 
+  Master Advertisement interval is 1.000 sec
+  Master Down interval is 3.609 sec
+</pre>
+<pre>
+SW4(config)#<b>interface gigabitEthernet 0/3</b>
+SW4(config-if)#<b>shutdown</b>
+SW4(config-if)#
+*Nov 24 17:56:36.660: %TRACK-6-STATE: 34 interface Gi0/3 line-protocol Up -> Down
+*Nov 24 17:56:38.624: %LINK-5-CHANGED: Interface GigabitEthernet0/3, changed state to administratively down
+*Nov 24 17:56:39.624: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/3, changed state to down
+*Nov 24 17:56:40.124: %VRRP-6-STATECHANGE: Vl34 Grp 34 state Master -> <b>Backup</b>
+</pre>
+<pre>
+SW4#<b>show vrrp</b> 
+Vlan34 - Group 34 
+  <b>State is Backup</b>  
+  Virtual IP address is 172.31.34.4
+  Virtual MAC address is 0000.5e00.0122
+  Advertisement interval is 1.000 sec
+  Preemption enabled
+  <b>Priority is 99</b>  
+    Track object 34 state Down decrement 1
+  Master Router is 172.31.34.3, priority is 100 
+  Master Advertisement interval is 1.000 sec
+  Master Down interval is 3.609 sec (expires in 3.421 sec)
+</pre>
+We can see SW3 preempts SW4 when the interface comes back up.
+<pre>
+SW4(config)#<b>interface gigabitEthernet 0/3</b>
+SW4(config-if)#<b>no shutdown</b>
+SW4(config-if)#
+*Nov 24 18:01:57.961: %LINK-3-UPDOWN: Interface GigabitEthernet0/3, changed state to up
+*Nov 24 18:01:57.963: %TRACK-6-STATE: 34 interface Gi0/3 line-protocol Down -> Up
+*Nov 24 18:01:58.961: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/3, changed state to up
+*Nov 24 18:02:01.373: %VRRP-6-STATECHANGE: Vl34 Grp 34 state Backup -> <b>Master</b>
+</pre>
+
+## Gateway Load Balancing Protocol (GLBP)
