@@ -84,7 +84,7 @@ VLAN0001
 
 Interface        Role Sts Cost      Prio.Nbr Type
 ---------------- ---- --- --------- -------- --------------------------------
-Fa1/0/21         Altn <b>BLK<b> 19        128.23   <b>P2p<b> Peer(STP)
+Fa1/0/21         Altn <b>BLK</b> 19        128.23   <b>P2p</b> Peer(STP)
 Fa1/0/23         Root FWD 19        128.25   P2p
 </pre>
 `BLK` in RSTP means in discarding state
