@@ -16,10 +16,10 @@ The four links between the switch pairs can be combined into a single etherchann
 
 #### Before and after combining multiple switches
 ##### Before:
-<img src="https://user-images.githubusercontent.com/31813625/33031719-1197c6fa-cded-11e7-87e0-a91a0e2725b0.png" width="683" height="277" />
+<img src="https://user-images.githubusercontent.com/31813625/33234387-f23a171c-d1f3-11e7-8097-936d0de79010.png" width="692" height="302" />
 
 ##### After:
-<img src="https://user-images.githubusercontent.com/31813625/33031881-85eb4af4-cded-11e7-8801-243a8a560177.png" width="683" height="277" />
+<img src="https://user-images.githubusercontent.com/31813625/33234388-f246897a-d1f3-11e7-8359-4264f5ed6198.png" width="650" height="284" />
 
 # Cisco Stackwise
 Cisco Stackwise allows us to turn multiple physical switches (up to 9 switches) into a single logical switch.
