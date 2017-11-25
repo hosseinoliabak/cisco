@@ -200,7 +200,7 @@ Vlan10 - Group 10
 </pre>
 
 ### HSRP Authentication
-* To prevent unexpected dvices from spoofing or participating in HSRP
+* To prevent unexpected devices from spoofing or participating in HSRP
 * All routers in the same standby group must have an identical authentication method and key
 #### Plain-Text HSRP Authentication
 * Up to 8 characters
@@ -249,7 +249,7 @@ SW1(config-if)#<b>standby 20 authentication md5 key-chain CHAIN-HSRP-20</b></pre
   * Listens to the virtual MAC and IP address
 * Backup router
   * Equivalent to the HSRP Standby router
-* In VRRP -unlike the HSRP - the virtal IP address can be the same as an interface IP
+* In VRRP -unlike the HSRP - the virtual IP address can be the same as an interface IP
   * Allows new VRRP implementation without changing default gateways of the computers
   * The switch whose interface IP matches the virtual IP will always be the master unless is down
 * VRRP group number: [1-255] (in HSRP: [0-255] in HSRP, 0 is the default group number)
@@ -354,3 +354,159 @@ SW4(config-if)#
 </pre>
 
 ## Gateway Load Balancing Protocol (GLBP)
+
+<img src="https://user-images.githubusercontent.com/31813625/33224002-f19d6c80-d132-11e7-8037-b6fa8a92f130.png" width="627" height="489" />
+
+* We can have loadbalancing as described below
+* We have one Active Virtual Gateway (AVG)
+* AVG gives a virtual MAC address to each (up to 4) Active Virtual Forwarder (AVF)
+  * Which MAC address it responds with depends on 2 things:
+    * Loadbalancing method: for example round-robin
+    * AVFs that are part of GLBP group
+* The other routers other than 4 AVFs become Standby Virtual Forwarder (SVF)
+* AVG listens for ARP request for the virtual IP address
+* Each AVF owns one virtual MAC address
+* AVFs are responsible for routing data traffic to its destination subnet
+* Responds with the virtual MAC address of a router in the group
+* Preemption for AVG is disabled by default
+* Preemption for AVFs are enabled by default so if one AVF fails, AVG gives the MAC address of the failed AVF to another AVF (in this case this AVF responds to 2 MAC addresses up to 18 hours (default is 4 hours))
+* Hellos and interval timers are like in HSRP
+* Hellos is sent to multicast 224.0.0.102 UDP 3222
+
+### Configuration
+
+<img src="https://user-images.githubusercontent.com/31813625/33225788-3e45d8d8-d14c-11e7-9e39-b0c7cbe64680.png" width="625" height="354" />
+
+* Catalyst 3750 and 3560 didn't support GLBP. I'll implement by routers instead
+1. For the 192.168.8.0/24 subnet, configure GLBP group 8 on the gig0/0 interfaces
+* Hosts in the subnet have 192.168.8.254 as their default gateway
+
+Configure GLBP on all routers as I configured for R1 in below:
+<pre>
+R1(config)#<b>interface gigabitEthernet 0/0</b>
+R1(config-if)#<b>glbp 8 ip 192.168.8.254</b></pre>
+
+<pre>
+R1#<b>show glbp</b> 
+GigabitEthernet0/0 - Group 8
+  State is <b>Active</b>
+    1 state change, last state change 00:01:17
+  Virtual IP address is 192.168.8.254
+  Hello time 3 sec, hold time 10 sec
+    Next hello sent in 1.856 secs
+  Redirect time 600 sec, forwarder timeout 14400 sec
+  Preemption disabled
+  <b>Active is local</b>
+  Standby is 192.168.8.50, priority 100 (expires in 7.424 sec)
+  Priority 100 (default)
+  Weighting 100 (default 100), thresholds: lower 1, upper 100
+  <b>Load balancing: round-robin</b>
+  Group members:
+    0075.645c.5500 (192.168.8.20)
+    0075.646e.3200 (192.168.8.10) local
+    0075.6484.9100 (192.168.8.50)
+    0075.64c6.de00 (192.168.8.30)
+    0075.64f3.5b00 (192.168.8.40)
+  There are 4 forwarders (1 active)
+  <b>Forwarder 1</b>
+    State is Active
+      1 state change, last state change 00:00:36
+    MAC address is 0007.b400.08<b>01</b> (default)
+    Owner ID is 0075.646e.3200
+    Redirection enabled
+    Preemption enabled, min delay 30 sec
+    Active is local, weighting 100
+  <b>Forwarder 2</b>
+    State is Listen
+    MAC address is 0007.b400.08<b>02</b> (learnt)
+    Owner ID is 0075.64c6.de00
+    Redirection enabled, 598.592 sec remaining (maximum 600 sec)
+    Time to live: 14398.592 sec (maximum 14400 sec)
+    Preemption enabled, min delay 30 sec
+    Active is 192.168.8.30 (primary), weighting 100 (expires in 9.760 sec)
+  <b>Forwarder 3</b> 
+    State is Listen
+    MAC address is 0007.b400.08<b>03</b>  (learnt)
+    Owner ID is 0075.645c.5500
+    Redirection enabled, 599.904 sec remaining (maximum 600 sec)
+    Time to live: 14399.904 sec (maximum 14400 sec)
+    Preemption enabled, min delay 30 sec
+    Active is 192.168.8.20 (primary), weighting 100 (expires in 10.240 sec)
+  <b>Forwarder 4</b>
+    State is Listen
+    MAC address is 0007.b400.08<b>04</b>  (learnt)
+    Owner ID is 0075.64f3.5b00
+    Redirection enabled, 599.904 sec remaining (maximum 600 sec)
+    Time to live: 14399.904 sec (maximum 14400 sec)
+    Preemption enabled, min delay 30 sec
+    Active is 192.168.8.40 (primary), weighting 100 (expires in 10.240 sec)
+</pre>
+<pre>
+Interface   Grp  Fwd Pri State    Address         Active router   <b>Standby router</b> 
+Gi0/0       8    -   100 Active   192.168.8.254   local           <b>192.168.8.50</b> 
+Gi0/0       8    1   -   Active   0007.b400.0801  local           -
+Gi0/0       8    2   -   Listen   0007.b400.0802  192.168.8.30    -
+Gi0/0       8    3   -   Listen   0007.b400.0803  192.168.8.20    -
+Gi0/0       8    4   -   Listen   0007.b400.0804  192.168.8.40    -
+</pre>
+Let's see the first 2 lines of the `show glbp` output of R2 (AVF) and R5 (SVF) 
+<pre>
+R2#<b>show glbp</b> 
+GigabitEthernet0/0 - Group 8
+  State is <b>Listen</b>
+</pre>
+<pre>
+R5#<b>show glbp</b> 
+GigabitEthernet0/0 - Group 8
+  State is <b>Standby</b>
+</pre>
+Let's see which MAC address is in ARP cache of PC1
+<pre>
+PC1> ping 192.168.8.254
+84 bytes from 192.168.8.254 icmp_seq=1 ttl=255 time=3.975 ms
+
+PC1> <b>arp</b> 
+00:07:b4:00:08:<b><u>02</u></b>  192.168.8.254 expires in 114 seconds 
+</pre>
+
+Now see the output of PC2:
+<pre>
+PC2> ping 192.168.8.254
+84 bytes from 192.168.8.254 icmp_seq=1 ttl=255 time=2.998 ms
+
+PC2> <b>arp</b>               
+00:07:b4:00:08:<b><u>03</u></b>  192.168.8.254 expires in 114 seconds 
+</pre>
+
+#### Weighting
+We only need to change the loadbalancing method in the AVG.
+<pre>
+R1(config-if)#<b>glbp 8 load-balancing ?</b>
+  host-dependent  Load balance equally, source MAC determines forwarder choice
+  round-robin     Load balance equally using each forwarder in turn
+  weighted        Load balance in proportion to forwarder weighting
+  <cr>
+</pre>
+Requirements for lab:
+2. Configure only the current AVG to load balance traffic as follows:
+- R1: 15%
+- R2: 20%
+- R3: 25%
+- R4: 40%
+<pre>
+R1(config)#<b>interface gigabitEthernet 0/0</b>
+R1(config-if)#<b>glbp 8 load-balancing weighted</b> 
+R1(config-if)#<b>glbp 8 weighting 15</b>
+</pre>
+<pre>
+R2(config)#<b>interface gigabitEthernet 0/0</b>
+R2(config-if)#<b>glbp 8 weighting 20</b>
+</pre>
+<pre>
+R3(config)#<b>interface gigabitEthernet 0/0</b>
+R3(config-if)#<b>glbp 8 weighting 25</b>
+</pre>
+<pre>
+R4(config)#<b>interface gigabitEthernet 0/0</b>
+R4(config-if)#<b>glbp 8 weighting 40</b>
+</pre>
