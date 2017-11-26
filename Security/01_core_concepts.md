@@ -227,7 +227,7 @@ You never send public key by itself. To create a digital signature for a documen
 you hash the document using your private key. Others can verify your digital signature with your public key.
 Public Key + My Digital Signature + 3rd party who we trust’s Digital Signature are inside this digital certificate.
 
-#### Questions
+## Operate and Implement Cryptographic Systems
 * How keys are managed?
 * How are public keys distributed?
 * How do you know you have the real public key?
@@ -255,7 +255,7 @@ There are 3 ways to do trust:
   * You and your friend can come up with a trust using public/private key concept. They xan sign the certificate themselves as trusted
 * Public Key Infrastructure (PKI) is a hierarchical method that starts off with root servers up at the top, intermediate servers (to take the load off of the CA), and goes down to users
 
-##### Public Key Infrastructure (PKI)
+### Public Key Infrastructure (PKI)
 * PKI is centralized
 * PKI is the most common cryptosystem to generate, distribute, and manage the keys
 * PKI is based on X.509 (ITU-T) protocol that identifies the parts in PKI. X.509 isn’t even used anymore
