@@ -317,6 +317,7 @@ There are two primary methods for implementing IPsec to protect data in motion
 * Provides data authentication and integrity using HMAC MD5 or HMAC SHA-1
 * Does NOT provide confidentiality (no encryption)
   * For that reason, we do not frequently see AH being used
+* Problem with NAT
 * IP protocol number 51
 
 ### ESP and AH runs at 2 very different modes:
@@ -370,6 +371,3 @@ In total, these types of VPNs are supported using Cisco ISR and Cisco ASA:
 * Used in many mail application today
 * Standard for public key encryption and signing of MIME data-email
 * Provides authentication, non-repudiation, integrity, and message encryption
-
-
-
