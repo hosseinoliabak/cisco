@@ -192,8 +192,9 @@ certificates just to give you an idea).
 ### Non-key-based Asymmetric Encryption
 Senders and receiver may have no access to a PKI solution
 #### Diffie-Hellman (DH):
-* Public key and private keys are not generated as pairs; it’s the situation where you just connect to somebody every
-now and then and you don’t want all extra rigmarole
+* Public key and private keys are not generated as pairs
+* DH allows two devices that do not yet have a secure connection to establish shared secret keying material (keys that can be used with symmetrical
+algorithms, such as AES)
 * Complicated
 * Sender and receiver negotiate a shared key. Each has public and private integers
 * Public integers are exchanged and then calculated over several passes to derive shared-secret key
