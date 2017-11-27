@@ -331,11 +331,26 @@ the original IP header while in tunnel mode, we use a new IP header.
 * Often between two hosts that want to protect some insecure traffic (example: telnet traffic)
 * Security is only provided for transport layer and above
 * Supports unicast traffic
+* IPsec client remote-access
 
 #### Tunnel Mode:
 * Typically used for site-to-site VPNs where we need to encapsulate the original IP packet since these are mostly private IP addresses and can't be routed on the Internet
 * Tunnel mode is most commonly used between gateways, or at a host to a gateway, the gateway acting as a proxy for the hosts behind it
 * Provides security for the complete IP packet; the original packet is encrypted and then encapsulated in another IP packet
 * Supports unicast traffic
+* IPsec Site-to-Site VPN
 
 ![image](https://user-images.githubusercontent.com/31813625/32991394-bace8366-cd08-11e7-8e25-f0f040ecf8af.png)
+
+## SSL and TLS Protocol Framework
+* SSL as a protocol was originally developed by Netscape
+* TLS and its predecessor SSL are cryptographic protocols that provide secure transactions on
+the Internet for things such as e-mail, web browsing, instant messaging, and so on
+* Most online transactions that are browser based are secured by SSL or TLS
+* Both of these protocols provide confidentiality, integrity, and authentication services
+* operate at the session layer and higher in the OSI logical model
+* They both can use the public key infrastructure (PKI) and digital certificates for authentication of the VPN endpoints and for establishing
+encryption keys that may be used
+* Similar to IPsec, these protocols use symmetric algorithms for bulk encryption, and asymmetric algorithms are used for the authentication and
+for the exchange of keys
+* SSL 3.0 served as the basis of TLS 1.0
