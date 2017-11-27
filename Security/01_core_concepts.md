@@ -354,3 +354,21 @@ encryption keys that may be used
 * Similar to IPsec, these protocols use symmetric algorithms for bulk encryption, and asymmetric algorithms are used for the authentication and
 for the exchange of keys
 * SSL 3.0 served as the basis of TLS 1.0
+* Both begin with asymmetric encryption with certificate - then switch to symmetric
+and shared secret key
+
+### VPNs are supported using Cisco
+In total, these types of VPNs are supported using Cisco ISR and Cisco ASA:
+* IPsec site-to-site
+* IPsec client remote-access
+* SSL clientless remote access
+* SSL full-tunnel client remote-access
+* Thin Client
+
+## Secure/Multipurpose Internet Mail Extensions (S/MIME)
+* Used in many mail application today
+* Standard for public key encryption and signing of MIME data-email
+* Provides authentication, non-repudiation, integrity, and message encryption
+
+
+
