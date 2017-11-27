@@ -339,5 +339,3 @@ the original IP header while in tunnel mode, we use a new IP header.
 * Supports unicast traffic
 
 ![image](https://user-images.githubusercontent.com/31813625/32991394-bace8366-cd08-11e7-8e25-f0f040ecf8af.png)
-
-![image](https://user-images.githubusercontent.com/31813625/32991401-d53d8d0a-cd08-11e7-84f1-cdf97a3040f0.png)
