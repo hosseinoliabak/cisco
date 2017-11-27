@@ -311,7 +311,7 @@ There are two primary methods for implementing IPsec to protect data in motion
 * Provides data authentication and integrity using HMAC MD5 or HMAC SHA-1
 * Provides confidentiality using DES, 3DES, or AES
 * Enforces anti-replay protection
-* IP protocol 50. If NAT-T (UDP 4500) is in use, the ESP header is hidden behind a UDP header
+* IP protocol 50. If NAT Traversal (UDP 4500) is in use, the ESP header is hidden behind a UDP header
 
 #### Authentication Header (AH):
 * Provides data authentication and integrity using HMAC MD5 or HMAC SHA-1
