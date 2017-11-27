@@ -358,14 +358,24 @@ for the exchange of keys
 * SSL 3.0 served as the basis of TLS 1.0
 * Both begin with asymmetric encryption with certificate - then switch to symmetric
 and shared secret key
+* Type of VPNs:
+  * SSL clientless remote access
+  * SSL full-tunnel client remote-access
 
-### VPNs are supported using Cisco
-In total, these types of VPNs are supported using Cisco ISR and Cisco ASA:
-* IPsec site-to-site
-* IPsec client remote-access
-* SSL clientless remote access
-* SSL full-tunnel client remote-access
-* Thin Client
+## Types of VPNs
+* **IPsec:** Implements security of IP packets at Layer 3 of the OSI model, and can be used
+for site-to-site VPNs and remote-access VPNs
+* **SSL:** Secure Sockets Layer implements security of TCP sessions over encrypted SSL tunnels
+of the OSI model, and can be used for remote-access VPNs (as well as being used to
+securely visit a web server that supports it via HTTPS)
+* **MPLS:** Multiprotocol Label Switching and MPLS Layer 3 VPNs are provided by a service
+provider to allow a company with two or more sites to have logical connectivity
+between the sites using the service provider network for transport. This is also a type of
+VPN (called MPLS L3VPN), but there is no encryption by default. IPsec could be used
+on top of the MPLS VPN to add confidentiality (through encryption) and the other benefits
+of IPsec to protect the Layer 3 packets. The primary VPNs that provide
+encryption, data integrity, authentication of who the peer is on the other end of the
+VPN, and so on use IPsec or SSL.
 
 ## Secure/Multipurpose Internet Mail Extensions (S/MIME)
 * Used in many mail application today
