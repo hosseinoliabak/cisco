@@ -212,7 +212,7 @@ We want Alice and Bob to have the unique value; so, to do this we actually use a
 * Available publically - not patented
 * Disadvantage: Double the length of the message making large transfers difficult
 
-### Digital Signatures
+### Digital Signature (encrypted hash)
 * Digital signatures represent a commitment to follow through, or prove you are who you say you are
 * Data is large-expensive to encrypt with private key. Instead, digital signatures hash the data and encrypt the hash
 * **Authentication:** User must authenticate to system to gain access to private key
@@ -226,7 +226,7 @@ they originated. Achieved by:
 
 You never send public key by itself. To create a digital signature for a document,
 you hash the document using your private key. Others can verify your digital signature with your public key.
-Public Key + My Digital Signature + 3rd party who we trust’s Digital Signature are inside this digital certificate.
+Public Key + My Digital Signature + 3rd party who we trust's Digital Signature are inside this digital certificate.
 
 ## Operate and Implement Cryptographic Systems
 * How keys are managed?
@@ -345,6 +345,21 @@ the original IP header while in tunnel mode, we use a new IP header.
 ![image](https://user-images.githubusercontent.com/31813625/32991394-bace8366-cd08-11e7-8e25-f0f040ecf8af.png)
 
 ## SSL and TLS Protocol Framework
+* It would be a perfect opportunity for IPsec to be used to encrypt the
+data and perform integrity checking and authentication of the server you are
+connected to
+  * there is not an IPsec client or software currently running on everybody’s computer
+  * Even if there were, not everyone has a digital certificate or a PSK that they could successfully use for authentication
+1. The browser requests that the web server identify itself
+2. The server sends the browser a copy of its digital certificate, which may also be called an SSL certificate
+3. The browser determines the certificate is valid based on the signature of the CA (or is not valid)
+4. Assuming the certificate is trusted, the browser now has access to the server’s public key contained in the certificate
+5. Most of the time, the server does not require the browser to prove who it is. Instead, the web
+server uses some type of user authentication, such as a username or password as required, to
+verify who the user is
+6. After the authentication has been done, several additional exchanges occur between the
+browser and the server as they establish the encryption algorithm they will use and the keys
+that they will use to encrypt and decrypt the datas
 * SSL as a protocol was originally developed by Netscape
 * TLS and its predecessor SSL are cryptographic protocols that provide secure transactions on
 the Internet for things such as e-mail, web browsing, instant messaging, and so on
