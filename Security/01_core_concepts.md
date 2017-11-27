@@ -281,3 +281,63 @@ There are 3 ways to do trust:
 4. Bob is going to the same process
 5. Now, we both have our own identification card which says this is who I am
 6. Now I want to talk to Bob saying him hey Bob this is my identity. Bob looks at that identity which has the CA's digital signature. The only way Bob can read the digital signature is by using the root certificate (CA's public key)
+
+## Internet Protocol Security (IPsec)
+Everybody by the end of 1990s, was making their own security: SSL/TLS, SSH.
+They asked what if instead of having all kind of these applications, we could come
+up with some kind of end-to-end basis IP security. And this is called IPsec.
+IPsec is not only one protocol, it is bunch of protocols.
+
+IP security is an open standard; it is a collection of protocols and algorithms
+used to protect IP packets at layer 3
+
+IPsec has four fundamental goals:
+* **Confidentiality:** provided through encryption changing clear text o cipher text
+  * DES, 3DES, AES, RSA
+* **Data Integrity:** provided through hashing or HMAC to verify data has not been manipulated during its transit
+  * MD5, SHA-1, SHA-2
+* **Peer authentication:** the sender and receiver will authenticate each other to make sure that we are really talking with the device we intend to
+  * Pre-Shared Key (PSK): peers authenticate each other by comparing preconfigured secret key
+  * RSA signature: peers authenticate each other using digital signature, the sending peer creates an encrypted hash using their private key, attaches it to a message and forwards it; the remote peer decrypts the hash using the public key and compares it with a recomputed hash
+  * Elliptical Curve Digital Signature Algorithm (ECDSA): It is smaller than RSA signatures
+* **Anti-replay:** verifies that each packet is unique and not duplicated. (By using sequence numbers, IPsec will not transmit any duplicate packets)
+
+### IPsec protocol framework:
+What gonna happens with data?
+There are two primary methods for implementing IPsec to protect data in motion
+
+#### Encapsulation Security Payload (ESP):
+* Provides data authentication and integrity using HMAC MD5 or HMAC SHA-1
+* Provides confidentiality using DES, 3DES, or AES
+* Enforces anti-replay protection
+* IP protocol 50. If NAT-T (UDP 4500) is in use, the ESP header is hidden behind a UDP header
+
+#### Authentication Header (AH):
+* Provides data authentication and integrity using HMAC MD5 or HMAC SHA-1
+* Does NOT provide confidentiality (no encryption)
+  * For that reason, we do not frequently see AH being used
+* IP protocol number 51
+
+### ESP and AH runs at 2 very different modes:
+**Transport mode** and **Tunnel mode**. The main difference between the two is that with transport mode we will use
+the original IP header while in tunnel mode, we use a new IP header.
+
+<img src="https://user-images.githubusercontent.com/31813625/33246997-c58763d2-d2e8-11e7-8b89-1912bb4fc2da.png" width="608" height="241" />
+
+#### Transport Mode
+* Keeping the original IP
+* Protects the payload of the packet but leaves the original IP address in clear
+* Works great if everybody had the same IP range and we got rid of NAT.
+* Often between two hosts that want to protect some insecure traffic (example: telnet traffic)
+* Security is only provided for transport layer and above
+* Supports unicast traffic
+
+#### Tunnel Mode:
+* Typically used for site-to-site VPNs where we need to encapsulate the original IP packet since these are mostly private IP addresses and can't be routed on the Internet
+* Tunnel mode is most commonly used between gateways, or at a host to a gateway, the gateway acting as a proxy for the hosts behind it
+* Provides security for the complete IP packet; the original packet is encrypted and then encapsulated in another IP packet
+* Supports unicast traffic
+
+![image](https://user-images.githubusercontent.com/31813625/32991394-bace8366-cd08-11e7-8e25-f0f040ecf8af.png)
+
+![image](https://user-images.githubusercontent.com/31813625/32991401-d53d8d0a-cd08-11e7-84f1-cdf97a3040f0.png)
