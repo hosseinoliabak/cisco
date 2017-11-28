@@ -74,6 +74,9 @@ tracking
 ### Configuration with Cisco IOS routers
 Original IP packet will be encapsulated in a new IP packet and encrypted
 before it is sent out of the network.
+
+<img src="https://user-images.githubusercontent.com/31813625/33339989-c85ce508-d448-11e7-953a-e90ea5faea3c.png" width="658" height="338" />
+
 0. Before all, we have to have end-to-end connectivity
 1. Make sure that out ACLs are compatible with our IPsec. For example:
   * `access-list 102 permit ahp host x host y`
@@ -133,10 +136,261 @@ will be applied to the outgoing interface. If it is interesting, then it will be
     <pre>
     R1(config)#<b>interface GigabitEthernet0/2</b>
     R1(config-if)#<b>crypto map VPN</b>
-    *Nov 27 23:53:03.070: %CRYPTO-6-ISAKMP_ON_OFF: ISAKMP is ON
-    </pre>.
+    *Nov 27 23:53:03.070: %CRYPTO-6-ISAKMP_ON_OFF: ISAKMP is ON    </pre>
 
+Try it yourself: Note that unnecessary output omitted from show running-config
+#### R1:
+<pre>
+!
+crypto isakmp policy 10
+ encr aes
+ authentication pre-share
+ group 2
+crypto isakmp key cisco address 209.165.202.129
+!
+crypto ipsec transform-set A esp-des esp-md5-hmac
+ mode tunnel
+!
+crypto map VPN 10 ipsec-isakmp
+ set peer 209.165.202.129
+ set transform-set A
+ match address VPN-TRAFFIC
+!
 
+interface GigabitEthernet0/2
+ ip address 209.165.200.225 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+ crypto map VPN
+!
+interface GigabitEthernet0/3
+ ip address 192.168.1.1 255.255.255.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+ip route 192.168.3.0 255.255.255.0 GigabitEthernet0/2
+ip route 209.165.202.128 255.255.255.252 GigabitEthernet0/2
+!
+ip access-list extended VPN-TRAFFIC
+ permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
+!
+</pre>
 
+#### R2:
+<pre>
+!
+interface GigabitEthernet0/1
+ ip address 209.165.200.226 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ ip address 209.165.202.130 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/1
+ip route 192.168.3.0 255.255.255.0 GigabitEthernet0/3
+!
+</pre>
 
+#### R3:
+<pre>
+!
+crypto isakmp policy 10
+ encr aes
+ authentication pre-share
+ group 2
+crypto isakmp key cisco address 209.165.200.225
+!
+crypto ipsec transform-set A esp-des esp-md5-hmac
+ mode tunnel
+!
+crypto map VPN 10 ipsec-isakmp
+ set peer 209.165.200.225
+ set transform-set A
+ match address VPN-TRAFFIC
+!
+interface GigabitEthernet0/2
+ ip address 209.165.202.129 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+ crypto map VPN
+!
+interface GigabitEthernet0/3
+ ip address 192.168.3.1 255.255.255.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/2
+ip route 209.165.200.224 255.255.255.252 GigabitEthernet0/2
+!
+ip access-list extended VPN-TRAFFIC
+ permit ip 192.168.3.0 0.0.0.255 192.168.1.0 0.0.0.255
+!
+</pre>
 
+### Verification
+<pre>
+R1#<b>clear crypto sa</b>
+R1#<b>debug crypto isakmp</b>
+R1#<b>debug crypto ipsec</b></pre>
+IKE Phase 1 Configuration:
+<pre>
+R1#<b>show crypto isakmp policy</b>
+
+Global IKE policy
+Protection suite of priority 10
+  encryption algorithm:  AES - Advanced Encryption Standard (128 bit keys).
+  hash algorithm:    Secure Hash Standard
+  authentication method:  Pre-Shared Key
+  Diffie-Hellman group:  #2 (1024 bit)
+  lifetime:    86400 seconds, no volume limit
+</pre>
+IKE Phase 1 Verification
+<pre>
+R1#<b>show crypto isakmp sa</b>
+IPv4 Crypto ISAKMP SA
+dst             src             state          conn-id status
+209.165.202.129 209.165.200.225 QM_IDLE           1002 ACTIVE
+
+IPv6 Crypto ISAKMP SA</pre>
+Transform-set Configuration
+<pre>
+R1#<b>show crypto isakmp sa</b>
+IPv4 Crypto ISAKMP SA
+dst             src             state          conn-id status
+209.165.202.129 209.165.200.225 QM_IDLE           1002 ACTIVE
+
+IPv6 Crypto ISAKMP SA
+</pre>
+Crypto map Configuration
+<pre>
+R1#<b>show crypto map</b>
+  Interfaces using crypto map NiStTeSt1:
+
+Crypto Map IPv4 "VPN" 10 ipsec-isakmp
+  Peer = 209.165.202.129
+  Extended IP access list VPN-TRAFFIC
+      access-list VPN-TRAFFIC permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
+      access-list VPN-TRAFFIC permit icmp 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
+  Current peer: 209.165.202.129
+  Security association lifetime: 4608000 kilobytes/3600 seconds
+  Responder-Only (Y/N): N
+  PFS (Y/N): N
+  Mixed-mode : Disabled
+  Transform sets={
+    A:  { esp-des esp-md5-hmac  } ,
+  }
+  Interfaces using crypto map VPN:
+    GigabitEthernet0/2</pre>
+IKE Phase 2 Verification
+<pre>
+R1#<b>show crypto ipsec sa</b>
+
+interface: GigabitEthernet0/2
+    Crypto map tag: VPN, local addr 209.165.200.225
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (192.168.1.0/255.255.255.0/1/0)
+   remote ident (addr/mask/prot/port): (192.168.3.0/255.255.255.0/1/0)
+   current_peer 209.165.202.129 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 0, #pkts encrypt: 0, #pkts digest: 0
+    #pkts decaps: 0, #pkts decrypt: 0, #pkts verify: 0
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 209.165.200.225, remote crypto endpt.: 209.165.202.129
+     plaintext mtu 1500, path mtu 1500, ip mtu 1500, ip mtu idb GigabitEthernet0/2
+     current outbound spi: 0x0(0)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+
+     outbound ah sas:
+
+     outbound pcp sas:
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (192.168.1.0/255.255.255.0/0/0)
+   remote ident (addr/mask/prot/port): (192.168.3.0/255.255.255.0/0/0)
+   current_peer 209.165.202.129 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 0, #pkts encrypt: 0, #pkts digest: 0
+    #pkts decaps: 0, #pkts decrypt: 0, #pkts verify: 0
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 209.165.200.225, remote crypto endpt.: 209.165.202.129
+     plaintext mtu 1446, path mtu 1500, ip mtu 1500, ip mtu idb GigabitEthernet0/2
+     current outbound spi: 0xE7CB46BA(3888858810)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0x59DC848B(1507624075)
+        transform: esp-des esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 5, flow_id: SW:5, sibling_flags 80004040, crypto map: VPN
+        sa timing: remaining key lifetime (k/sec): (4302002/3214)
+        IV size: 8 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0xE7CB46BA(3888858810)
+        transform: esp-des esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 6, flow_id: SW:6, sibling_flags 80004040, crypto map: VPN
+        sa timing: remaining key lifetime (k/sec): (4302002/3214)
+        IV size: 8 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:
+R1#
+*Nov 28 19:23:12.853: IPSEC(sibling_update_flow_stats): IPSEC: MIB Stats Ptr 0x1020CF68
+
+*Nov 28 19:23:12.854: IPSEC(sibling_update_flow_stats): IPSEC: MIB Stats Ptr 0x1020CF68
+
+*Nov 28 19:23:12.854: IPSEC(sibling_update_flow_stats): IPSEC: Flow ID : 0x14000005, Flow Stats Ptr 0xF06D580
+
+*Nov 28 19:23:12.855: IPSEC(sibling_update_flow_stats): IPSEC: MIB Stats Ptr 0x1020CF68
+</pre>
+To see the current sessions:
+<pre>
+R1#<b>show crypto session</b>
+Crypto session current status
+
+Interface: GigabitEthernet0/2
+Session status: UP-ACTIVE
+Peer: 209.165.202.129 port 500
+  Session ID: 0
+  IKEv1 SA: local 209.165.200.225/500 remote 209.165.202.129/500 Active
+  IPSEC FLOW: permit 1 192.168.1.0/255.255.255.0 192.168.3.0/255.255.255.0
+        Active SAs: 0, origin: crypto map
+  IPSEC FLOW: permit ip 192.168.1.0/255.255.255.0 192.168.3.0/255.255.255.0
+        Active SAs: 2, origin: crypto map
+</pre>
