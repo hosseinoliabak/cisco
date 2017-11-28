@@ -70,3 +70,73 @@ tracking
 3.	**IPsec Tunnel:** The peers then proceed to IKE phase 2
 4.	**Data Transfer:** The IPsec tunnel is created, the data is securely transferred
 5.	**Termination:** The IPsec tunnel terminates when IPsec SAs are deleted or when their lifetime expires
+
+### Configuration with Cisco IOS routers
+Original IP packet will be encapsulated in a new IP packet and encrypted
+before it is sent out of the network.
+0. Before all, we have to have end-to-end connectivity
+1. Make sure that out ACLs are compatible with our IPsec. For example:
+  * `access-list 102 permit ahp host x host y`
+  * `access-list 102 permit esp host x host y`
+  * `access-list 102 permit udp host x host y eq isakmp`
+  * `access-list 102 permit udp host x host y eq non500-isakmp`
+
+1. Define the interesting traffic: the crypto ACL is not applied to an interface, it's gonna be applied to a crypto map (step 4), then the crypto map
+will be applied to the outgoing interface. If it is interesting, then it will be encrypted. If not interested, it will bypass the encryption.
+    <pre>
+    R1(config)#<b>ip access-list extended VPN-TRAFFIC</b>
+    R1(config-ext-nacl)#<b>permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255</pre></b>
+
+2. ISAKMP Policy Parameters:
+
+    | Parameter | Keyword | Accepted Values | Default Value |
+    | --- | --- | --- | --- |
+    |Encryption | des<br /> aes<br /> aes 192<br /> aes 256<br />| 56-bit DES-CBC<br /> 128-bit AES<br /> 192-bit AES<br /> 256-bit AES | des |
+    | Hash | sha<br /> md5 | SHA-1 (HMAC variant)<br /> MD5 (HMAC variant)<br /> | sha |
+    | Authentication | rsa-sig<br /> rsa-encr<br /> pre-share | RSA signatures<br /> RDA encrypted nonces<br /> Preshared keys | rsa-sig |
+    | Group | 1<br /> 2<br /> 5 | 768-bit DH<br />  1024-bit DH<br /> 1536-bit DH | 1 |
+    | Lifetime | seconds | Any number of seconds | 86,400 sec |
+
+  * We can see the default policies by `show crypto isakmp policy`
+  * If we want to change the default values, we can use global `crypto isakmp policy <priority#>` command. The lower priority wins. If the first policy matches on both sides, the IOS don't look at the rest. So we put the strongest the lowest.
+  * Don't forget the pre-shared key:
+    * `crypto isakmp key cisco123 address <the peer address>`
+
+3. Configure IPsec Transform Set (Quick Mode): combination of hash and encryption algorithm for users traffic
+  * Transform sets: Mechanism for payload authentication + mechanism for payload encryption + IPsec mode (tunnel mode is default)
+  * Create a transformset stronger that ISAKMP. For example if you chose AES 192 in Phase1, here choose AES 192 or higher, not DES
+  * We can have more than 1 transform set. For example, below, transform-set B on R1 matches with transform-set C on R3
+     * (R1):
+        * transform-set A: esp-aes 192, esp-sha-hmac, tunnel
+        * transform-set B: esp-aes, esp-sha-hmac, tunnel
+        * transform-set C: esp-3des 192, esp-md5-hmac, tunnel
+     * (R3):
+        * transform-set A: esp-aes 256, esp-sha-hmac, tunnel
+        * transform-set B: esp-aes, esp-md5-hmac, tunnel
+        * transform-set C: esp-aes, esp-sha-hmac, tunnel
+  * For example both sides should have:
+    <pre>
+    R1(config)#<b>crypto ipsec transform-set A esp-aes 192 esp-sha-hmac</b>
+    R1(cfg-crypto-trans)#<b>mode tunnel</b>
+    R1(cfg-crypto-trans)#<b>exit</b></pre>
+
+4. Crypto map: What to protect (match address, crypto ACL), How to protect (set transform-set), Where to send (set peer)
+    <pre>
+    R1(config)#<b>crypto map VPN 10 ipsec-isakmp</b>
+    % NOTE: This new crypto map will remain disabled until a peer
+      and a valid access list have been configured.
+    R1(config-crypto-map)#<b>set peer 209.165.202.129</b>
+    R1(config-crypto-map)#<b>set transform-set A</b>
+    R1(config-crypto-map)#<b>match address VPN-TRAFFIC</b></pre>
+
+* Now we activate the crypto map on the egress interface:
+    <pre>
+    R1(config)#<b>interface GigabitEthernet0/2</b>
+    R1(config-if)#<b>crypto map VPN</b>
+    *Nov 27 23:53:03.070: %CRYPTO-6-ISAKMP_ON_OFF: ISAKMP is ON
+    </pre>
+
+
+
+
+
