@@ -243,6 +243,17 @@ ip access-list extended VPN-TRAFFIC
 R1#<b>clear crypto sa</b>
 R1#<b>debug crypto isakmp</b>
 R1#<b>debug crypto ipsec</b></pre>
+
+The below table containing VPN states would help to work with debug
+
+| State | Description |
+| --- | --- |
+| MM_MO_STATE | The phase 1 SA has been created, but nothing else has happened |
+| MM_SA_SETUP | The peers have agreed on parameters for the Phase 1 SA |
+| MM_KEY_EXCH | DH negotiation is successful, but the Phase1 SA remains unauthenticated |
+| MM_KEY_AUTH | The pahse 1 SA has been authenticated |
+| QM_IDLE | The phase 1 SA is idle, in a quiescent state |
+
 IKE Phase 1 Configuration:
 <pre>
 R1#<b>show crypto isakmp policy</b>
