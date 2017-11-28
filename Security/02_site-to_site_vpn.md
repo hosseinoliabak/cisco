@@ -84,7 +84,7 @@ before it is sent out of the network.
     * `access-list 102 permit esp host x host y`
     * `access-list 102 permit udp host x host y eq isakmp`
     * `access-list 102 permit udp host x host y eq non500-isakmp`
-    * In the below example we don't have any previous ACLs so we skip this step
+    * In the following example, we don't have any previous ACLs so we skip this step
 
 1. Define the interesting traffic: the crypto ACL is not applied to an interface, it's gonna be applied to a crypto map (step 4), then the crypto map
 will be applied to the outgoing interface. If it is interesting, then it will be encrypted. If not interested, it will bypass the encryption.
