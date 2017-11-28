@@ -134,7 +134,7 @@ will be applied to the outgoing interface. If it is interesting, then it will be
     R1(config)#<b>interface GigabitEthernet0/2</b>
     R1(config-if)#<b>crypto map VPN</b>
     *Nov 27 23:53:03.070: %CRYPTO-6-ISAKMP_ON_OFF: ISAKMP is ON
-    </pre>
+    </pre>.
 
 
 

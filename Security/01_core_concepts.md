@@ -1,3 +1,15 @@
+# The CIA of security
+The goal of security is defined as CIA
+
+### CIA Triad
+* Confidentiality: authorized users can view
+* Integrity: authorized users can change
+* Availability: authorized users uninterrupted access
+
+There are 2 other things to add to the CIA Triad
+* Auditing & Accountability
+* Non-Repudiation
+
 # Cryptography Basics
 * Cryptology = Cryptography + Cryptanalysis
   * **Cryptography:**
@@ -88,7 +100,7 @@ Using multiple substitution alphabets:
 Like Caesar Cypher but added some complexity into it; Vigenère cipher is the sequence of Caesar ciphers with different transformations.
 * Phrase: We Attack at Dawn; Key: Badge (XE DZXBCN GX EAZT)
 * During the 16th century
-* Vigenère Cipher supposedly the first cipher which used and encryption key. This ia where the idea of encryption keys comes from
+* Vigenère Cipher supposedly the first cipher which used an encryption key. This is where the idea of encryption keys comes from
 
 ##### Edward Hebern:
 * 19th century
@@ -123,12 +135,14 @@ A block cipher is a deterministic algorithm operating on fixed-length groups of 
 * Designed the Lucifer cipher
 * 1973 NIST puts out an Request For Proposal
 * Lucifer was eventually accepted and was called DES
-First open standard. Does the following steps 16 times:
-1.	Key: it drops the last 8 bits of the key with that we have 2x28-bit chunks (56 bits)
-2.	We then grab the first 24 bits from each half, and put them together and we’ve created what’s known as a subkey, which is 48 bits
-3.	first takes first 64-bit chunk of data from the data stream
-4.	Initial Permutation: a very specific stirring of the data
-5.	Fiestel function: split to 2x32 bits halves; then set one of the halves aside; we expand these 32 bits to a 48-bit chunk of data using an expansion function, then we apply XOR function using the subkey we have already generated. In DES, S boxes take in 64 bits, and output four bits. We apply the 8 different S boxes to the data creating a 32-bit output. We then put 2x32 bits together but backwards (Final permutation)
+* First open standard.
+
+* Does the following steps 16 times:
+  1.	Key: it drops the last 8 bits of the key with that we have 2x28-bit chunks (56 bits)
+  2.	We then grab the first 24 bits from each half, and put them together and we’ve created what’s known as a subkey, which is 48 bits
+  3.	first takes first 64-bit chunk of data from the data stream
+  4.	Initial Permutation: a very specific stirring of the data
+  5.	Fiestel function: split to 2x32 bits halves; then set one of the halves aside; we expand these 32 bits to a 48-bit chunk of data using an expansion function, then we apply XOR function using the subkey we have already generated. In DES, S boxes take in 64 bits, and output four bits. We apply the 8 different S boxes to the data creating a 32-bit output. We then put 2x32 bits together but backwards (Final permutation)
 * Problems with DES:
   * Short key: 56 bits
   * In 1997 DES was broken by an exhastive search attack
@@ -171,14 +185,14 @@ send a symmetric key between the two and switch to symmetric encryption (SSL and
 
 ### Key-based Asymmetric Encryption
 #### Rivest, Shamir, and Adleman (RSA):
-Published in 1977. Cornerstone is to take to large prime number and multiply them together to generate a big-semiprime number;
+Published in 1977. Cornerstone is to take two large prime number and multiply them together to generate a big-semiprime number;
 with that we have generated key pairs.
 
 ##### How an RSA key exchange takes place:
 Alex and Bob want to communicate via RSA asymmetric encryption. First thing they’re going to generate each of their
 own key pairs, and then they go about the process of exchanging their public keys. Now keep in mind if Eve grabs
 one of these public keys, it doesn’t really make any difference because the only thing Eve could do would be encrypt
-something. But there is a problem, and that is, what id Eve pretends to be Alice or Bob? Well the RSA guys thought
+something. But there is a problem, and that is, what if Eve pretends to be Alice or Bob? Well the RSA guys thought
 about that stuff ahead of time, and RSA includes all kind of protocols that do things that include what we call
 authentication (we will discuss about authentication later but in fact it boils down to digital signatures and
 certificates just to give you an idea).
@@ -203,7 +217,7 @@ so that Eve could see it. Now to do this, we’re going to use DH. DH is a key e
 (AKA: key agreement protocol) and the whole goal of DH is to take advantage of what we call modulo arithmetic
   * 3? mod 17=2314692094782383457
 
-##### How a DH works:
+##### How DH works:
 We want Alice and Bob to have the unique value; so, to do this we actually use asymmetric encryption here, and that first of all either Bob or Alice define a particular public key, this public key is a big long number. Both Alex and Bob generate a random private value then using this groovy mathematics, in essence they’re gonna mix these values together creating third value, then Alice and Bob exchange this mix, then Alice and Bob add their own private value to this mix and it creates the exact same value, and this is the number that we can go ahead and do symmetric encryption with, and Eve will never know what that number is.
 
 #### ElGamal
