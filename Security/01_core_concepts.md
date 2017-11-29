@@ -387,7 +387,10 @@ data and perform integrity checking and authentication of the server you are
 connected to
   * There is not an IPsec client or software currently running on everybody’s computer
   * Even if there were, not everyone has a digital certificate or a PSK that they could successfully use for authentication
-1. The browser requests that the web server identify itself
+
+A. Handshake:
+
+1. The browser (PK<sub>CA</sub>) requests that the web server (SK (SK means private key), PK, The Server's Identity Certificate Issues by a CA) identify itself
 2. The server sends the browser a copy of its digital certificate, which may also be called an SSL certificate
 3. The browser determines the certificate is valid based on the signature of the CA (or is not valid)
 4. Assuming the certificate is trusted, the browser now has access to the server’s public key contained in the certificate
@@ -395,8 +398,12 @@ connected to
 server uses some type of user authentication, such as a username or password as required, to
 verify who the user is
 6. After the authentication has been done, several additional exchanges occur between the
-browser and the server as they establish the encryption algorithm they will use and the keys
-that they will use to encrypt and decrypt the data
+browser and the server to share the keys
+
+B. Record-layer:
+
+7. The server and the client uses their keys to encrypt, authenticate all messages they send
+
 * SSL as a protocol was originally developed by Netscape
 * TLS and its predecessor SSL are cryptographic protocols that provide secure transactions on
 the Internet for things such as e-mail, web browsing, instant messaging, and so on
