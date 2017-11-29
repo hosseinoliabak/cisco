@@ -265,204 +265,18 @@ or seed to increase the randomness.
   * Key recovery performed by Key Recovery Agent (Escrow Agent)
 There are 3 ways to do trust:
 * Generate your own certificates (unsigned certificate) fantastic as long as both parties understand that there is no third-party vouching for you
-* Web of trust: requires lots of maintenance (email certificates, hard drive encryption, …)
+* Web of trust model:
   * Web of trust is not centralized
-  * You and your friend can come up with a trust using public/private key concept. They can
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   +sign the certificate themselves as trusted
+  * Obtain public keys from my friends in person "Key-signing parties"
+  * Obtain "Certificates" on my public key from my friends
+  * If A knows B's public key, and B issued a certificate for C, then C can send this certificate to A
+  * PGP email certificates, hard drive encryption, …
 * Public Key Infrastructure (PKI) is a hierarchical method that starts off with root servers up at the top, intermediate servers (to take the load off of the CA), and goes down to users
+* Other than "trust", you can distribute the keys as "pre-shared"
 
 ### Public Key Infrastructure (PKI)
 * PKI is centralized
-* PKI is the most common cryptosystem to generate, distribute, and manage the keys
+* PKI is the most common cryptosystem to generate, distribute, and manage the public keys
 * PKI is based on X.509 (ITU-T) protocol that identifies the parts in PKI. X.509 isn’t even used anymore
 * PKCS: invented by RSA corporation; de-facto standard for a lot of PKI systems
   * PKCS#1: RSA Cryptography Standard
@@ -470,9 +284,21 @@ There are 3 ways to do trust:
   * PKCS#10: This is a format of a certificate request sent to a CA that wants to receive its identity certificate. This type of request would include the public key for the entity desiring a certificate
   * PKCS#7: This is a format that can be used by a CA as a response to a PKCS#10 request. The response itself will very likely be the identity certificate (or certificates) that had been previously requested
   * PKCS#12: A format for storing both public and private keys using a symmetric passwordbased key to "unlock" the data whenever the key needs to be used or accessed
-
 * Suppose I want to send a message to my friend Bob
-1. I submit a Certificate Signing Request (CSR) to a CA server
+0. Each party generates their own key-pairs
+* Suppose:
+  * My public key is: PK
+  * CA's Public key is PK<sub>CA</sub>
+1. I submit a Certificate Signing Request (CSR) to a CA server - PKCS#10. Meaning that I
+ask the CA to sign the binding "Hossein, PK". (CA must verify my identity out of band)
+* Here is the information in the request:
+  * Common Name: FQDN
+  * Business Name: Legal name
+  * Department:
+  * City
+  * State
+  * Country: Two-letter code of the country: US, IR, UK,...
+  * Email Address: Address of the contact person
 * Certificate Authority (CA):
   * Comodo
   * Symantec (or VeriSign before it was purchased by Symantec)
@@ -481,11 +307,18 @@ There are 3 ways to do trust:
   * Cisco IOS
   * Cisco ASA
   * Cisco ISE
-2. CA sends back to me an Identity Certificate (the identity of the device such as its IP address, FQDN, and the public key of that device)
-3. I also retrieve a root certificate (it is actually the CA's public key) from that CA server. The root certificate allows me to read the Identity certificate that the CA has signed
+2. CA sends back to me an Identity Certificate (the identity of the device such as its IP address, FQDN, ..., and the public key of that device (Hossein, PK))
+3. I also retrieve the PK<sub>CA</sub> (it is actually the CA's public key) from that CA server.
+This allows me to read the Identity certificate that the CA has signed
+  * Identity Certificate = Sign<sub>PK<sub>CA</sub></sub>(Hossein, PK)
 4. Bob is going to the same process
-5. Now, we both have our own identification card which says this is who I am
-6. Now I want to talk to Bob saying him hey Bob this is my identity. Bob looks at that identity which has the CA's digital signature. The only way Bob can read the digital signature is by using the root certificate (CA's public key)
+5. Now, we both have our own Identity certificates which says this is who I am
+6. Now I want to talk to Bob saying him hey Bob this is my identity.
+Bob looks at that identity which has the CA's digital signature.
+The only way Bob can read the digital signature is by using the PK<sub>CA</sub>
+(Bob has the PK<sub>CA</sub> in many ways, but the natural one is roots of trust)
+  * Vrfy<sub>PK<sub>CA</sub></sub>((Hossein, PK), Identity Certificate)=1
+  * Bob is then assured that PK is Hossein's public key
 
 ## Internet Protocol Security (IPsec)
 Everybody by the end of 1990s, was making their own security: SSL/TLS, SSH.
@@ -552,7 +385,7 @@ the original IP header while in tunnel mode, we use a new IP header.
 * It would be a perfect opportunity for IPsec to be used to encrypt the
 data and perform integrity checking and authentication of the server you are
 connected to
-  * there is not an IPsec client or software currently running on everybody’s computer
+  * There is not an IPsec client or software currently running on everybody’s computer
   * Even if there were, not everyone has a digital certificate or a PSK that they could successfully use for authentication
 1. The browser requests that the web server identify itself
 2. The server sends the browser a copy of its digital certificate, which may also be called an SSL certificate
@@ -563,7 +396,7 @@ server uses some type of user authentication, such as a username or password as 
 verify who the user is
 6. After the authentication has been done, several additional exchanges occur between the
 browser and the server as they establish the encryption algorithm they will use and the keys
-that they will use to encrypt and decrypt the datas
+that they will use to encrypt and decrypt the data
 * SSL as a protocol was originally developed by Netscape
 * TLS and its predecessor SSL are cryptographic protocols that provide secure transactions on
 the Internet for things such as e-mail, web browsing, instant messaging, and so on
