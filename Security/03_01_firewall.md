@@ -18,6 +18,17 @@ Then I can control the traffic between my zones
   * Inside Zone: Trusted (meaning that the Security level is 100)
   * Outside Zone: Security level = 0
   * DMZ: Public facing services in our organization
+* Traffic form higher to lower security level is allowed to pass.
+It will create an entry in the state table and the reply is allowed to come back.
+On the other hand, traffic from a lower to a higher security level interface
+is gonna be denied. If we want to allow some traffic for example traffic on
+port 80 to be allowed from a lower security level to a higher security level, we have
+to permit that traffic by an ACL
+* If security levels are the same, by default that traffic is not allowed. But
+we can allow the traffic using command below:
+<pre>
+ciscoasa(config)# <b>same-security-traffic permit inter-interface</b>
+</pre>
 * Configuration based on organization's security policy
 * Should be components in larger security architecture and solution?
 
@@ -101,9 +112,6 @@ configure mode commands/options:
   notifications  Normal but significant conditions (severity=5)
   warnings       Warning conditions                (severity=4)
 </pre>
-<pre>
-ciscoasa(config)# <b>logging trap ?</b>
-</pre>
 
 Note that you cannot do below configuration unless you configured an interface
 ahead of time. (how to configure the interface is explained in "asic Confoguration and verification" section)
@@ -167,4 +175,8 @@ ciscoasa(config)# <b>http 0 0 outside</b>
 <img src="https://user-images.githubusercontent.com/31813625/33412470-8220ae32-d559-11e7-84f5-aaa09a037cd8.png" />
 
 
+To preview commands before sending them to the device:
 
+![image](https://user-images.githubusercontent.com/31813625/33460479-4b0d61b2-d5fc-11e7-869f-1603e6c0aa77.png)
+
+ 
