@@ -133,6 +133,8 @@ switch ports and ASAs as a big trunk etherchannel
   * Specific Configuration
 
 ### Basic Confoguration and verification
+I am using ASAv inside GNS3 which is installed on Ubuntu-based Linux OS
+
 Interface configuration
 <pre>
 ciscoasa(config)# <b>interface gigabitEthernet 0/0</b>
@@ -162,7 +164,7 @@ ciscoasa(config)# <b>http server enable</b>
 ciscoasa(config)# <b>http 0 0 outside</b>
 </pre>
 
-<img src="https://user-images.githubusercontent.com/31813625/33412470-8220ae32-d559-11e7-84f5-aaa09a037cd8.png" width="677" height="488" />
+<img src="https://user-images.githubusercontent.com/31813625/33412470-8220ae32-d559-11e7-84f5-aaa09a037cd8.png" />
 
 
 
