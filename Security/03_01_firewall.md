@@ -116,8 +116,8 @@ configure mode commands/options:
 Note that you cannot do below configuration unless you configured an interface
 ahead of time. (how to configure the interface is explained in "asic Confoguration and verification" section)
 <pre>
-ciscoasa(config)# <b>logging host inside 172.16.0.50</b></pre>
-`172.16.0.50` is the host we want to send the logs to
+ciscoasa(config)# <b>logging host inside 10.10.10.50</b></pre>
+10.10.10.50 is the host we want to send the logs to
 
 ### Modes of Deployment
 * Single Routed Mode (default): Act as in L3
@@ -146,7 +146,7 @@ I am using ASAv inside GNS3 which is installed on Ubuntu-based Linux OS
 Interface configuration
 <pre>
 ciscoasa(config)# <b>interface gigabitEthernet 0/0</b>
-ciscoasa(config-if)# <b>ip address 10.10.10.1 255.255.255.252</b>
+ciscoasa(config-if)# <b>ip address 10.10.10.1 255.255.255.0</b>
 ciscoasa(config-if)# <b>nameif inside</b>
 INFO: Security level for "inside" set to 100 by default.
 ciscoasa(config-if)# <b>no shutdown</b>
@@ -159,7 +159,7 @@ GigabitEthernet0/0       inside                   100
 GigabitEthernet0/1       outside                    0
 </pre>
 
-**ASDM** is a java-based GUI tool that facilitates the setup, configuration,
+ASDM is a java-based GUI tool that facilitates the setup, configuration,
 monitoring, and troubleshooting of ASAs.
 
 I used David Bombal's great tutorial in link below to setup the ASDM.
@@ -172,11 +172,8 @@ ciscoasa(config)# <b>http server enable</b>
 ciscoasa(config)# <b>http 0 0 outside</b>
 </pre>
 
-<img src="https://user-images.githubusercontent.com/31813625/33412470-8220ae32-d559-11e7-84f5-aaa09a037cd8.png" />
-
+![image](https://user-images.githubusercontent.com/31813625/33462646-af0bf5e8-d606-11e7-9d38-cb97f2cd0ba2.png)
 
 To preview commands before sending them to the device:
 
 ![image](https://user-images.githubusercontent.com/31813625/33460479-4b0d61b2-d5fc-11e7-869f-1603e6c0aa77.png)
-
- 
