@@ -7,31 +7,6 @@ Then I can control the traffic between my zones
 * A router could also act as a firewall using Context-Based Access Control (CBAC)
  or Zone-Based Policy Firewall (ZBPFW) or abbreviated to ZBFW
 
-#### Firewall Implementation
-* Packet filtering on routers and switches (ACL)
-* Dedicated firewall appliances (e.g ASA)
-* Complex systems integrating multiple hosts and appliances
-
-#### Requirements of all firewall implementations
-* Must be resistant to attacks
-* Must be the only transit point between network zones
-  * Inside Zone: Trusted (meaning that the Security level is 100)
-  * Outside Zone: Security level = 0
-  * DMZ: Public facing services in our organization
-* Traffic form higher to lower security level is allowed to pass.
-It will create an entry in the state table and the reply is allowed to come back.
-On the other hand, traffic from a lower to a higher security level interface
-is gonna be denied. If we want to allow some traffic for example traffic on
-port 80 to be allowed from a lower security level to a higher security level, we have
-to permit that traffic by an ACL
-* If security levels are the same, by default that traffic is not allowed. But
-we can allow the traffic using command below:
-<pre>
-ciscoasa(config)# <b>same-security-traffic permit inter-interface</b>
-</pre>
-* Configuration based on organization's security policy
-* Should be components in larger security architecture and solution?
-
 ### Packet filtering firewalls (Stateless firewalls)
 * Each packet that passes through a firewall is going to be filtered independent of one another.
 * Permit/Deny-based on just the information in the header
@@ -40,7 +15,7 @@ ciscoasa(config)# <b>same-security-traffic permit inter-interface</b>
 
 ### Stateful firewalls
 * Control sessions
-* Information is stored in a state table (in ASA it is called a Connection Table)
+* Information is stored in a state table (`show conn` to see the State table) (in ASA it is called a Connection Table)
 * Stateful session flow table contains: Source and destination IP addresses,
 Source and Destination Port numbers, TCP sequencing information,
 and additional flag for each TCP or UDP connection associated with a particular session
@@ -70,6 +45,31 @@ may need to have special coding as well
 * Advanced Malware Protection (Cisco AMP project)
 * Identity-based Access
 * Cisco Deiscovery Agent (CDA) talks using WMI to Active Directory
+
+#### Firewall Implementation
+* Packet filtering on routers and switches (ACL)
+* Dedicated firewall appliances (e.g ASA)
+* Complex systems integrating multiple hosts and appliances
+
+#### Requirements of all firewall implementations
+* Must be resistant to attacks
+* Must be the only transit point between network zones
+  * Inside Zone: Trusted (meaning that the Security level is 100)
+  * Outside Zone: Security level = 0
+  * DMZ: Public facing services in our organization
+* Traffic form higher to lower security level is allowed to pass.
+It will create an entry in the state table and the reply is allowed to come back.
+On the other hand, traffic from a lower to a higher security level interface
+is gonna be denied. If we want to allow some traffic for example traffic on
+port 80 to be allowed from a lower security level to a higher security level, we have
+to permit that traffic by an ACL
+* If security levels are the same, by default that traffic is not allowed. But
+we can allow the traffic using command below:
+<pre>
+ciscoasa(config)# <b>same-security-traffic permit inter-interface</b>
+</pre>
+* Configuration based on organization's security policy
+* Should be components in larger security architecture and solution?
 
 ### Logging
 Firewalls are so chatty, meaning that they prodoce a lot of logs. It is easy
