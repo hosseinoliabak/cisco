@@ -140,7 +140,7 @@ switch ports and ASAs as a big trunk etherchannel
   * Global Configuration
   * Specific Configuration
 
-### Basic Confoguration and verification
+### Basic Configuration and verification
 I am using ASAv inside GNS3 which is installed on Ubuntu-based Linux OS
 
 Interface configuration
