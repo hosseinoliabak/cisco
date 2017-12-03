@@ -1,10 +1,18 @@
 # Remote Access VPN
-There are 2 ways:
-* Using IPsec (Layer 3)
+There are 2 ways of esteblishing Remote Access VPN:
+* Using IPsec (Layer 3): Legacy way
+       IPsec-client should be installed on win/mac machine
+       
 * Using SSL/TLS is much more popular (Layer 5 (session) and up)
+    SSL : Secure Socket Layer
+    Deal with TLS (Transport Layer Security)  , Versions : TLS1 , TLS1.1 , TLS 1.2
+    
   * Client Solution: Full tunnel, looks like traditional IPsec
+     a clinet (host) , that connects to VPN gateway(like ASA)
+     
   * Clientless Solution: Using a web browser to establish a tunnel
     * You can then send traffic through the browser tunnel using an applet (like Port forwarding Java applet ) but this is limited but great to for partner connectivity
+     * establish the connection to our ASA
   * HTTPS is not the only application supported
     * FTPS, POP3S, LDAPS, Wireless security (EAP-TLS), and others
   * Relies on certificates (installed on the server) to authenticate VPN peers
