@@ -36,7 +36,12 @@ Smart Tunnels:
 
 ### Configuration
 
+#### Topology
+
 ![Topology](https://user-images.githubusercontent.com/31813625/33532835-15315460-d86b-11e7-99cb-469546662e59.png)
+
+#### Wizard
+
 ![Wizard](https://user-images.githubusercontent.com/31813625/33532780-a611ff30-d86a-11e7-8649-6c975deff5b4.png)
 ![Connection](https://user-images.githubusercontent.com/31813625/33532781-a61e18f6-d86a-11e7-9b77-1627d6e1a448.png)
 ![Interface](https://user-images.githubusercontent.com/31813625/33533026-96844dc8-d86c-11e7-88b6-cd1c1b63118d.png)
@@ -49,5 +54,10 @@ Smart Tunnels:
 ![Choose the bookmark](https://user-images.githubusercontent.com/31813625/33532789-a67fa9ea-d86a-11e7-941b-ea2a74002cb3.png)
 ![Confirm the bokmark](https://user-images.githubusercontent.com/31813625/33532790-a68d9a14-d86a-11e7-8be1-c712eea0d42b.png)
 ![Summary](https://user-images.githubusercontent.com/31813625/33532791-a69b46be-d86a-11e7-90f6-dca9638b3611.png)
-![Client Access Web](https://user-images.githubusercontent.com/31813625/33532792-a6a6400a-d86a-11e7-9e06-4fa7413666c4.png)
-![Client Logged In](https://user-images.githubusercontent.com/31813625/33532793-a6b246ca-d86a-11e7-8423-742c2a99ee2b.png)
+
+#### Client Access
+
+![Client Prompted](https://user-images.githubusercontent.com/31813625/33533235-bc05ba18-d86d-11e7-9a73-80d52bbe782b.png)
+![Client Browses](https://user-images.githubusercontent.com/31813625/33533342-83238670-d86e-11e7-9445-c09cc8df7168.png)
+![Client Accesses to Web Server 10.10.10.1](https://user-images.githubusercontent.com/31813625/33533343-8330204c-d86e-11e7-905f-e0fd8d96436b.png)
+
