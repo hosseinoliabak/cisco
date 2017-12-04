@@ -36,7 +36,7 @@ Smart Tunnels:
 
 ### Configuration
 
-![0](https://user-images.githubusercontent.com/31813625/33532779-a601c020-d86a-11e7-895d-df7d04619978.png)
+![0](https://user-images.githubusercontent.com/31813625/33532835-15315460-d86b-11e7-99cb-469546662e59.png)
 ![1](https://user-images.githubusercontent.com/31813625/33532780-a611ff30-d86a-11e7-8649-6c975deff5b4.png)
 ![2](https://user-images.githubusercontent.com/31813625/33532781-a61e18f6-d86a-11e7-9b77-1627d6e1a448.png)
 ![3](https://user-images.githubusercontent.com/31813625/33532782-a62a0440-d86a-11e7-961e-e411fda5100b.png)
