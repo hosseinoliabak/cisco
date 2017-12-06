@@ -7,7 +7,7 @@
 * Can be both connection oriented and connectionless service
 
 ## Transport Services
-* *Transport Services* vs *Data Link Services*
+* *Transport Services* vs *Data Link* Services
   * Similarities:
     * Both provide point-to-point connection
     * Both have to deal with error control, sequencing, flow control, retransmission, etc
@@ -26,7 +26,7 @@
 * TCP addressing:
   * IP protocol number, TCP/UDP port number
 
-### Transmission Control Protocol (TCP)
+## Transmission Control Protocol (TCP)
 * TCP Provides a logical full duplex connection between two application layer
 processes across an unreliable datagram network (IP network)
 * TCP Provides flow control using Selective Repeat
@@ -114,3 +114,138 @@ for congestion control
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 ```
+* **Source Port:**  16 bits
+  * The source port number
+* **Destination Port:**  16 bits
+  * The destination port number
+* **Sequence Number:**  32 bits
+  * The sequence number of the first data octet in this segment (except
+    when SYN is present). If SYN is present the sequence number is the
+    initial sequence number (ISN) and the first data octet is ISN+1
+* **Acknowledgment Number:**  32 bits
+  * If the ACK control bit is set, this tells the sender I received until
+  byte n you had sent to me
+* **Data Offset:**  4 bits
+  * The length of the header
+* **Reserved:**  6 bits
+  * Reserved for future use.  Must be zero.
+* **Control Bits:**  6 bits (from left to right):
+  * **URG:**  The URG flag is used to inform a receiving station that certain
+  data within a segment is urgent and should be prioritized. If the URG
+  flag is set, the receiving station evaluates the **urgent pointer**, a 16-bit field
+  in the TCP header. This pointer indicates how much of the data in the segment,
+  counting from the first byte, is urgent.
+  The URG flag isn't employed much by modern protocols, but we can see
+  an example of it in the Telnet packet capture
+  * **ACK:**  Acknowledges received data
+  * **PSH:**  The socket that TCP makes available at the session level can be
+  written to by the application with the option of "pushing" data out immediately,
+  rather than waiting for additional data to enter the buffer
+  * **RST:**  Aborts a connection in response to an error
+  * **SYN:**  Initiates 3-way handshake and Sequence Number initiation
+  * **FIN:**  No more data from sender. Closes a connection
+* **Window:**  16 bits
+  * The number of data octets beginning with the one indicated in the
+    acknowledgment field which the sender of this segment is willing to
+    accept.
+* **Checksum:**  16 bits
+  * Used for error detection
+
+## User Datagram Protocol
+* UDP in an unreliable, connectionless transport protocol
+* UDP Services:
+  * Routes the received packet to the desired application on the host
+(Destination Port)
+  * Checks the integrity of the datagram. This is optional! (UDP Checksum)
+* If a host does not wish to calculate the checksum, it sets it to all 0's.
+* Applications that use UDP: Domain Name Services (DNS), Simple
+Network Management Protocol (SNMP), Real Time Protocol (RTP)
+* UDP checksum calculation: Similar to TCP (pad to 16, psuedoheader
+for IP verification)
+
+### UDP Header Format
+```
+      0      7 8     15 16    23 24    31
+     +--------+--------+--------+--------+
+     |     Source      |   Destination   |
+     |      Port       |      Port       |
+     +--------+--------+--------+--------+
+     |                 |                 |
+     |     Length      |    Checksum     |
+     +--------+--------+--------+--------+
+     |
+     |          data octets ...
+     +---------------- ...
+```
+
+## Real Time Transport Protocol (RTP)
+* A generic protocol for real time applications such as voice and video
+  * Uses UDP and acts as an interface between user application and transport
+protocol (Mostly UDP)
+* Header specifies the profile and encoding format of the payload (single
+audio stream, mp3)
+* Packets are numbered to allow detection of missing packets
+* Time stamping is used to allow synchronization and jitter compensation
+* No flow control, no error control, no acknowledgement, and no repeat-requests
+* Services:
+  * Payload type identification
+  * Sequence numbering
+  * Time stamping
+  * Delivery monitoring
+
+### RTP Fixed Header Fields
+```
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |V=2|P|X|  CC   |M|     PT      |       sequence number         |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                           timestamp                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           synchronization source (SSRC) identifier            |
+   +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+   |            contributing source (CSRC) identifiers             |
+   |                             ....                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+```
+* V = version (V): 2 bits
+* P = padding (P):
+  * 1 bit - the packet has been padded to a multiple of 4-bytes. The last padding
+byte tells how many bytes were padded
+* extension (X): 1 bit
+  * If the extension bit is set, the fixed header MUST be followed by
+      exactly one header extension
+* CSRC count (CC): 4 bits
+  * he CSRC count contains the number of CSRC identifiers that follow
+      the fixed header
+* marker (M): 1 bit - used by the application
+* payload type (PT): 7 bits
+  * identifies the format of the RTP payload and determines its interpretation by the application.
+  * A receiver MUST ignore packets with payload types that it does not
+      understand
+* sequence number: 16 bits
+  * The sequence number increments by one for each RTP data packet
+      sent, and may be used by the receiver to detect packet loss and to
+      restore packet sequence
+* timestamp: 32 bits
+  * Appropriate time alignment of the samples in the receiver for smooth playback
+and jitter reduction
+  * Synchronization between multiple streams such as video and audio in a
+video conference
+* SSRC: 32 bits: Tells which stream this packet belongs to
+* CSRC list: 0 to 15 items, 32 bits each
+
+### Real Time Transport Control Protocol
+* RTP is used in conjunction with the RTP Control Protocol (RTCP).
+* RTP carries the media streams (e.g., audio and video) and RTCP is
+used to monitor transmission statistics and quality of service (QoS)
+and aids synchronization of multiple streams.
+* When both protocols are used in conjunction, RTP is originated and
+received on even port numbers and the associated RTCP
+communication uses the next higher odd port number.
+* RTCP feedback can let the source know about delay, jitter,
+bandwidth, congestion, etc.
+* This data can be used by the source to adjust encoding or transport
+properties of the stream
+* Different streams can use different clocks with different granularities
+and different drift rates.
