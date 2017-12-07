@@ -289,7 +289,7 @@ GigabitEthernet0/1     [up/up]
     * Switching providers readdressing network devices
   * NPTv6 creates statless, 1:1 mappings between global unicast and unique local addresses
   * The global unicast and unique local prefixes differ, but the rest of the address stays the same
-  
+
 ## IPv4 and IPv6 Interoperability
 * IPv6 and IPv4 can coexists
   * **Dual Stack:** The host runs IPv4 and IPv6 simultaneously.
