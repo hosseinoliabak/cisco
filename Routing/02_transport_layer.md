@@ -10,6 +10,7 @@
 * *Transport Services* vs *Data Link* Services
   * Similarities:
     * Both provide point-to-point connection
+      * point-to-point means one path to the destination. When a packet goes in one end, it must come out the other end!
     * Both have to deal with error control, sequencing, flow control, retransmission, etc
   * Differences:
     * Transport connection is indirect
@@ -48,6 +49,20 @@ processes across an unreliable datagram network (IP network)
 * FTP: 21, Telnet:23, SMTP: 25, HTTP: 80
 * TCP may buffer at both sides; consequently transmission may be delayed
 * TCP should handle lost, out of order, and delayed segments with non-aligned boundaries
+* TCP Windowing
+  * Host can't process packets as quickly as it's receiving them
+  * Unprocessed packets are stored in a receive buffer
+  * When the receive buffer is full, subsequent packets get tail-dropped
+* Former Maximum Window size supported by TCP was 65,535 bytes
+  * The TCP window scale option is an option to increase the receive window size allowed in TCP (RFC 1323)
+    * Multiples the Window Size
+    * Maximum effective window size is 2<sup>30</sup> or about 1 gigabyte
+    * `R1(config)#ip tcp window-size [65536-1073741823]`
+    * TCP Window scaling must be enabled on both hosts
+* TCP Global synchronization
+  * Occurs when multiple connections experienced packet loss
+  * Network failure
+  * Packet getting tail-dropped
 * Every byte has 32-bits *sequence number*
   * On 10 Mbps it takes about an hour to wrap around
   * Separate 32-bit sequence numbers are used for acknowledgement and for the window mechanism
@@ -55,6 +70,15 @@ processes across an unreliable datagram network (IP network)
   * Segment contains 20-byte header, options, + data
   * Variable payload size (the size is decided by the TCP software and is usually 1500 bytes)
   * Must fit into MTU: maximum transfer unit size of a network
+    * Ethernet MTU is the largest payload that can be carried in a single frame, not including Ethernet headers.
+    A common default MTU is 1500 bytes
+  * Path MTU Discovery (PMTUD):
+    * Suppose **(R1)**-------MTU=1500Bytes-------**(R2)**-------MTU=1280Bytes-------**(R3)**
+    * Suppose R1 wants to send a packet to R3. r2 realize that packet is too big to send it to R3.
+    * Then R2 split up the packet (to 220 B + 1280 B fragment) and sends it to R3?
+      * More work for R2
+      * IPv6 packets cannot be fragmented by transit routers as the minimum MTU for IPv6 is 1280 Bytes
+        * R2 sends ICMPv6 type 2 message telling to R1 "Use MTU 1280"
 * **Sliding window** protocol with timeout
   * Receiver sends back ack# equal to next expected segment#
   * Receiver uses piggybacking. Meaning that I send you something, You want to send me something. Okay you can give me the ack of the segment
@@ -86,6 +110,9 @@ of data bytes any particular layer-2 technology allows per
 packet. TCP/IP headers are later added to the packet (normally
 40 bytes) and the resulting total is called the Maximum
 Transmission Unit (MTU))
+  * MSS = MTU - TCP/IP headers
+    * Generally in Ethernet we have 1500 Bytes MTU. TCP/IP headers are 40 bytes
+    * MSS = 1460 Bytes
 * Another method is *congestion avoidance:*
   * In the congestion avoidance mode the window size increases by one MSS every RTT.
 When a packet is lost, the window size is halved. TCP thus
@@ -177,7 +204,15 @@ for IP verification)
      |          data octets ...
      +---------------- ...
 ```
-
+### TCP Starvation/UDP Dominance
+* UDP is unaware of bandwidth, delay, and packet loss. What if it consumes all bandwidth of the link?
+* Consequence for TCP:
+  * Starvation
+  * Higher latency
+  * Lower throughput
+* Solution:
+  * Place TCP and UDP into separate QoS classes. You can either limit the
+  UDP flows or you could even give the TCP flows a minimum bandwidth guarantee
 ## Real Time Transport Protocol (RTP)
 * A generic protocol for real time applications such as voice and video
   * Uses UDP and acts as an interface between user application and transport
