@@ -97,3 +97,49 @@ portion of the internet datagram.
 * **Source Address:**
 * **Destination Address:**
 * **IP Option:** This field is not used often
+
+## Internet Protocol, Version 6 (IPv6)
+* ARP has been replaced by ICMPv6 Neighbor Discovery Protocol.
+* Multicast instead of broadcast
+* Minimum MTU of 1280 Bytes
+
+
+### IPv6 Header Format:
+* 40-Byte Main/Regular IPv6 Header
+```
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |Version| Traffic Class |           Flow Label                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |         Payload Length        |  Next Header  |   Hop Limit   |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                                                               |
+   +                                                               +
+   |                                                               |
+   +                         Source Address                        +
+   |                                                               |
+   +                                                               +
+   |                                                               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                                                               |
+   +                                                               +
+   |                                                               |
+   +                      Destination Address                      +
+   |                                                               |
+   +                                                               +
+   |                                                               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+```
+* **Version:** 4-bit Internet Protocol version number = 6.
+* **Traffic Class:** 8-bit traffic class field. The most significant 6 bits are
+used for Type of Service to let the Router Known what services should be
+provided to this packet. The least significant 2 bits are used for Explicit Congestion Notification (ECN).
+* **Flow Label:** 20-bit Flow Label field helps avoid re-ordering of data packets.
+It is designed for streaming/real-time media.
+* **Payload Length:** 16-bit unsigned integer. The size of the payload in octets, including any extension headers.
+* **Next Header:** 8-bit selector.  Identifies the type of header immediately following the IPv6 header.
+* **Hop Limit:** 8-bit unsigned integer. This is same as TTL in IPv4.
+
+####  IPv6 Extension Headers (EH)
+* IPv4 Options perform a very important role in the IP protocol operation therefore the capability had to be preserved in IPv6.
+The functionality of options is removed from the main header and implemented through a set of additional headers called extension headers.
+* The main header remains fixed in size (40 bytes) while customized EHs are added as needed.
