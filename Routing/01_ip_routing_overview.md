@@ -143,3 +143,163 @@ It is designed for streaming/real-time media.
 * IPv4 Options perform a very important role in the IP protocol operation therefore the capability had to be preserved in IPv6.
 The functionality of options is removed from the main header and implemented through a set of additional headers called extension headers.
 * The main header remains fixed in size (40 bytes) while customized EHs are added as needed.
+
+### Address Types:
+Like IPv4, IPv6 has unicast and multicast addressing support. In this course for now,
+I am concerning to unicast address types.
+
+#### Unicast Address Types (RFC 4291)
+* Global: AKA Aggregatable Global Unicast Addresses
+  * Routable on the public Internet
+  * Begin with the 2000::/3 prefix
+* Link-local
+  * Unique to a link but NOT necessarily unique to a router
+  * Not routable
+  * Begin with fe80::/64 prefix (in practice)
+* Unspecified Address ::/128
+  * Never assigned to an Interface
+  * Used as a source address in the absence of an IPv6 address
+
+#### How are the IPv6 unicast addresses assigned?
+1. **Static**
+<pre>
+Router(config)#<b>interface gigabitEthernet 0/0</b>
+Router(config-if)#<b>ipv6 address 2001:db9:45:c0de::1/64</b>
+Router(config-if)#<b>ipv6 address fe80::14:1 link-local</b></pre>
+<pre>
+Router#<b>show ipv6 interface gigabitEthernet 0/0</b>
+GigabitEthernet0/0 is up, line protocol is up
+  <b>IPv6 is enabled, link-local address is FE80::14:1</b>
+  No Virtual link-local address(es):
+  Global unicast address(es):
+    <b>2001:DB9:45:C0DE::1, subnet is 2001:DB9:45:C0DE::/64</b>
+  Joined group address(es):
+    FF02::1
+    FF02::1:FF00:1
+    FF02::1:FF14:1
+  MTU is 1500 bytes
+  ICMP error messages limited to one every 100 milliseconds
+  ICMP redirects are enabled
+  ICMP unreachables are sent
+  ND DAD is enabled, number of DAD attempts: 1
+  ND reachable time is 30000 milliseconds (using 30000)
+  ND NS retransmit interval is 1000 milliseconds
+</pre>
+2. **Modified EUI-64**: Can be used to generate *global unicast* and the *link-local* addresses
+* A /64 prefix is manually specified
+* The remaining 64 bits of the address are generated automatically
+3. **DHCPv6**
+* Client/Server architecture
+* Uses UDP multicasts instead of broadcasts
+* For now, beyod the scope of CCNP
+4. **Stateless address auto-configuration (SLAAC)**
+* Can uses EUI-64 to generate the interface ID portion of the address
+* Prefix is automatically determined from router advertisements
+* Neighbor Diecovery Protocol (NDP) - RFC 4861
+  * Similar to IPv4 processes such as ARP and ICMP redirect
+  * SLAAC uses it to determine network prefix and default gateway information
+  * Detecting duplicate IPv6 addresses
+  * L3 to L3 address resolution (similar to ARP in IPv6)
+  * ICMPv6 message types used by NDP
+    * Router Solicitation (RS)
+      * Sent by a network device when it needs network prefix, prefix length, or default GW
+      * Sent to the link-local all-routers multicast ff02::2
+    * Router Advertisement (RA)
+      * If there is an IPv6 router on the link, then it will send to the link-local
+      all-nodes multicast address ff02::1 with prefix information
+    * Neighbor Solicitation (NS)
+      * Address resolution
+      * Duplicate Address Detection (DAD): DAD is also done even if we use DHCPv4 and EUI-64
+    * Neighbor Advertisement (NA)
+
+#### Configuration
+* Example 1
+<pre>
+R1#<b>debug ipv6 nd</b>
+R1(config)#<b>interface gigabitEthernet 0/1</b>
+R1(config-if)#<b>ipv6 enable</b>
+*Dec  7 20:26:36.752: ICMPv6-ND: (GigabitEthernet0/1) L2 came up
+*Dec  7 20:26:36.753: IPv6-Addrmgr-ND: DAD request for FE80::227:1DFF:FE03:CC01 on GigabitEthernet0/1
+*Dec  7 20:26:36.755: ICMPv6-ND: (GigabitEthernet0/1,FE80::227:1DFF:FE03:CC01) Sending DAD NS [Nonce: a135.3950.428c]
+*Dec  7 20:26:36.757: ICMPv6-ND: ND output feature SEND executed on 3 - rc=0
+
+*Dec  7 20:26:37.756: IPv6-Addrmgr-ND: DAD: FE80::227:1DFF:FE03:CC01 is unique.
+*Dec  7 20:26:37.759: ICMPv6-ND: (GigabitEthernet0/1,FE80::227:1DFF:FE03:CC01) Sending NA to FF02::1
+*Dec  7 20:26:37.760: ICMPv6-ND: (GigabitEthernet0/1) L3 came up
+*Dec  7 20:26:37.763: ICMPv6-ND: (GigabitEthernet0/1,FE80::227:1DFF:FE03:CC01) Linklocal Up
+*Dec  7 20:26:37.764: ICMPv6-ND: ND output feature SEND executed on 3 - rc=0
+
+R1#<b>show interfaces gigabitEthernet 0/1 | in bia</b>
+  Hardware is iGbE, address is <b>0027.1d03.cc01</b> (bia 0027.1d03.cc01)
+R1#<b>show ipv6 interface gigabitEthernet 0/1</b>
+GigabitEthernet0/1 is up, line protocol is up
+  <b>IPv6 is enabled, link-local address is FE80::227:1DFF:FE03:CC01</b>
+  No Virtual link-local address(es):
+  No global unicast address is configured
+  Joined group address(es):
+    FF02::1
+    FF02::1:FF03:CC01
+  MTU is 1500 bytes
+  ICMP error messages limited to one every 100 milliseconds
+  ICMP redirects are enabled
+  ICMP unreachables are sent
+  ND DAD is enabled, number of DAD attempts: 1
+  ND reachable time is 30000 milliseconds (using 30000)
+  ND NS retransmit interval is 1000 milliseconds
+</pre>
+* Example 2 requirements:
+  * Assign the unicast address 2001:db8:14::1/64 to R1's gig0/1 interface
+  * Configure R2 to use SLAAC to receive an IPv6 address from R1
+
+<pre>
+R1(config)#<b>ipv6 unicast-routing</b>
+R1(config)#<b>interface gigabitEthernet 0/1</b>
+R1(config-if)#<b>ipv6 address 2001:db8:14::1/64</b>
+R1(config-if)#<b>no shutdown</b></pre>
+
+<pre>
+R2(config)#<b>interface gigabitEthernet 0/1</b>
+R2(config-if)#<b>ipv6 address autoconfig</b>
+R2(config-if)#<b>no shutdown</b></pre>
+* Verification:
+<pre>
+R1#<b>show ipv6 interface brief</b>
+GigabitEthernet0/0     [administratively down/down]
+    unassigned
+GigabitEthernet0/1     [up/up]
+    FE80::227:1DFF:FE03:CC01
+    <b>2001:DB8:14::1</b>
+</pre>
+<pre>
+R2#<b>show ipv6 interface brief</b>
+GigabitEthernet0/0     [administratively down/down]
+    unassigned
+GigabitEthernet0/1     [up/up]
+    FE80::227:1DFF:FE9F:4D01
+    <b>2001:DB8:14:0:227:1DFF:FE9F:4D01</b>
+</pre>
+
+### IPv6 Network Prefix Translation (NPTv6)
+* Unique Local Addresses (RFC 4193)
+  * Use the **fd00::/8** prefix with the rest of the address randomly generated
+  * Not routable in public Internet
+  * But routable internally
+  * Why not use global unicast on all devices?
+    * Global unicast addresses may be allocated to an Internet service provider
+    * Switching providers readdressing network devices
+  * NPTv6 creates statless, 1:1 mappings between global unicast and unique local addresses
+  * The global unicast and unique local prefixes differ, but the rest of the address stays the same
+  
+## IPv4 and IPv6 Interoperability
+* IPv6 and IPv4 can coexists
+  * **Dual Stack:** The host runs IPv4 and IPv6 simultaneously.
+    * The entire network between them has to support IPv6
+  * **Tunneling IPv6 over IPv4:** Allows *some* devices on the network to run IPv6. IPv6 packets will be encapsulated by IPv4 header
+    * Tunneling does not provide communication between an IPv4-only host and an IPv6-only host
+  * **Stateful NAT-64:** Allows IPv4-only host to talk to IPv6-only host
+    * e.g. IPv4 Address 10.1.1.2 <-> IPv6 address 2001::2
+    * Stateful: One-to-One translation
+  * **Stateless NAT-64:**
+    * Uses embedded IPv4-in-IPv6 address instead of static mappings
+    * Example: **192.1.1.1** <-> 2001:DB9:0:1::**C001:101**
+      * C0010101 is the hexadecimal format of 192.1.1.1
