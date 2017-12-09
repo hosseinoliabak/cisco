@@ -201,3 +201,16 @@ Sending 5, 100-byte ICMP Echos to 12.12.12.1, timeout is 2 seconds:
 !!!!!
 Success rate is 100 percent (5/5), round-trip min/avg/max = 8/9/11 ms
 </pre>
+
+## Authentication
+* Customer's requirement:
+  1. R2 and R3 authenticate each other using clear text
+  2. R2 and R4 authentocate each other using MD5
+
+<pre>
+R2(config-router)#<b>area 234 virtual-link 3.3.3.3 authentication-key cisco</b>
+R2(config-router)#<b>area 234 virtual-link 4.4.4.4 authentication message-digest-key 89 md5 cisco</pre></b>
+<pre>
+R3(config-router)#<b>area 234 virtual-link 2.2.2.2 authentication-key cisco</b></pre>
+<pre>
+R4(config-router)#<b>area 234 virtual-link 2.2.2.2 authentication message-digest-key 89 md5 cisco</b></pre>
