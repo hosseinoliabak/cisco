@@ -2,7 +2,7 @@
 
 This is an example we work on
 
-![ospf](https://user-images.githubusercontent.com/31813625/33791623-8b5e9068-dc5c-11e7-8840-472e1a3b6870.png)
+![ospf](https://user-images.githubusercontent.com/31813625/33792313-cf98a018-dc69-11e7-8e49-28b5508f3158.png)
 
 ### Basic OSPF Confoguration
 
