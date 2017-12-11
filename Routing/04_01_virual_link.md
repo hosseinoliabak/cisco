@@ -9,37 +9,37 @@ This is an example we work on
 **R1:**
 <pre>
 router ospf 1
- network 12.12.12.0 0.0.0.3 area 12
+ network 12.12.12.1 0.0.0.0 area 12
 </pre>
 
 **R2:**
 <pre>
 router ospf 1
- network 12.12.12.0 0.0.0.3 area 12
- network 172.16.234.0 0.0.0.255 area 234
+ network 12.12.12.2 0.0.0.0 area 12
+ network 172.16.234.2 0.0.0.0 area 234
 </pre>
 
 **R3:**
 <pre>
 router ospf 1
- network 35.35.35.0 0.0.0.7 area 0
- network 172.16.234.0 0.0.0.255 area 234
+ network 35.35.35.3 0.0.0.0 area 0
+ network 172.16.234.3 0.0.0.0 area 234
 </pre>
 
 **R4:**
 <pre>
 router ospf 1
  area 234 virtual-link 2.2.2.2
- network 45.45.45.0 0.0.0.7 area 0
- network 172.16.234.0 0.0.0.255 area 234
+ network 45.45.45.4 0.0.0.0 area 0
+ network 172.16.234.4 0.0.0.0 area 234
 </pre>
 
 **R5:**
 <pre>
 router ospf 1
  network 10.10.0.0 0.0.7.255 area 0
- network 35.35.35.0 0.0.0.7 area 0
- network 45.45.45.0 0.0.0.7 area 0
+ network 35.35.35.5 0.0.0.0 area 0
+ network 45.45.45.5 0.0.0.0 area 0
 </pre>
 
 **Basic verification on R5:**
