@@ -76,3 +76,24 @@ O IA     10.10.45.0/29 [110/2] via 172.16.1.4, 00:47:56, GigabitEthernet0/0
 * Note:
   * On **ABR** We used `area X range IP MASK` under the router configuration
   * On **ASBR** we use `summary-address IP MASK` under the router configuration
+
+One more thing:
+
+Let's see the routing table of R3 which was one of the ABRs we did summarization on:
+<pre>
+R3#show ip route ospf
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 8 subnets, 3 masks
+<b>O        10.10.1.0/24 is a summary, 00:00:25, Null0</b>
+O        10.10.1.1/32 [110/2] via 10.10.35.5, 00:00:25, GigabitEthernet0/5
+O        10.10.1.129/32 [110/2] via 10.10.35.5, 00:00:25, GigabitEthernet0/5
+O        10.10.2.1/32 [110/2] via 10.10.35.5, 00:00:25, GigabitEthernet0/5
+O        10.10.3.1/32 [110/2] via 10.10.35.5, 00:00:25, GigabitEthernet0/5
+O        10.10.45.0/29 [110/2] via 10.10.35.5, 00:00:25, GigabitEthernet0/5
+</pre>
+ABR that creates the summary route will create a null0 interface to prevent loops
+(If loop happened, it will continue until the IP TTL expires.).
+We know that we have more specific route in the routing tables for a couple of 10.10.x.x networks.
+However, when a packet received destined to 10.10.1.0 but there is no destination, the packet is sent to
+blackhole null0 interface
