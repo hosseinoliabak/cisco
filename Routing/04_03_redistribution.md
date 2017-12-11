@@ -90,3 +90,13 @@ R1#<b>show ip ospf database external 1.1.1.0</b>
 	Forward Address: 0.0.0.0
 	External Route Tag: 0
 </pre>
+
+If we were asked to **summarize on ASBR** those networks to 1.0.0.0/8:
+<pre>
+ASBR(config-router)#<b>summary-address 1.0.0.0 255.0.0.0</b></pre>
+<pre>
+R1#<b>show ip route ospf</b>
+Gateway of last resort is not set
+
+O E2  1.0.0.0/8 [110/20] via 10.10.1.2, 00:01:51, GigabitEthernet0/0
+</pre>

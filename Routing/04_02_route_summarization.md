@@ -51,6 +51,7 @@ O IA     10.10.35.0/29 [110/2] via 172.16.1.3, 00:16:55, GigabitEthernet0/0
 O IA     10.10.45.0/29 [110/2] via 172.16.1.4, 00:36:11, GigabitEthernet0/0
 </pre>
 Now let's do the summarization on R4 as well.
+
 **R4**
 <pre>
 R4(config)#<b>router ospf 1</b>
@@ -71,3 +72,7 @@ O IA     10.10.3.1/32 [110/3] via 172.16.1.4, 00:47:56, GigabitEthernet0/0
 O IA     10.10.35.0/29 [110/2] via 172.16.1.3, 00:28:40, GigabitEthernet0/0
 O IA     10.10.45.0/29 [110/2] via 172.16.1.4, 00:47:56, GigabitEthernet0/0
 </pre>
+
+* Note:
+  * On **ABR** We used `area X range IP MASK` under the router configuration
+  * On **ASBR** we use `summary-address IP MASK` under the router configuration
