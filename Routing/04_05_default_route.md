@@ -1,5 +1,7 @@
 # Injecting Default Routes
 1. Using `default-information originate`
+  * `default-information originate`. We also need to have default route in the ASBR's routing table
+  * `default-information originate always`. No need to default route in the ASBR's routing table
 2. Using Stub Areas
 
 ## default-information originate
