@@ -62,3 +62,16 @@ In EIGRP we are also having these 3 tables but different terminology and informa
 * Default values K1 and K3 are set to 1, all others are set to 0
 * By default the EIGRP metric would be <pre>256 (10<sup>7</sup>/Bandwidth in Kibps + Delay in microseconds/10)</pre>
 
+### Traditional EIGRP and Named EIGRP Configurations Compared
+
+#### Basic configuration comparison
+##### Traditional Approach
+<pre>
+R1(config)#<b>router eigrp 1</b>
+R1(config-router)#<b>network 0.0.0.0</b></pre>
+
+##### Named Approach
+<pre>
+R1(config)#<b>router eigrp R1</b>
+R1(config-router)#<b>address-family ipv4 autonomous-system 1</b>
+R1(config-router-af)#<b>network 0.0.0.0</b></pre>
