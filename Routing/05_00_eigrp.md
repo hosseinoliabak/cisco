@@ -33,6 +33,8 @@ In EIGRP we are also having these 3 tables but different terminology and informa
   * Every hello packet includes a hold-time which tells the **receiving neighbor** how often to expect hello messages
     * Defaults to 3x the Hello interval
     * So, hello interval is locally significant, but hold-time is significant for the neighbor
+    * `passive-interface` prevents eigrp sending hello on that interface; however, EIGRP still advertises the subnets belonging to that interface.
+      * Used for stub networks
 * **Update**
   * Conveys routing prefix and metric information
   * Non-periodic: Not sent at defined intervals
@@ -75,3 +77,50 @@ R1(config-router)#<b>network 0.0.0.0</b></pre>
 R1(config)#<b>router eigrp R1</b>
 R1(config-router)#<b>address-family ipv4 autonomous-system 1</b>
 R1(config-router-af)#<b>network 0.0.0.0</b></pre>
+
+* **The Named EIGRP Hierarchical Structure**
+* Traditional and Named Approaches are compatible
+* 3 different modes
+  * **Address-Family:** General EIGRP configuration commands are issued under this
+configuration mode. For example, router ID, network, and EIGRP
+stub router configurations are performed here. Multiple address
+families (for example, IPv4 and IPv6) can be configured under the
+same EIGRP virtual instance.
+  * **Address-Family-Interface:**
+  Commands entered under interface configuration mode with
+a traditional EIGRP configuration are entered here for Named
+EIGRP configuration. For example, timer and passive interface
+configurations are performed here.
+  * **Address-Family-Topology:** Commands that have a direct impact on a router’s EIGRP topology
+table are given in this configuration mode. For example, variance and
+redistribution are configured in this mode.
+
+* Example: dvanced EIGRP Configuration Using the Named Configuration Approach
+<pre>
+router eigrp R1
+  !
+  address-family ipv4 unicast autonomous-system 1
+    !
+  af-interface default
+  hello-interval 2
+  hold-time 10
+  passive-interface
+  exit-af-interface
+  !
+  af-interface Serial1/0
+  no passive-interface
+  exit-af-interface
+  !
+  topology base
+  variance 2
+  exit-af-topology
+  network 0.0.0.0
+  exit-address-family
+  !
+  address-family ipv6 unicast autonomous-system 2
+  !
+  topology base
+  variance 2
+  exit-af-topology
+  exit-address-family
+</pre>
