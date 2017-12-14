@@ -143,3 +143,64 @@ Loopback0 is up, line protocol is up
   ND RAs are suppressed (periodic)
   Hosts use stateless autoconfig for addresses.
 </pre>
+
+## EIGRP Message Authentication
+
+R Configuration (Named Approach)
+<pre>
+R1(config)#<b>router eigrp R1</b>
+R1(config-router)#<b>address-family ipv4 unicast autonomous-system 1</b>
+R1(config-router-af)#<b>af-interface gigabitEthernet 0/0</b>
+R1(config-router-af-interface)#<b>authentication key-chain KC-EIGRP</b>
+R1(config-router-af-interface)#<b>authentication mode ?</b>
+  <b>hmac-sha-256</b>  HMAC-SHA-256 Authentication
+  <b>md5</b>           Keyed message digest
+R1(config-router-af-interface)#<b>authentication mode md5</b>
+*Dec 14 00:17:43.124: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.10.12.2 (GigabitEthernet0/0) is down: authentication mode changed
+R1(config-router-af-interface)#<b>exit-af-interface</b>
+R1(config-router-af)#<b>exit-address-family</b>
+R1(config-router)#<b>exit</b>
+R1(config)#<b>key chain KC-EIGRP</b>
+R1(config-keychain)#<b>key 1</b>
+R1(config-keychain-key)#<b>key-string VALUE</b>
+R1(config-keychain-key)#<b>cryptographic-algorithm md5</b>
+R1(config-keychain-key)#<b>exit</b>
+R1(config-keychain)#<b>exit</b>
+</pre>
+
+R2 Configuration (Traditional Approah)
+<pre>
+R2(config)#<b>key chain KC-EIGRP</b>
+R2(config-keychain)#<b>key 1</b>
+R2(config-keychain-key)#<b>key-string VALUE</b>
+R2(config-keychain-key)#<b>cryptographic-algorithm md5</b>
+R2(config-keychain-key)#<b>exit</b>
+R2(config-keychain)#<b>exit</b>
+R2(config)#<b>interface gigabitEthernet 0/0</b>
+R2(config-if)#<b>ip authentication key-chain eigrp 1 KC-EIGRP</b>
+R2(config-if)#<b>ip authentication mode eigrp 1 ?</b>
+  <b>md5</b>  Keyed message digest
+R2(config-if)#<b>ip authentication mode eigrp 1 md5</b>
+*Dec 14 00:41:17.148: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.10.12.1 (GigabitEthernet0/0) is up: new adjacency
+</pre>
+
+**Verification**
+<pre>
+R1#<b>show ip eigrp 1 interfaces detail gigabitEthernet 0/0</b>
+EIGRP-IPv4 VR(R1) Address-Family Interfaces for AS(1)
+                              Xmit Queue   PeerQ        Mean   Pacing Time   Multicast    Pending
+Interface              Peers  Un/Reliable  Un/Reliable  SRTT   Un/Reliable   Flow Timer   Routes
+Gi0/0                    1        0/0       0/0        1604       0/0         8016           0
+  Hello-interval is 2, Hold-time is 10
+  Split-horizon is enabled
+  Next xmit serial <none>
+  Packetized sent/expedited: 5/1
+  Hello's sent/expedited: 3046/4
+  Un/reliable mcasts: 0/6  Un/reliable ucasts: 6/6
+  Mcast exceptions: 0  CR packets: 0  ACKs suppressed: 0
+  Retransmissions sent: 3  Out-of-sequence rcvd: 1
+  Topology-ids on interface - 0
+  <b>Authentication mode is md5,  key-chain is "KC-EIGRP"</b>
+  Topologies advertised on this interface:  base
+  Topologies not advertised on this interface:
+</pre>
