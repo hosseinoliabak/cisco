@@ -56,6 +56,24 @@ In EIGRP we are also having these 3 tables but different terminology and informa
     * Finally Both routers send *update* packet to their neighbors telling about the new distance to the destination
       * And the router which lost the rout, now consider the path to the destination as a *passive* state
         * A route is in the *passive* state once the DUAL algorithm has converged on a final cost
+* Stuck in Active (SIA)
+  * When a route goes active, queries are sent to neighbors to find the best bath to the prefix
+  * If the active timer (default: 3 minutes) expires before all replies are received, the route becomes SIA
+  * Adjacencies with the neighbors that did not respond are reset
+  * **EIGRP stubs** are designed to avoid routes getting stuck in active
+    * Stub routers do not advertise learned routes from one neighbor to other EIGRP neighbors
+    * the nonstub routers do not send Query messages to the stub routers
+    * The eigrp stub command has several options. **connected** and **summary** option are the defaults
+      * **connected :** Advertise connected routes but only for interfaces matched with a network command.
+      * **summary :** Advertise auto-summarized or statically configured summary routes.
+      * **static :** Advertise static routes, assuming that the redistribute static command is configured.
+      * **leak-map** *name* **:** Advertise routes (that would otherwise be part of a summary route) specified by a leak map.
+      * **redistributed:** Advertise redistributed routes, assuming that redistribution is configured.
+      * **receive-only:** Does not advertise any routes. This option cannot be used with any other option.
+    * Note that stub routers still form neighborships, even in receive-only mode. The stub
+router simply performs less work and reduces the Query scope because neighbors will
+not send these routers any Query messages.
+
 
 ### EIGRP Wighted Metric Formula
 * K1, K2: related to Bandwidth
