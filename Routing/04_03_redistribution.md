@@ -26,6 +26,7 @@ ASBR(config)#<b>router ospf 1</b>
 ASBR(config-router)#<b>network 10.10.1.2 0.0.0.0 area 0</b>
 ASBR(config-router)#<b>redistribute connected subnets</b></pre>
 
+* `subnets` means redistribute classless subnets otherwise the router only redistributes classful subnets
 
 Verification on R1
 
@@ -99,4 +100,201 @@ R1#<b>show ip route ospf</b>
 Gateway of last resort is not set
 
 O E2  1.0.0.0/8 [110/20] via 10.10.1.2, 00:01:51, GigabitEthernet0/0
+</pre>
+
+## Redistributing EIGRP into OSPF
+* Default metric for redistributed routes are:
+  * Form BGP: Metric = 1
+  * From other OSPF: The metric will be equal to the metric of the source OSPF
+  * All other sources: Metric = 20
+    * We can change it by subcommand `RD2(config-router)#default-metric 10
+`
+* <pre>redistribute <i>protocol</i> [ <i>process-id</i> | <i>as-number</i> ] [ <b>metric</b> <i>bw delay reliability load mtu</i> ] [ <b>match</b> { <b>internal</b> | <b>nssa-external</b> | <b>external 1</b> | <b>external 2</b> }] [ <b>tag</b> <i>tag-value</i> ][ <b>route-map</b> <i>name</i> ]</pre>
+* By default, the OSPF redistribute command creates Type 2 routes
+  * E2: The OSPF routers do not add any internal OSPF cost to the metric for an E2 route
+  * E1: OSPF routers calculate the metrics of E1 routes by adding the internal cost to reach the
+ASBR to the external cost defined on the redistributing ASBR
+
+
+
+Basic Configuration
+
+**BR1**
+<pre>
+hostname BR1
+!
+interface GigabitEthernet0/0
+ ip address 10.10.10.1 255.255.255.0
+!
+router ospf 2
+ network 10.10.10.1 0.0.0.0 area 0
+</pre>
+
+**BR2**
+<pre>
+hostname BR2
+!
+interface GigabitEthernet0/0
+ ip address 10.10.20.1 255.255.255.0
+!
+router eigrp BR2
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  topology base
+  exit-af-topology
+  network 10.10.20.1 0.0.0.0
+ exit-address-family
+!
+</pre>
+
+**RD1**
+<pre>
+hostname RD1
+!
+interface GigabitEthernet0/0
+ ip address 10.10.10.2 255.255.255.0
+!
+interface GigabitEthernet0/1
+ ip address 172.16.1.1 255.255.255.0
+ speed 10
+!
+router ospf 1
+ network 172.16.1.1 0.0.0.0 area 0
+!
+router ospf 2
+ network 10.10.10.2 0.0.0.0 area 0
+</pre>
+
+**RD2**
+<pre>
+hostname RD2
+!
+interface GigabitEthernet0/0
+ ip address 10.10.20.2 255.255.255.0
+!
+interface GigabitEthernet0/2
+ ip address 172.31.1.1 255.255.255.0
+!
+router eigrp RD2
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  topology base
+  exit-af-topology
+  network 10.10.20.2 0.0.0.0
+ exit-address-family
+!
+router ospf 1
+ network 172.31.1.1 0.0.0.0 area 0
+</pre>
+
+**HQ**
+<pre>
+hostname HQ
+!
+interface GigabitEthernet0/0
+ ip address 172.16.1.2 255.255.255.0
+ speed 10
+!
+interface GigabitEthernet0/1
+ ip address 172.31.1.2 255.255.255.0
+!
+router ospf 1
+ network 172.16.1.2 0.0.0.0 area 0
+ network 172.31.1.2 0.0.0.0 area 0
+</pre>
+
+<pre>
+HQ#<b>show ip route</b>
+Gateway of last resort is not set
+
+      172.16.0.0/16 is variably subnetted, 2 subnets, 2 masks
+C        172.16.1.0/24 is directly connected, GigabitEthernet0/0
+L        172.16.1.2/32 is directly connected, GigabitEthernet0/0
+      172.31.0.0/16 is variably subnetted, 2 subnets, 2 masks
+C        172.31.1.0/24 is directly connected, GigabitEthernet0/1
+L        172.31.1.2/32 is directly connected, GigabitEthernet0/1
+</pre>
+
+### Redistribution Configuration
+<pre>
+RD1(config-router)#<b>redistribute ospf 2 subnets metric-type 1</b></pre>
+
+<pre>
+RD2(config-router)#<b>sredistribute eigrp 1 subnets metric-type 1</b></pre>
+
+<pre>
+HQ#<b>show ip route ospf</b>
+Gateway of last resort is not set
+
+      10.0.0.0/24 is subnetted, 2 subnets
+O E1     10.10.10.0 [110/<b>11</b>] via 172.16.1.1, 00:02:18, GigabitEthernet0/0
+O E1     10.10.20.0 [110/<b>21</b>] via 172.31.1.1, 00:00:40, GigabitEthernet0/1
+</pre>
+
+<pre>
+HQ#<b>show ip ospf neighbor</b>
+
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+<b>172.31.1.1</b>        1   FULL/BDR        00:00:35    172.31.1.1      GigabitEthernet0/1
+</b>172.16.1.1</b>        1   FULL/BDR        00:00:38    172.16.1.1      GigabitEthernet0/0
+</pre>
+
+<pre>
+HQ#<b>show ip ospf database external adv-router 172.31.1.1</b>
+
+            OSPF Router with ID (172.31.1.2) (Process ID 1)
+
+		<b>Type-5 AS External Link States</b>
+
+  LS age: 154
+  Options: (No TOS-capability, DC, Upward)
+  LS Type: AS External Link
+  Link State ID: 10.10.20.0 (External Network Number )
+  Advertising Router: 172.31.1.1
+  LS Seq Number: 80000001
+  Checksum: 0x74B6
+  Length: 36
+  Network Mask: /24
+	Metric Type: 1 (Comparable directly to link state metric)
+	MTID: 0
+	<b>Metric: 20</b>
+	Forward Address: 0.0.0.0
+	External Route Tag: 0
+</pre>
+
+<pre>
+HQ#<b>show ip ospf database external adv-router 172.16.1.1</b>
+
+            OSPF Router with ID (172.31.1.2) (Process ID 1)
+
+		<b>Type-5 AS External Link States</b>
+
+  LS age: 318
+  Options: (No TOS-capability, DC, Upward)
+  LS Type: AS External Link
+  Link State ID: 10.10.10.0 (External Network Number )
+  Advertising Router: 172.16.1.1
+  LS Seq Number: 80000001
+  Checksum: 0x9CBA
+  Length: 36
+  Network Mask: /24
+	Metric Type: 1 (Comparable directly to link state metric)
+	MTID: 0
+	<b>Metric: 1</b>
+	Forward Address: 0.0.0.0
+	External Route Tag: 0
+</pre>
+
+We can change the default metric `RD2(config-router)#default-metric 10`
+
+Let's verify this change
+<pre>
+HQ#<b>show ip route ospf</b>
+Gateway of last resort is not set
+
+      10.0.0.0/24 is subnetted, 2 subnets
+O E1     10.10.10.0 [110/11] via 172.16.1.1, 00:10:19, GigabitEthernet0/0
+O E1     10.10.20.0 [110/<b>11</b>] via 172.31.1.1, 00:01:57, GigabitEthernet0/1
 </pre>
