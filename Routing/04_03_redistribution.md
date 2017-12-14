@@ -298,3 +298,57 @@ Gateway of last resort is not set
 O E1     10.10.10.0 [110/11] via 172.16.1.1, 00:10:19, GigabitEthernet0/0
 O E1     10.10.20.0 [110/<b>11</b>] via 172.31.1.1, 00:01:57, GigabitEthernet0/1
 </pre>
+
+
+Now you can redistribute ospf 1 to ospf 2 and eigrp for mutual reachablity
+
+<pre>
+RD1(config)#<b>router ospf 2</b>
+RD1(config-router)#redistribute ospf 1 subnets metric-type 1</b></pre>
+
+<pre>
+RD2(config)#<b>router eigrp RD2</b>
+RD2(config-router)#<b>address-family ipv4 unicast autonomous-system 1</b>
+RD2(config-router-af)#<b>topology base</b>
+RD2(config-router-af-topology)#<b>redistribute ospf 1 metric 1000000 20 255 255 255</b>
+RD2(config-router-af-topology)#<b>exit-af-topology</b></pre>
+
+**Verification:** Look at Administrative Distances and Metrics
+
+<pre>
+BR1#<b>show ip route ospf</b>
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 3 subnets, 2 masks
+O E1     10.10.20.0/24 [110/22] via 10.10.10.2, 00:06:03, GigabitEthernet0/0
+      172.16.0.0/24 is subnetted, 1 subnets
+O E1     172.16.1.0 [110/11] via 10.10.10.2, 00:06:03, GigabitEthernet0/0
+      172.31.0.0/24 is subnetted, 1 subnets
+O E1     172.31.1.0 [110/12] via 10.10.10.2, 00:06:03, GigabitEthernet0/0
+</pre>
+
+<pre>
+BR2#<b>show ip route eigrp</b>
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 3 subnets, 2 masks
+D EX     10.10.10.0/24
+           [170/112640] via 10.10.20.2, 00:04:38, GigabitEthernet0/0
+      172.16.0.0/24 is subnetted, 1 subnets
+D EX     172.16.1.0 [170/112640] via 10.10.20.2, 00:04:38, GigabitEthernet0/0
+      172.31.0.0/24 is subnetted, 1 subnets
+D EX     172.31.1.0 [170/112640] via 10.10.20.2, 00:04:38, GigabitEthernet0/0
+</pre>
+
+For `traceroute` you can issue command below to make it faster
+<pre>
+HQ(config)#<b>no ip icmp rate-limit unreachable</b></pre>
+
+<pre>
+HQ#<b>traceroute 10.10.10.1</b>
+Type escape sequence to abort.
+Tracing the route to 10.10.10.1
+VRF info: (vrf in name/id, vrf out name/id)
+  1 172.16.1.1 7 msec 5 msec 4 msec
+  2 10.10.10.1 6 msec 7 msec 8 msec
+</pre>
