@@ -93,6 +93,20 @@ Routing Protocol is "eigrp 1"
   Distance: internal 90 external 170
 </pre>
 
+<pre>
+R2#<b>show ip route eigrp</b>
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 3 subnets, 2 masks
+<b>D        10.10.0.0/21 is a summary, 00:15:37, Null0</b>
+D        <u>10.10.3.0/24</u>
+           [90/10880] via 192.168.23.3, 01:19:12, GigabitEthernet0/3
+D        <u>10.10.4.0/24</u>
+           [90/10880] via 192.168.24.4, 01:18:33, GigabitEthernet0/4
+</pre>
+Null 0 interface has the same concept discussed in OSPF. Do not worry about the packets destined to
+<u>10.10.3.0</u> and <u>10.10.4.0</u> because they have more specific routes in routing table.
+
 One more command I'd like to show:
 <pre>
 R1#<b>show ip eigrp traffic</b>
