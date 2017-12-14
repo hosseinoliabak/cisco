@@ -146,7 +146,7 @@ Loopback0 is up, line protocol is up
 
 ## EIGRP Message Authentication
 
-R Configuration (Named Approach)
+R1 Configuration (Named Approach)
 <pre>
 R1(config)#<b>router eigrp R1</b>
 R1(config-router)#<b>address-family ipv4 unicast autonomous-system 1</b>
