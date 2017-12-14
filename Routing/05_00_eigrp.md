@@ -73,7 +73,12 @@ In EIGRP we are also having these 3 tables but different terminology and informa
     * Note that stub routers still form neighborships, even in receive-only mode. The stub
 router simply performs less work and reduces the Query scope because neighbors will
 not send these routers any Query messages.
-
+* Default route and propagating it in EIGRP
+  * in ospf we had `(config-router)#default-information originate` but in EIGRP we can do
+  `(config-router)#redistribute static` then write a default static route to the destination for example
+  `ip route 0.0.0.0 0.0.0.0 gig 0/0`
+  * Another option is, if we issued command `network 0.0.0.0` and the default route, there would be no need
+  to `redistribute static` eigrp subcommand
 
 ### EIGRP Wighted Metric Formula
 * K1, K2: related to Bandwidth
