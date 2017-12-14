@@ -186,7 +186,7 @@ Link ID         ADV Router      Age         Seq#       Checksum
 0.0.0.0         3.3.3.3         81          0x80000003 0x0053DC
 </pre>
 
-## Not-So-Stubby Area
+## Not-So-Stubby Area (NSSA)
 
 ![nssa](https://user-images.githubusercontent.com/31813625/33864585-58ec6784-debb-11e7-928d-910b0fcc5fa9.png)
 
@@ -194,7 +194,7 @@ Link ID         ADV Router      Age         Seq#       Checksum
 
 Here is an example configuration on R1:
 <pre>
-WAN1#show running-config | section ospf
+WAN1#<b>show running-config | section ospf</b>
 router ospf 1
  auto-cost reference-bandwidth 1000
  area 0 range 10.10.0.0 255.255.0.0
@@ -206,7 +206,7 @@ We have to configure `area 1 nssa` on B1 and WAN2 as well.
 Let's see the result on B1:
 
 <pre>
-B1#show ip ospf database
+B1#<b>show ip ospf database</b>
 
             OSPF Router with ID (1.1.1.1) (Process ID 1)
 
@@ -274,6 +274,11 @@ Link ID         ADV Router      Age         Seq#       Checksum Tag
 1.1.1.1         1.1.1.1         702         0x80000001 0x004E81 0
 </pre>
 
+#### Redistribution in NSSA
+* We cannot redistribute routes into *Stub* and *Totally Stub* areas
+* But we can redistribute into NSSA
+
+
 ### Totally NSSA
 * Like NSSA but 2 differences:
   1. Type-3 LSA cannot pass
@@ -281,7 +286,7 @@ Link ID         ADV Router      Age         Seq#       Checksum Tag
 * To configure, on **ABR**s we add `no-summary` keyword at the end of `area 1 nssa` OSPF router subcommand
 
 <pre>
-WAN1#show run | s ospf
+WAN1#<b>show run | s ospf</b>
 router ospf 1
  auto-cost reference-bandwidth 1000
  area 0 range 10.10.0.0 255.255.0.0
@@ -289,8 +294,9 @@ router ospf 1
  network 10.10.0.0 0.0.255.255 area 0
  network 172.16.1.0 0.0.0.255 area 1
 </pre>
+
 <pre>
-WAN2#show run | s ospf
+WAN2#>b>show run | s ospf</b>
 router ospf 1
  auto-cost reference-bandwidth 1000
  area 0 range 10.10.0.0 255.255.0.0
@@ -298,14 +304,16 @@ router ospf 1
  network 10.10.0.0 0.0.255.255 area 0
  network 172.16.1.0 0.0.0.255 area 1
 </pre>
+
 <pre>
-B1#show run | s ospf
+B1#<b>show run | s ospf</b>
 router ospf 1
  auto-cost reference-bandwidth 1000
  <b>area 1 nssa</b>
  redistribute connected subnets
  network 172.16.1.0 0.0.0.255 area 1
 </pre>
+
 <pre>
 B1#<b>show ip ospf database</b>
 
