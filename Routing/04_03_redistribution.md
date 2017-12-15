@@ -334,11 +334,13 @@ Gateway of last resort is not set
 
       10.0.0.0/8 is variably subnetted, 3 subnets, 2 masks
 D EX     10.10.10.0/24
-           [170/112640] via 10.10.20.2, 00:04:38, GigabitEthernet0/0
+           [170/10250240] via 10.10.20.2, 00:04:07, GigabitEthernet0/0
       172.16.0.0/24 is subnetted, 1 subnets
-D EX     172.16.1.0 [170/112640] via 10.10.20.2, 00:04:38, GigabitEthernet0/0
+D EX     172.16.1.0
+           [170/10250240] via 10.10.20.2, 00:04:07, GigabitEthernet0/0
       172.31.0.0/24 is subnetted, 1 subnets
-D EX     172.31.1.0 [170/112640] via 10.10.20.2, 00:04:38, GigabitEthernet0/0
+D EX     172.31.1.0
+           [170/10250240] via 10.10.20.2, 00:04:07, GigabitEthernet0/0
 </pre>
 
 For `traceroute` you can issue command below to make it faster
@@ -352,4 +354,25 @@ Tracing the route to 10.10.10.1
 VRF info: (vrf in name/id, vrf out name/id)
   1 172.16.1.1 7 msec 5 msec 4 msec
   2 10.10.10.1 6 msec 7 msec 8 msec
+</pre>
+
+<pre>
+BR2#<b>show ip eigrp topology 172.16.1.0/24</b>
+EIGRP-IPv4 VR(BR2) Topology Entry for AS(1)/ID(10.10.20.1) for 172.16.1.0/24
+  State is Passive, Query origin flag is 1, 1 Successor(s), FD is 1312030720, RIB is 10250240
+  Descriptor Blocks:
+  10.10.20.2 (GigabitEthernet0/0), from 10.10.20.2, Send flag is 0x0
+      Composite metric is (1312030720/1311375360), route is External
+      Vector metric:
+        Minimum bandwidth is 1000000 Kbit
+        Total delay is 20010000000 picoseconds
+        Reliability is 255/255
+        Load is 1/255
+        Minimum MTU is 1500
+        Hop count is 1
+        Originating router is 172.16.1.2
+      External data:
+        AS number of route is 1
+        <b>External protocol is OSPF, external metric is 11</b>
+        Administrator tag is 0 (0x00000000)
 </pre>
