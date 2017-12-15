@@ -115,6 +115,7 @@ O E2  1.0.0.0/8 [110/20] via 10.10.1.2, 00:01:51, GigabitEthernet0/0
   * E1: OSPF routers calculate the metrics of E1 routes by adding the internal cost to reach the
 ASBR to the external cost defined on the redistributing ASBR
 
+![image](https://user-images.githubusercontent.com/31813625/34020254-30a88594-e101-11e7-8376-97a2a04d4b1d.png)
 
 
 Basic Configuration
