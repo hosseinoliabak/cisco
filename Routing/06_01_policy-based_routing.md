@@ -20,6 +20,11 @@ The decision making can be based on source IP address, type of traffic (www, ftp
 Why on the incoming interface? Because if we set PBR on outgoing interface,
 it means that decision is already make according to routing table.
 
+### Configuration Example
+
+![pbr](https://user-images.githubusercontent.com/31813625/35136047-18b18020-fcaf-11e7-8e30-2fe19a9cf95a.png)
+
+
 Base Configuration:
 
 R1:
