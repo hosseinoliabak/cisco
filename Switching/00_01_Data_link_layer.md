@@ -66,17 +66,14 @@ some frames. This problem may be solved by introducing flow control. Most flow
 control protocols contain a feedback mechanism to inform the sender when it should transmit the next frame.
 
 ## 802.3 LAN Frame
-```
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-....+-+-+-+-+-+-+-+-+
-   |   Preamble  | |Destination|   Source  |   |       Data        |  FCS  |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-....+-+-+-+-+-+-+-+-+
-   <---7 Bytes--><-><-6 Bytes--><--6 Bytes-><--><-- 46-1500 Bytes--><-4 By->
 
-```
+![2000px-ethernet_802 1q_insert svg](https://user-images.githubusercontent.com/31813625/35241232-d4323944-ff83-11e7-8e0c-701a4b8cfde6.png)
+
 * **Preamble (7 Bytes):** this is a 7-byte pattern of ones and zeroes and is used for synchronization
 * **SFD (1 Byte):** the "start frame delimiter" marks the end of the preamble and tells the receiver that the next fields will be the actual Ethernet frame, starting with the destination field
 * **Destination (2 or 6 Bytes):** this is the destination MAC address of the receiver
 * **Source (2 or 6 Bytes):** the source MAC address of the device that sent the frame
-* **Type (2 Bytes):** this tells us what is carried inside the Ethernet frame. An IPv4 packet, IPv6 packet or something else
+* **802.1Q (4 Bytes):** adds a 32-bit field between the source MAC address and the EtherType fields of the original frame 
+* **Type/Size (2 Bytes):** this tells us what is carried inside the Ethernet frame. An IPv4 packet, IPv6 packet or something else
 * **Data (46-1500 Bytes):** this carries the actual data that we are trying to transmit, for example an IPv4 packet. If the length of the field is less than 46 bytes, then padding data is added to bring its length up to the required minimum of 46 bytes
 * **Frame Check Sequence FCS (4 Bytes):** It contains a 32 bit Cyclic Redundancy Check (CRC). The frame check sequence helps the receiver to figure out if the frame is correct or corrupt
