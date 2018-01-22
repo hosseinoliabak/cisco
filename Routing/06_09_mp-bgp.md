@@ -26,6 +26,10 @@ we would have three different BGP neighbor sessions, one for each protocol.
     <img src="https://user-images.githubusercontent.com/31813625/35204977-e5945796-feff-11e7-8a1f-acfa54789db5.png" width="413" height="83" />
     
 ### Configuration
+
+![image](https://user-images.githubusercontent.com/31813625/35229643-e7163e06-ff61-11e7-8e96-6b299d644225.png)
+
+
 We want to configure MPBGP between R5 and R6. First let's convert our old way configuration
 to the new way.
 <pre>
@@ -147,7 +151,6 @@ BGP table version is 8, local router ID is 5.5.5.5
      Network          Next Hop            Metric LocPrf Weight Path
  <b>*>  2006::/64        2056::6                  0             0 64520 i</b>
  *>  2045::/64        ::                       0         32768 i
-
 </pre>
 
   
