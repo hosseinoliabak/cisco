@@ -1,0 +1,304 @@
+Here is backup of running configuration for the BGP exercise we did:
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+R1:
+------
+
+hostname R1
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+!
+interface GigabitEthernet0/2
+ ip address 12.12.12.1 255.255.255.0
+ no shut
+!
+interface GigabitEthernet0/3
+ ip address 13.13.13.1 255.255.255.0
+ no shut
+!
+router ospf 1
+ network 1.1.1.1 0.0.0.0 area 0
+ network 12.12.12.1 0.0.0.0 area 0
+ network 13.13.13.1 0.0.0.0 area 0
+!
+router bgp 64500
+ bgp log-neighbor-changes
+ network 12.12.12.0 mask 255.255.255.0
+ network 13.13.13.0 mask 255.255.255.0
+ neighbor 2.2.2.2 remote-as 64500
+ neighbor 2.2.2.2 update-source Loopback0
+ neighbor 2.2.2.2 next-hop-self
+ neighbor 3.3.3.3 remote-as 64500
+ neighbor 3.3.3.3 update-source Loopback0
+</pre>
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+R2:
+------
+hostname R2
+!
+interface Loopback0
+ ip address 2.2.2.2 255.255.255.255
+!
+interface GigabitEthernet0/0
+ ip address 10.1.24.2 255.255.255.248
+ no shut
+!
+interface GigabitEthernet0/1
+ ip address 12.12.12.2 255.255.255.0
+ no shut
+!
+interface GigabitEthernet0/2
+ ip address 10.1.25.2 255.255.255.248
+ no shut
+!
+router ospf 1
+ network 2.2.2.2 0.0.0.0 area 0
+ network 12.12.12.2 0.0.0.0 area 0
+!
+router bgp 64500
+ bgp log-neighbor-changes
+ network 12.12.12.0 mask 255.255.255.0
+ neighbor 1.1.1.1 remote-as 64500
+ neighbor 1.1.1.1 update-source Loopback0
+ neighbor 1.1.1.1 next-hop-self
+ neighbor 3.3.3.3 remote-as 64500
+ neighbor 3.3.3.3 update-source Loopback0
+ neighbor 3.3.3.3 next-hop-self
+ neighbor 4.4.4.4 remote-as 64510
+ neighbor 4.4.4.4 ebgp-multihop 2
+ neighbor 4.4.4.4 update-source Loopback0
+ neighbor 4.4.4.4 weight 60
+ neighbor 4.4.4.4 prefix-list public_only out
+ neighbor 4.4.4.4 route-map RmMED10 out
+ neighbor 5.5.5.5 remote-as 64510
+ neighbor 5.5.5.5 ebgp-multihop 2
+ neighbor 5.5.5.5 update-source Loopback0
+ neighbor 5.5.5.5 prefix-list public_only out
+ neighbor 5.5.5.5 route-map RmW50 in
+ neighbor 5.5.5.5 route-map RmMED20 out
+!
+ip route 4.4.4.4 255.255.255.255 10.1.24.4
+ip route 5.5.5.5 255.255.255.255 10.1.25.5
+!
+!
+ip prefix-list NET13 seq 5 permit 13.13.13.0/24
+!
+ip prefix-list PrefixMED seq 10 permit 12.12.12.0/24
+!
+ip prefix-list public_only seq 10 permit 12.12.12.0/24
+ip prefix-list public_only seq 20 permit 13.13.13.0/24
+!
+ip prefix-list weight50 seq 10 permit 45.45.45.0/24
+!
+route-map RmW50 permit 10
+ match ip address prefix-list weight50
+ set weight 50
+!
+route-map RmW50 permit 20
+!
+route-map RmMED20 permit 10
+ match ip address prefix-list PrefixMED
+ set metric 20
+!
+route-map RmMED20 permit 20
+ match ip address prefix-list NET13
+!
+route-map RmMED10 permit 10
+ match ip address prefix-list PrefixMED
+ set metric 10
+!
+route-map RmMED10 permit 20
+ match ip address prefix-list NET13
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+R3:
+------
+hostname R3
+!
+interface Loopback0
+ ip address 3.3.3.3 255.255.255.255
+!
+interface GigabitEthernet0/1
+ ip address 13.13.13.3 255.255.255.0
+ no shut
+!
+interface GigabitEthernet0/3
+ ip address 10.1.36.3 255.255.255.248
+ no shut
+!
+router ospf 1
+ network 3.3.3.3 0.0.0.0 area 0
+ network 13.13.13.3 0.0.0.0 area 0
+!
+router bgp 64500
+ bgp log-neighbor-changes
+ network 13.13.13.0 mask 255.255.255.0
+ neighbor 1.1.1.1 remote-as 64500
+ neighbor 1.1.1.1 update-source Loopback0
+ neighbor 1.1.1.1 next-hop-self
+ neighbor 2.2.2.2 remote-as 64500
+ neighbor 2.2.2.2 update-source Loopback0
+ neighbor 2.2.2.2 next-hop-self
+ neighbor 6.6.6.6 remote-as 64520
+ neighbor 6.6.6.6 ebgp-multihop 2
+ neighbor 6.6.6.6 update-source Loopback0
+ neighbor 6.6.6.6 route-map RmLP200 in
+ neighbor 6.6.6.6 route-map bgp_public_only out
+!
+ip route 6.6.6.6 255.255.255.255 10.1.36.6
+!
+!
+ip prefix-list Local_pref_200 seq 10 permit 45.45.45.0/24
+!
+ip prefix-list public_only seq 10 permit 13.13.13.0/24
+ip prefix-list public_only seq 20 permit 12.12.12.0/24
+!
+route-map RmLP200 permit 10
+ match ip address prefix-list Local_pref_200
+ set local-preference 200
+!
+route-map RmLP200 permit 20
+!
+route-map bgp_public_only permit 10
+ match ip address prefix-list public_only
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+
+R4:
+------
+hostname R4
+!
+interface Loopback0
+ ip address 4.4.4.4 255.255.255.255
+!
+interface GigabitEthernet0/0
+ ip address 45.45.45.4 255.255.255.0
+ no shut
+!
+interface GigabitEthernet0/2
+ ip address 10.1.24.4 255.255.255.248
+ no shut
+!
+router eigrp R4
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  topology base
+  exit-af-topology
+  network 4.4.4.4 0.0.0.0
+  network 45.45.45.4 0.0.0.0
+ exit-address-family
+!
+router bgp 64510
+ bgp log-neighbor-changes
+ network 45.45.45.0 mask 255.255.255.0
+ neighbor 2.2.2.2 remote-as 64500
+ neighbor 2.2.2.2 ebgp-multihop 2
+ neighbor 2.2.2.2 update-source Loopback0
+ neighbor 5.5.5.5 remote-as 64510
+ neighbor 5.5.5.5 update-source Loopback0
+ neighbor 5.5.5.5 next-hop-self
+!
+ip route 2.2.2.2 255.255.255.255 10.1.24.2
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+R5:
+------
+hostname R5
+!
+interface Loopback0
+ ip address 5.5.5.5 255.255.255.255
+!
+interface GigabitEthernet0/0
+ ip address 45.45.45.5 255.255.255.0
+ no shut
+!
+interface GigabitEthernet0/2
+ ip address 10.1.25.5 255.255.255.248
+ no shut
+!
+interface GigabitEthernet0/3
+ no shut
+!
+!
+router eigrp R5
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  topology base
+  exit-af-topology
+  network 5.5.5.5 0.0.0.0
+  network 45.45.45.5 0.0.0.0
+ exit-address-family
+!
+router bgp 64510
+ bgp log-neighbor-changes
+ network 45.45.45.0 mask 255.255.255.0
+ neighbor 2.2.2.2 remote-as 64500
+ neighbor 2.2.2.2 ebgp-multihop 2
+ neighbor 2.2.2.2 update-source Loopback0
+ neighbor 4.4.4.4 remote-as 64510
+ neighbor 4.4.4.4 update-source Loopback0
+ neighbor 4.4.4.4 next-hop-self
+ neighbor 6.6.6.6 remote-as 64520
+ neighbor 6.6.6.6 ebgp-multihop 2
+ neighbor 6.6.6.6 update-source Loopback0
+!
+ip route 2.2.2.2 255.255.255.255 10.1.25.2
+ip route 6.6.6.6 255.255.255.255 10.1.56.6
+
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+R6:
+------
+hostname R6
+!
+interface Loopback0
+ ip address 6.6.6.6 255.255.255.255
+!
+interface GigabitEthernet0/0
+ ip address 10.1.36.6 255.255.255.248
+ no shut
+!
+interface GigabitEthernet0/1
+ ip address 160.160.160.6 255.255.255.0
+ no shut
+!
+interface GigabitEthernet0/3
+ ip address 10.1.56.6 255.255.255.248
+ no shut
+!
+router bgp 64520
+ bgp log-neighbor-changes
+ redistribute connected route-map RDtoBGP
+ neighbor 3.3.3.3 remote-as 64500
+ neighbor 3.3.3.3 ebgp-multihop 2
+ neighbor 3.3.3.3 update-source Loopback0
+ neighbor 3.3.3.3 route-map RmASPATH in
+ neighbor 5.5.5.5 remote-as 64510
+ neighbor 5.5.5.5 ebgp-multihop 2
+ neighbor 5.5.5.5 update-source Loopback0
+!
+ip route 3.3.3.3 255.255.255.255 10.1.36.3
+ip route 5.5.5.5 255.255.255.255 10.1.56.5
+!
+!
+ip prefix-list ASPATH seq 10 permit 12.12.12.0/24
+!
+ip prefix-list LAN160 seq 5 permit 160.160.160.0/24
+!
+route-map RmASPATH permit 10
+ match ip address prefix-list ASPATH
+ set as-path prepend 64500 64500 64500
+!
+route-map RmASPATH permit 20
+!
+route-map RDtoBGP permit 10
+ match ip address prefix-list LAN160
