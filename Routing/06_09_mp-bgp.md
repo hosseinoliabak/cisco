@@ -114,12 +114,39 @@ RPKI validation codes: V valid, I invalid, N Not found
  *>  160.160.160.0/24 0.0.0.0                  0         32768 ?
 </pre>
 **IPv6 routing over an IPv4 BGP Session**
+
+R5 configuration
 <pre>
-R5(config)#ipv6 unicast-routing
-R5(config)#route-map IPV6-NEXT-HOP
-R5(config-route-map)#set ipv6 next-hop 2056::6
-R5(config)#router bgp 64510
-R5(config-router)#address-family ipv6 
+R5(config)#<b>ipv6 unicast-routing</b>
+R5(config)#<b>route-map IPV6-NEXT-HOP</b>
+R5(config-route-map)#<b>set ipv6 next-hop 2056::5</b>
+R5(config)#<b>router bgp 64510</b>
+R5(config-router)#<b>address-family ipv6</b> 
+R5(config-router-af)#<b>network 2045::/64</b>       
+R5(config-router-af)#<b>neighbor 6.6.6.6 activate</b>
+R5(config-router-af)#<b>neighbor 6.6.6.6 route-map IPV6-NEXT-HOP out</b>
+R5(config-router-af)#<b>exit</b>
+</pre>
+
+R6 configuration:
+<pre>
+R6(config)#<b>route-map IPv6-NEXT-HOP permit</b>
+R6(config-route-map)#<b>set ipv6 next-hop 2056::6</b>   
+R6(config)#<b>router bgp 64520</b>
+R6(config-router)#<b>address-family ipv6</b>
+R6(config-router-af)#<b>network 2006::/64</b>
+R6(config-router-af)#<b>neighbor 5.5.5.5 activate</b> 
+R6(config-router-af)#<b>neighbor 5.5.5.5 route-map IPv6-NEXT-HOP out</b>
+R6(config-router-af)#<b>do clear bgp all 64510 soft</b>                 
+</pre>
+
+Verification
+<pre>
+R5#<b>show bgp ipv6 unicast</b> 
+BGP table version is 8, local router ID is 5.5.5.5
+     Network          Next Hop            Metric LocPrf Weight Path
+ <b>*>  2006::/64        2056::6                  0             0 64520 i</b>
+ *>  2045::/64        ::                       0         32768 i
 
 </pre>
 
