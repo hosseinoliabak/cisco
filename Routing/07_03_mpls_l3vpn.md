@@ -52,12 +52,22 @@ VRF having it's own dedicated interfaces, RIB, FIB, and CEF table.
       | --- | --- |
       | VRF A Site 1 | <b>64500:100</b>:192.168.1.0/24 |
       | VRF B Site 5 | <b>64500:200</b>:192.168.1.0/24 | 
-     
+  * What interfaces are assigned to the VRF
   * Route Target (RT): an extended BGP community attached to each VPNv4 route.
     * If used, RD is not considered by router
     * **Imported RT:** determines which VPNv4 routes are imported to the VRF
     * **Exported RT:** determines what RT will be attached to route redistributed into MP-BGP
-  * What interfaces are assigned to the VRF
+    * In full mesh scenarios RD, Imported RT, and Exported RT have the same value.
+  * We can design different topology playing with RT values
+    * Full Mesh
+    
+    ![full mesh mpls](https://user-images.githubusercontent.com/31813625/35351335-92741f22-010e-11e8-8d1c-e9e2ee14faa2.png)
+    * Hub and Spoke
+    
+    ![hubandspoke](https://user-images.githubusercontent.com/31813625/35351336-929b2824-010e-11e8-9f2a-9c104a437e27.png)
+
+    * Exercise: Design a hybrid topology wherein we have 2 customers and
+    headquarters can see each other. Branches can see their headquarter.
 
 ### PE-CE routing
 * Customer CE devices will directly connect to PE device using an L3 link.
