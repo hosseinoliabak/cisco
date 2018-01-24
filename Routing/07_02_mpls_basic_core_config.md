@@ -13,6 +13,10 @@ ip cef
 interface Loopback0
  ip address 2.2.2.2 255.255.255.255
 !
+interface GigabitEthernet0/0.22
+!
+interface GigabitEthernet0/1.12
+!
 interface GigabitEthernet0/3.23
  encapsulation dot1Q 23
  ip address 10.0.23.2 255.255.255.0
@@ -89,6 +93,10 @@ ip cef
 !
 interface Loopback0
  ip address 5.5.5.5 255.255.255.255
+!
+interface GigabitEthernet0/0.11
+!
+interface GigabitEthernet0/1.56
 !
 interface GigabitEthernet0/3.45
  encapsulation dot1Q 45
