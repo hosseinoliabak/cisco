@@ -4,6 +4,34 @@
 
 Base configuration
 
+Customer-A A-CE1
+
+<pre>
+hostname A-CE1
+!
+ip cef
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+!
+interface GigabitEthernet0/2.12
+ encapsulation dot1Q 12
+ ip address 192.168.12.1 255.255.255.0
+</pre>
+Customer-B B-SW-CE2
+<pre>
+hostname B-SW-CE2
+!
+ip cef
+!
+interface Loopback0
+ ip address 22.22.22.22 255.255.255.255
+!
+interface GigabitEthernet0/0.22
+ encapsulation dot1Q 22
+ ip address 192.168.22.22 255.255.255.0
+</pre>
+
 PE1:
 <pre>
 hostname PE1
@@ -109,6 +137,28 @@ router ospf 1
  no passive-interface GigabitEthernet0/3.45
  network 5.5.5.5 0.0.0.0 area 0
  network 10.0.45.5 0.0.0.0 area 0
+</pre>
+Customer-A A-CE2
+<pre>
+hostname A-CE2
+!
+interface Loopback0
+ ip address 6.6.6.6 255.255.255.255
+!
+interface GigabitEthernet0/2.56
+ encapsulation dot1Q 56
+ ip address 192.168.56.6 255.255.255.0
+</pre>
+Customer-B B-SW-CE1
+<pre>
+hostname B-SW-CE1
+!
+interface Loopback0
+ ip address 11.11.11.11 255.255.255.255
+!
+interface GigabitEthernet0/0.11
+ encapsulation dot1Q 11
+ ip address 192.168.11.11 255.255.255.0
 </pre>
 
 ### MPLS Configuration
