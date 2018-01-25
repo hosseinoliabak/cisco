@@ -1,0 +1,331 @@
+hostname A-CE1
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+!
+interface GigabitEthernet0/2.12
+ encapsulation dot1Q 12
+ ip address 192.168.12.1 255.255.255.0
+!
+router bgp 65012
+ bgp log-neighbor-changes
+ redistribute connected route-map CONNECTED
+ neighbor 192.168.12.2 remote-as 2345
+ neighbor 192.168.12.2 send-community both
+!
+route-map CONNECTED permit 10
+ match interface Loopback0
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+hostname B-SW-CE2
+!
+interface Loopback0
+ ip address 22.22.22.22 255.255.255.255
+!
+interface GigabitEthernet0/0.22
+ encapsulation dot1Q 22
+ ip address 192.168.22.22 255.255.255.0
+!
+router eigrp 1
+ network 22.22.22.22 0.0.0.0
+ network 192.168.22.22 0.0.0.0
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+hostname PE1
+!
+ip vrf CUSTOMER-A
+ rd 2345:1
+ route-target export 2345:1
+ route-target import 2345:1
+!
+ip vrf CUSTOMER-B
+ rd 2345:2
+ route-target export 2345:2
+ route-target import 2345:2
+!
+ip cef
+!
+multilink bundle-name authenticated
+mpls label range 200 299
+!
+interface Loopback0
+ ip address 2.2.2.2 255.255.255.255
+!
+interface GigabitEthernet0/0.22
+ encapsulation dot1Q 22
+ ip vrf forwarding CUSTOMER-B
+ ip address 192.168.22.2 255.255.255.0
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1.12
+ encapsulation dot1Q 12
+ ip vrf forwarding CUSTOMER-A
+ ip address 192.168.12.2 255.255.255.0
+!
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3.23
+ encapsulation dot1Q 23
+ ip address 10.0.23.2 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+!
+router eigrp 65535
+ !
+ address-family ipv4 vrf CUSTOMER-B
+  default-metric 10000000 10 255 1 1500
+  redistribute bgp 2345
+  network 192.168.22.2 0.0.0.0
+  autonomous-system 1
+ exit-address-family
+!
+router ospf 1
+ router-id 2.2.2.2
+ passive-interface default
+ no passive-interface GigabitEthernet0/3.23
+ network 2.2.2.2 0.0.0.0 area 0
+ network 10.0.23.2 0.0.0.0 area 0
+!
+router bgp 2345
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ neighbor 5.5.5.5 remote-as 2345
+ neighbor 5.5.5.5 update-source Loopback0
+ neighbor 192.168.12.1 remote-as 65012
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family vpnv4
+  neighbor 5.5.5.5 activate
+  neighbor 5.5.5.5 send-community both
+ exit-address-family
+ !
+ address-family ipv4 vrf CUSTOMER-A
+  redistribute connected
+  neighbor 192.168.12.1 remote-as 65012
+  neighbor 192.168.12.1 activate
+  neighbor 192.168.12.1 send-community both
+ exit-address-family
+ !
+ address-family ipv4 vrf CUSTOMER-B
+  redistribute connected
+  redistribute eigrp 1
+ exit-address-family
+!
+ip bgp-community new-format
+!
+mpls ldp router-id Loopback0
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+hostname LSR1
+!
+ip cef
+!
+multilink bundle-name authenticated
+mpls label range 300 399
+!
+interface Loopback0
+ ip address 3.3.3.3 255.255.255.255
+!
+interface GigabitEthernet0/0.34
+ encapsulation dot1Q 34
+ ip address 10.0.34.3 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+interface GigabitEthernet0/2.23
+ encapsulation dot1Q 23
+ ip address 10.0.23.3 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+router ospf 1
+ router-id 3.3.3.3
+ passive-interface default
+ no passive-interface GigabitEthernet0/0.34
+ no passive-interface GigabitEthernet0/2.23
+ network 3.3.3.3 0.0.0.0 area 0
+ network 10.0.23.3 0.0.0.0 area 0
+ network 10.0.34.3 0.0.0.0 area 0
+!
+mpls ldp router-id Loopback0
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+hostname LSR2
+!
+ip cef
+!
+multilink bundle-name authenticated
+mpls label range 400 499
+!
+interface Loopback0
+ ip address 4.4.4.4 255.255.255.255
+!
+interface GigabitEthernet0/0.34
+ encapsulation dot1Q 34
+ ip address 10.0.34.4 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+interface GigabitEthernet0/2.45
+ encapsulation dot1Q 45
+ ip address 10.0.45.4 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+router ospf 1
+ router-id 4.4.4.4
+ passive-interface default
+ no passive-interface GigabitEthernet0/0.34
+ no passive-interface GigabitEthernet0/2.45
+ network 4.4.4.4 0.0.0.0 area 0
+ network 10.0.34.4 0.0.0.0 area 0
+ network 10.0.45.4 0.0.0.0 area 0
+!
+mpls ldp router-id Loopback0
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+
+hostname PE2
+!
+ip vrf CUSTOMER-A
+ rd 2345:1
+ route-target export 2345:1
+ route-target import 2345:1
+!
+ip vrf CUSTOMER-B
+ rd 2345:2
+ route-target export 2345:2
+ route-target import 2345:2
+!
+ip cef
+!
+multilink bundle-name authenticated
+mpls label range 500 599
+!
+interface Loopback0
+ ip address 5.5.5.5 255.255.255.255
+!
+interface GigabitEthernet0/0.11
+ encapsulation dot1Q 11
+ ip vrf forwarding CUSTOMER-B
+ ip address 192.168.11.5 255.255.255.0
+!
+interface GigabitEthernet0/1.56
+ encapsulation dot1Q 56
+ ip vrf forwarding CUSTOMER-A
+ ip address 192.168.56.5 255.255.255.0
+!
+interface GigabitEthernet0/3.45
+ encapsulation dot1Q 45
+ ip address 10.0.45.5 255.255.255.0
+ ip ospf network point-to-point
+ mpls ip
+!
+!
+router eigrp PE2
+ !
+ address-family ipv4 unicast vrf CUSTOMER-B autonomous-system 1
+  !
+  topology base
+   default-metric 1000000 10 255 1 1500
+   redistribute bgp 2345
+  exit-af-topology
+  network 192.168.11.5 0.0.0.0
+ exit-address-family
+!
+router ospf 1
+ router-id 5.5.5.5
+ passive-interface default
+ no passive-interface GigabitEthernet0/3.45
+ network 5.5.5.5 0.0.0.0 area 0
+ network 10.0.45.5 0.0.0.0 area 0
+!
+router bgp 2345
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ neighbor 2.2.2.2 remote-as 2345
+ neighbor 2.2.2.2 update-source Loopback0
+ neighbor 192.168.56.6 remote-as 65056
+ !
+ address-family ipv4
+  neighbor 2.2.2.2 activate
+ exit-address-family
+ !
+ address-family vpnv4
+  neighbor 2.2.2.2 activate
+  neighbor 2.2.2.2 send-community both
+ exit-address-family
+ !
+ address-family ipv4 vrf CUSTOMER-A
+  redistribute connected
+  neighbor 192.168.56.6 remote-as 65056
+  neighbor 192.168.56.6 activate
+  neighbor 192.168.56.6 send-community both
+ exit-address-family
+ !
+ address-family ipv4 vrf CUSTOMER-B
+  redistribute eigrp 1
+ exit-address-family
+!
+ip bgp-community new-format
+!
+mpls ldp router-id Loopback0
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+hostname A-CE2
+!
+interface Loopback0
+ ip address 6.6.6.6 255.255.255.255
+!
+interface GigabitEthernet0/2.56
+ encapsulation dot1Q 56
+ ip address 192.168.56.6 255.255.255.0
+!
+router bgp 65056
+ bgp log-neighbor-changes
+ redistribute connected route-map CONNECTED
+ neighbor 192.168.56.5 remote-as 2345
+ neighbor 192.168.56.5 send-community both
+!
+route-map CONNECTED permit 10
+ match interface Loopback0
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+hostname B-SW-CE1
+!
+interface Loopback0
+ ip address 11.11.11.11 255.255.255.255
+!
+interface GigabitEthernet0/0.11
+ encapsulation dot1Q 11
+ ip address 192.168.11.11 255.255.255.0
+!
+router eigrp 1
+ network 11.11.11.11 0.0.0.0
+ network 192.168.11.11 0.0.0.0
