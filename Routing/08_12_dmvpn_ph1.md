@@ -259,7 +259,6 @@ Branch2(config-router)#<b>network 192.168.2.2 0.0.0.0</b>
 Branch2(config-router)#<b>network 10.0.1.2 0.0.0.0</b> 
 </pre>
 <pre>
-<pre>
 HQ(config)#<b>router eigrp 12</b>
 HQ(config-router)#<b>network 172.16.0.12 0.0.0.0</b>
 HQ(config-router)#<b>network 10.0.1.12 0.0.0.0</b>
