@@ -44,7 +44,7 @@
   * These routes learned via the tunnel to the hub
 * Once the spoke-to-spoke tunnel is formed, hub only used for control plane exchange
 * It is possible you have multiple NHRP Servers, multiple levels of tunnels.
-* We will be simle design, single DMVPN with a single hub
+* We will be simple design, single DMVPN with a single hub
 
 ![dmvpn](https://user-images.githubusercontent.com/31813625/35466811-6590b56a-02d5-11e8-8e4a-692f5e8ccb19.png)
 
@@ -61,7 +61,7 @@
 * DMVPN Phase 3
   * Spoke router doesn't need to have specific route to the other spoke
   * Doesn't matter what the next-hop IP address is
-  * Spoke1 sends the traffic directly to the hub. Hub sees that another spoke is destination.
-  Hub then sends an NHRP redirect to both spokes.
-  * Then spokes send an NHRP resolution to retrive the NBMA addresses, then spokes install
+  * Spoke1 sends the traffic directly to the hub. Hub sees that another spoke is
+  destination. Hub then sends an NHRP redirect to both spokes.
+  * Then spokes send an NHRP resolution to retrieve the NBMA addresses, then spokes install
 a new entry in the routing table
