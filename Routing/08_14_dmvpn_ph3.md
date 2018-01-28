@@ -258,15 +258,71 @@ Type:Spoke, NHRP Peers:2,
 </pre>
 
 ### BGP Configuration
-* I removed all configuration related to OSPF
+* I removed all previous configuration related to OSPF
 
 #### iBGP with dynamic peers
 <pre>
-HQ(config)#ip route 0.0.0.0 0.0.0.0 null 0
-HQ(config)#router bgp 64500   
-HQ(config-router)#bgp listen range 10.0.1.0/24 peer-group DMVPN_BRANCHES
-HQ(config-router)#network 0.0.0.0 
-HQ(config-router)#neighbor DMVPN_BRANCHES peer-group 
-HQ(config-router)#neighbor DMVPN_BRANCHES remote-as 64500
-HQ(config-router)#neighbor DMVPN_BRANCHES route-map BRANCH_ROUTERS out
+HQ(config)#<b>ip route 0.0.0.0 0.0.0.0 null 0</b>
+HQ(config)#<b>router bgp 64500</b>   
+HQ(config-router)#<b>bgp listen range 10.0.1.0/24 peer-group DMVPN_BRANCHES</b>
+HQ(config-router)#<b>neighbor DMVPN_BRANCHES peer-group</b>
+HQ(config-router)#<b>neighbor DMVPN_BRANCHES remote-as 64500</b>
+HQ(config-router)#<b>network 0.0.0.0 mask 0.0.0.0</b>
+</pre>
+<pre>
+Branch1(config)#<b>router bgp 64500</b>
+Branch1(config-router)#<b>neighbor 10.0.1.12 remote-as 64500</b>
+Branch1(config-router)#<b>network 192.168.1.0 mask 255.255.255.0</b>
+</pre>
+<pre>
+Branch2(config)#<b>router bgp 64500</b>
+Branch2(config-router)#<b>neighbor 10.0.1.12 remote-as 64500</b>
+Branch2(config-router)#<b>network 192.168.2.0 mask 255.255.255.0</b>
+</pre>
+<pre>
+HQ(config-router)#<b>do sho ip bgp nei 10.0.1.1 adv</b>
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  0.0.0.0          0.0.0.0                  0         32768 i
+</pre>
+<pre>
+Branch1(config-if)#<b>do sho ip route bgp</b>
+Gateway of last resort is 10.0.1.12 to network 0.0.0.0
+
+B*    0.0.0.0/0 [200/0] via 10.0.1.12, 00:00:28
+
+Branch1#<b>traceroute 192.168.2.2 source 192.168.1.1</b>
+Type escape sequence to abort.
+Tracing the route to 192.168.2.2
+VRF info: (vrf in name/id, vrf out name/id)
+  1 10.0.1.12 8 msec 7 msec 5 msec
+  2 10.0.1.2 12 msec 9 msec 6 msec
+
+Branch1#<b>traceroute 192.168.2.2 source 192.168.1.1</b>
+Type escape sequence to abort.
+Tracing the route to 192.168.2.2
+VRF info: (vrf in name/id, vrf out name/id)
+  1 10.0.1.2 10 msec 9 msec 7 msec
+
+Branch1#<b>show ip route nhrp</b> 
+       o - ODR, P - periodic downloaded static route, <b>H - NHRP</b>, l - LISP
+Gateway of last resort is 10.0.1.12 to network 0.0.0.0
+
+      10.0.0.0/8 is variably subnetted, 3 subnets, 2 masks
+H        10.0.1.2/32 is directly connected, 00:01:10, Tunnel0
+H     192.168.2.0/24 [250/255] via 10.0.1.2, 00:01:10, Tunnel0
+
+Branch1#<b>show dmvpn</b>
+Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
+	T1 - Route Installed, T2 - Nexthop-override
+==========================================================================
+
+Interface: Tunnel0, IPv4 NHRP Details 
+Type:Spoke, NHRP Peers:2, 
+
+ # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
+ ----- --------------- --------------- ----- -------- -----
+     2 202.2.2.2              10.0.1.2    UP 00:01:39   DT1
+                              10.0.1.2    UP 00:01:39   DT1
+     1 200.0.0.12            10.0.1.12    UP 00:25:06     S
 </pre>
