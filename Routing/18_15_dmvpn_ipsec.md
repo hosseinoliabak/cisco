@@ -1,7 +1,7 @@
 # DMVPN Over IPsec
 To configure IPsec in this article, you should already configured DMVPN Phase 3. I used
 iBGP for routing. (I preserved the last configuration from 08_14_dmvpn_ph3)
-#### IPsec phase 1 ISAKMP tunnel
+#### IPsec phase 1 (ISAKMP tunnel)
 <pre>
 HQ & Branches(config)#<b>crypto isakmp policy 10</b>
 HQ & Branches(config-isakmp)#<b>authentication pre-share</b> 
