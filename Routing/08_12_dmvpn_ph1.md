@@ -65,7 +65,7 @@ HQ(config-if)#<b>ip nhrp network-id 1</b>
 will be dynamic
 * `ip nhrp map multicast dynamic` tells the HQ where to forward the multicast packets to.
 We used this instead of using `tunnel destination` command
-* `ip nhrp network-id` when you use multiple DMVPN networks this command would differenciate between them.
+* `ip nhrp network-id` when you use multiple DMVPN networks this command would differentiate between them.
 
 Configuring branches are easy as when we configure one branch we can use the configuration
 as a template for other branches
@@ -506,7 +506,7 @@ O        10.0.1.12/32 [110/1000] via 10.0.1.12, 00:05:48, Tunnel0
 O        172.16.0.0 [110/1001] via 10.0.1.12, 00:05:48, Tunnel0
 <b>O     192.168.2.0/24 [110/2001] via 10.0.1.12, 00:05:03, Tunnel0</b></pre>
 As we can see Branch1 to reach Branch2, points to the HQ router which is not issue
-when dealing with DMVP phase 1 is issue in phase 2.
+when dealing with DMVPN phase 1 is issue in phase 2.
 
 #### point-to-multipoint non-broadcast OSPF network type
 * Like point-to-multipoint OSPF network but we have to configure static neighbors

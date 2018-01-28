@@ -202,7 +202,7 @@ Branch1(config)#<b>no router eigrp 120</b>
 Branch2(config)#<b>no router eigrp 120</b></pre>
 
 #### point-to-point OSPF network type
-* We discussed why poin-to-point network type doesn't work with DMVPN as th HQ
+* We discussed why point-to-point network type doesn't work with DMVPN as th HQ
 expects one neighbor on its tunnels interface while there are two here.
 
 #### broadcast OSPF network type
