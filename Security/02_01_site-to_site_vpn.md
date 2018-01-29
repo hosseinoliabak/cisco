@@ -90,7 +90,7 @@ before it is sent out of the network.
 will be applied to the outgoing interface. If it is interesting, then it will be encrypted. If not interested, it will bypass the encryption.
     <pre>
     R1(config)#<b>ip access-list extended VPN-TRAFFIC</b>
-    R1(config-ext-nacl)#<b>permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255</pre></b>
+    R1(config-ext-nacl)#<b>permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255</b></pre>
 
 2. ISAKMP Policy Parameters:
 
