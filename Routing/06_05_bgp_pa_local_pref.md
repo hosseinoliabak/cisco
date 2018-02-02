@@ -10,6 +10,9 @@ in BGP updates. Hence the scope is on inbound route updates and influences only 
 3. Locally injected routes: locally injected is better than iBGP/eBGP
 4. shorter AS_PATH (default in BGP)
 5. Origin: i>e>?
+  * i: network command. In aggregation if as_set is not used; if as_set is used and all subnets use origin code `i`. and `neighbor default-originate` command 
+  * e: egp (no longer exists)
+  * ?: redistribution. In aggregation if as_set is used and at least one subnets uses origin code `?`. and `default information originate` command
 6. Smaller MED: 
 7. Neighbor type: eBGP > iBGP
 8. Smaller IGP metric to next hop: 
