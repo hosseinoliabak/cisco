@@ -38,4 +38,43 @@ Transfer).
 The REST API uses HTTP messages to send and receive information between
 the SDN controller and another application. The two most used data
 formats are JSON and XML.
+
 <img src="https://user-images.githubusercontent.com/31813625/32898743-f7cb7b38-cab6-11e7-887f-f76b4730a23f.png" width="430" height="446" />
+
+### Network Functions Virtualization (NFV)
+NFV is the next step in virtualization, taking physical networking equipment
+and running it in a VM.
+* Virtual Switches
+* Virtual Routers
+* Virtual Load balancers
+* Virtual Firewalls
+
+### Relationship between SDN and NFV
+* SDN traditionally manages physical network equipment
+* NFV deploys virtual network equipment
+* In the center of this we have combination of these two (SDN and NFV)
+  * Automated Network Provisioning and Control
+  * SDN can broadly speaking refer to managing both physical and virtual equipment
+  
+### SDN use cases
+* Problem: Lack of network omniscience
+  * Solution: Centralized Controller
+* Problem: High aggregate time to manage many devices individually (switches, routers, LBs, firewalls,...)
+  * Solution: Standard interface to multiple devices
+* Lengthy provisioning time (racking, cabling,...)
+  * Solution: Automation via centralized controller
+* Problem: Vendor lock-in, because each device speaks its own control language
+  * Solution: One multi-lingual standard interface
+* Problem: Consistency across devices
+  * Solution: automation
+* Difficulty undoing a change
+  * Solution: automation
+
+### SDN defined
+* SDN is not a product or protocol... it's an architecture
+  * OSI model: who we send data on the network
+  * SDN architecture: how we manage the network
+* SDN architecture
+  * Data plane: Where does the packet go?
+  * Control plane: OSPF, STP, BGP, ...
+  * Management plane: SSH, console, Web GUI, applications, ...
