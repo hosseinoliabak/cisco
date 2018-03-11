@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Virtual Network Editor
+Comment=Manage virtual networks
+Exec=/usr/bin/vmware-netcfg
+Terminal=false
+Type=Application
+Icon=vmware-netcfg
+StartupNotify=true
+Categories=System;
