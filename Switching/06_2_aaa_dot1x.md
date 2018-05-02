@@ -53,9 +53,13 @@ Port-based Network Access Control (PNAC)
 **Scenario:** If a PC is connected to a switch first authenticate then bring the port up/up.
 
 * 802.1X also involves three parties:
-  * Authentication server: RADIUS
-  * Authenticator: The Switch
-  * Supplicant: The PC is going to be connected to the switch
+  * Authentication server: Host which supports the RADIUS and EAP
+  * Authenticator: Switch or wireless access point
+  * Supplicant (Client): The device is going to be connected to the switch or WAP
+  
+Using 802.1X authentication, the client provides credentials to the authenticator, which the authenticator forwards to the authentication server for verification. Note that the authenticator does not need to have a certificate or have any knowledge
+of the authentication method (PEAP, TLS, etc). The authentication is tunneled from the client to the authenticator over the
+RADUIS protocol.
 
 For port-based authentication, both the switch and the end user’s PC must support the
 802.1X standard, using the Extensible Authentication Protocol over LANs (EAPOL).
@@ -67,7 +71,17 @@ does not already have an IP address, it cannot request one. The PC also has no k
 of the switch or its IP address, so any means other than a Layer 2 protocol is not possible.
 This is why the PC must also have an 802.1X-capable application or client software.
 
-The idea behind AAA is that a user has to authenticate before getting access to the network. The fa0/1 interface on SW1 will be blocked and you are not even getting an IP address. The only thing the user is allowed to do is send his/her credentials which will be forwarded to the AAA server. If your credentials are OK the port will be unblocked and you will be granted access to the network.
+The idea behind AAA is that a user has to authenticate before getting access to the network. The fa0/1 interface on SW1 will be blocked and you are not even getting an IP address. The only thing the user is allowed to do is send his/her credentials (machine, user, or MAC address (for printers usually) ) which will be forwarded to the AAA server. If your credentials are OK the port will be unblocked and you will be granted access to the network.
+1. The client sends an EAPOL-Start packet to initiate the EAP authentication
+2. The authenticator replies with an EAP-Request/Identity packet to request identification
+3. The client sends its identity
+4. The information is forwarded to the RADIUS server in a RADIUS-Access request packet
+5. The RADIUS replies with an Access Challenge packet requesting the password
+6. The authenticator requests the password from the client
+7. The client replies with a Response/Auth packet, which contains the pasasword
+8. The password is forwarded to the RADIUS server, which then replies with an Access-Accept packet to grant the access
+9. The authenticator sends an EAP-Success packet to the client with a confirmation that the credentials are OK
+10. The client can now send the user data
 
 <img src="https://user-images.githubusercontent.com/31813625/32982677-3fd7e308-cc56-11e7-9198-8cce2f610ee1.png" width="528" height="134" />
 
