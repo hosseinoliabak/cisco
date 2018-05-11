@@ -160,8 +160,8 @@ I am concerning to unicast address types.
   * Never assigned to an Interface
   * Used as a source address in the absence of an IPv6 address
 
-#### How are the IPv6 unicast addresses assigned?
-1. **Static**
+### How are the IPv6 unicast addresses assigned?
+#### 1. Static
 <pre>
 Router(config)#<b>interface gigabitEthernet 0/0</b>
 Router(config-if)#<b>ipv6 address 2001:db9:45:c0de::1/64</b>
@@ -185,16 +185,64 @@ GigabitEthernet0/0 is up, line protocol is up
   ND reachable time is 30000 milliseconds (using 30000)
   ND NS retransmit interval is 1000 milliseconds
 </pre>
-2. **Modified EUI-64**: Can be used to generate *global unicast* and the *link-local* addresses
+#### 2. Modified EUI-64
+* Can be used to generate *global unicast* and the *link-local* addresses
 * A /64 prefix is manually specified
 * The remaining 64 bits of the address are generated automatically
-3. **DHCPv6**
+#### 3. DHCPv6
 * Client/Server architecture
 * Uses UDP multicasts instead of broadcasts
-* For now, beyod the scope of CCNP
-4. **Stateless address auto-configuration (SLAAC)**
-* Can uses EUI-64 to generate the interface ID portion of the address
-* Prefix is automatically determined from router advertisements
+* Controls address assignments (leases)
+* Gives DNS settings and other options
+* Uses UDP multicasts instead of broadcasts
+* DHCP servers receive messages using link-scope multicast
+* DHCP relay for when server is not on the same link
+
+##### 3.1. Stateless DHCPv6
+* DHCPv6 server doesn't assign IP addresses to the clients 
+* Clients will have IPs through autoconfiguration process 
+* DHCPv6 assigns other information such ad DNS, DGW to the clients 
+
+<pre>
+R1(config)#<b>ipv6 dhcp pool MYPOOL</b> #Create an IPv6 pool, even though we don't be assigning IPv6 addresses to hosts 
+R1(config-dhcpv6)#<b>dns-server 2001:DB8:21:5555:5</b> #Specify the information for a DNS server that the auto configured host should use. 
+R1(config)#<b>int fa 0/1</b> #On the interface connecting to the client we specify which DHCP pool to reference (we may have several). The IPv6 address is already assigned. 
+R1(config-if)#<b>ipv6 dhcp server MYPOOL</b> #We can append rapid-commit to this command for rapid mode 
+R1(config-if)#<b>ipv6 nd other-config-flag</b> #In the router advertisement, set the "O" flag (means other options are available via DHCPv6 Lite server) to on. This will let the auto configured clients know there is other or optional DHCP information they can ask for. 
+</pre>
+
+##### 3.2. Stateful DHCPv6
+* Assigning IPv6 addresses to clients 
+* DHCPv6 knows which IP assigned to what client 
+* DHCPv6 does not allow you to exclude addresses as you can with DHCPv4 
+* DHCPv6 does not allow you to configure manual address bindings 
+<pre>
+R1(config)#<b>ipv6 dhcp pool STATEFUL-POOL</b> #Creates an IPv6 pool 
+R1(config)#<b>address prefix 2001:DB8:21::/64</b> #similar to command network in DHCPv4 
+R1(config-dhcpv6)#<b>dns-server 2001:DB8:21:5555:5</b> #Specify the information for a DNS server 
+R1(config)#<b>int fa 0/1</b> #On the interface connecting to the client we specify which DHCP pool to reference (we may have several) 
+R1(config-if)#<b>ipv6 dhcp server STATEFUL-POOL</b> #We can append rapid-commit to this command for rapid mode 
+R1(config-if)#<b>ipv6 nd managed-config-flag</b> #indicates that hosts must use R1 as the DHCP server 
+R1#<b>show ipv6 dhcp pool</b> 
+R1#<b>show ipv6 dhcp binding</b> #display current DHCPv6 bindings 
+R1#<b>debug ipv6 dhcp</b> 
+R1#<b>clear ipv6 dhcp binding</b> #Manually clear an address binding 
+</pre>
+
+#### Router as an stateful DHCPv6 client 
+<pre>
+R1(config)#<b>interface FastEthernet 0/1</b>
+R1(config-if)#<b>ipv6 enable</b> #to enable IPv6  on the interface 
+R1(config-if)#<b>ipv6 address dhcp</b> tells the router to get IP from DHCP server. We can append rapid-commit to this command for rapid mode 
+</pre>
+
+#### Configuring a DHCPv6 Relay Agent
+<pre>
+R1(config-if)#<b>ipv6 dhcp relay destination dhcp_server_ipv6</b> #like ip helper-address dhcp_server_ipv4 
+</pre>
+
+#### 4. Stateless address auto-configuration (SLAAC)
+* ARP in IPv4 is replaced by ICMPv6 ND (Neighbor Discovery) with 4 different types of communication in 2 major categories, Solicitations (S): asking for something; Advertisements (A): advertising periodically or responding to something (triggered immediately)
 * Neighbor Diecovery Protocol (NDP) - RFC 4861
   * Similar to IPv4 processes such as ARP and ICMP redirect
   * SLAAC uses it to determine network prefix and default gateway information
@@ -203,14 +251,22 @@ GigabitEthernet0/0 is up, line protocol is up
   * ICMPv6 message types used by NDP
     * Router Solicitation (RS)
       * Sent by a network device when it needs network prefix, prefix length, or default GW
+      * Router Solicitation, Who is the router on the LAN?
       * Sent to the link-local all-routers multicast ff02::2
     * Router Advertisement (RA)
-      * If there is an IPv6 router on the link, then it will send to the link-local
-      all-nodes multicast address ff02::1 with prefix information
+      * every 200 seconds by default or by replying router solicitation
+      * the neighbor is saying I am the router on the LAN. 
+      * if there is an IPv6 router on the link, then it will send to the link-local
+      * all-nodes multicast address ff02::1 with prefix information
     * Neighbor Solicitation (NS)
+      * like ARP request, asking information about neighbor; what is your MAC address?
       * Address resolution
       * Duplicate Address Detection (DAD): DAD is also done even if we use DHCPv4 and EUI-64
     * Neighbor Advertisement (NA)
+      * is the reply, the neighbor is saying this is my MAC address 
+      
+* Can uses EUI-64 to generate the interface ID portion of the address
+* Prefix is automatically determined from router advertisements
 
 #### Configuration
 * Example 1
