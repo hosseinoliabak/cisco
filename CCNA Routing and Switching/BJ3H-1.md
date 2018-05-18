@@ -11,6 +11,7 @@ What is a Model?
 ### OSI Model
 
 | Layer | Protocol Data Unit | Characteristics |
+| --- | --- | --- |
 | 7. Application | Data (APDU) | Closest to users | 
 | 6. Presentation | Data (PPDU) | Data format, compression and encryption |
 | 5. Session | Data (SPDU) | Keep an open link between apps. | 
@@ -131,6 +132,7 @@ Idea: Light as the information carrier for free space communication
 * Satellite operational frequency ranges:
 
   | Band | Downlink | Uplink | Bandwidth | Problems |
+  | --- | --- | --- | --- | --- |
   | L | 1.5 GHz | 1.6 GHz | 15 MHz | Low BW, Crowded |
   | S | 1.9 GHz | 2.2 GHz | 70 MHz | Low BW, Crowded |
   | C | 4.0 GHz | 6.0 GHz | 500 MHz | Terrestrial Interference |
