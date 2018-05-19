@@ -36,11 +36,11 @@ What is a Model?
 * Straight-Through Cables: CAT 5 UTP cabling usually uses only four wires when sending and receiving information on the
 network. The four wires of the eight that are used are wires 1, 2, 3, and 6. 
 
-  **Image to be added from my Windows Machine**
+    ![straight](https://user-images.githubusercontent.com/31813625/40263577-85c09174-5ae2-11e8-94e0-a822b1392b2c.png)
 
 * Crossover Cables 
 
-  **Image to be added from my Windows Machine**
+    ![cross](https://user-images.githubusercontent.com/31813625/40263578-85e20bc4-5ae2-11e8-86c2-874ccb2f2654.png)
 
 * TIA 568A and TIA 568B Standards Although only four of the wires are used to send and receive data in most environments
 today, some of the newer standards use all eight wires. Therefore, it is important to know the order of all eight wires
@@ -66,15 +66,15 @@ cabling (Both are 10 Mbps):
   either side (so that the cable length can continue on), while a third end of the connector tees out to have a cable
   length connect to the network card on the client machine
   
-  **Image to be added from my Windows Machine**
-  
+    ![thinnet](https://user-images.githubusercontent.com/31813625/40263406-c93ff17c-5adf-11e8-86a3-b2fb28334eca.png)
+    
   * Thicknet (RG-8); ½ inch thick; maximum cable length of 500 meters and usually is used as a backbone to connect
   several smaller thinnet-based networks; A transceiver often is connected directly to the thicknet cable using a
   connector known as a vampire tap. Connection from the transceiver to the network adapter card is made using a drop
   cable to connect to the adapter unit interface (AUI) port connector
   
-    **Image to be added from my Windows Machine**
-    
+    ![thicknet](https://user-images.githubusercontent.com/31813625/40263403-c0326b82-5adf-11e8-8a11-27f477af5224.png)    
+
 #### Fiber Optic Cabling
 
 An optical fiber consists of an extremely thin cylinder of glass, called the core, surrounded by a concentric layer of
