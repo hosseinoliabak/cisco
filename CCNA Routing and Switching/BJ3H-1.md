@@ -10,15 +10,15 @@ What is a Model?
 
 ### OSI Model
 
-| Layer | Protocol Data Unit | Characteristics |
-| --- | --- | --- |
-| 7. Application | Data (APDU) | Closest to users | 
-| 6. Presentation | Data (PPDU) | Data format, compression and encryption |
-| 5. Session | Data (SPDU) | Keep an open link between apps. | 
-| 4. Transport | Segment, Datagram | Virtual circuits, reliability and ports |
-| 3. Network | Packet | Logical addressing and path determination |
-| 2. Data Link | Frame | Physical addressing, error detection |
-| 1. Physical | Bit | Transporting the bits |
+| Layer | Protocol Data Unit | Characteristics | Standards bodies | 
+| --- | --- | --- | --- | 
+| 7. Application | Data (APDU) | Closest to users | IETF/RFC |  
+| 6. Presentation | Data (PPDU) | Data format, compression and encryption | IETF/RFC | 
+| 5. Session | Data (SPDU) | Keep an open link between apps. | IETF/RFC | 
+| 4. Transport | Segment, Datagram | Virtual circuits, reliability and ports | IETF/RFC | 
+| 3. Network | Packet | Logical addressing and path determination | IETF/RFC | 
+| 2. Data Link | Frame | Physical addressing, error detection | IEEE 802 |
+| 1. Physical | Bit | Transporting the bits | IEEE 802 |
 
 * Protocol
 * Service
@@ -287,15 +287,17 @@ An access method determines how a host will place data on the wire — does the 
 
 To summarize, CSMA/CD provides that before a host sends data on the network, it will "sense" (CS) the wire to ensure
 that the wire is free of traffic. Multiple systems have equal access to the wire (MA), and if there is a collision,
-a host will detect that collision (CD) and retransmit the data 
+a host will detect that collision (CD) and retransmit the data
+
+* 802.3 
 
 #### Carrier sense multiple access with collision avoidance (CSMA/CA) 
 
- is not as popular as CSMA/CD and for good reason. With CSMA/CA, before a host sends data on the wire, it will "sense"
- the wire as well to see if the wire is free of signals. If the wire is free, it will try to “avoid” a collision by
- sending a piece of “dummy” data on the wire first to see whether it collides with any other data. If it does not
- collide, the host in effect assumes "If my dummy data did not collide, then the real data will not collide," and it
- submits the real data on the wire 
+CSMA/CD deals with transmissions after a collision has occurred. With CSMA/CA, before a host sends data on the PHY,
+typically wireless (802.11), it will "sense" the PHY as well to see if the it is free of signals. If the PHY is free,
+it will try to "avoid" a collision by sending a piece of "dummy" data first to see whether it collides with any other data.
+If it does not collide, the host assumes "If my dummy data did not collide, then the real data will not collide," and it
+submits the real data on the PHY 
 
 #### Token Passing 
 
