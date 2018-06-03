@@ -6,19 +6,34 @@ using tools to change how the router or switch deals with different
 packets. For example, we can configure the router so that voice traffic
 is prioritized before data traffic.
 
+## When QoS is needed?
+
+Wetwork congestion causes delay:
+* Examples of typical congestion points
+
+    ![whenqos](https://user-images.githubusercontent.com/31813625/40891607-a5891a1e-6756-11e8-80bb-6924d89d6166.png)
+
 ## Characteristics of network traffic
 There are four characteristics of network traffic that we must deal with:
 * Bandwidth: the speed of the link. bits per second (bps)
-* Delay: we have one-way (time from source to destination) and two-way delay (from source to destination and back)
+* Congestion: An interface experiences congestion when it is presented with more traffic than it can
+handle. Network congestion points are strong candidates for QoS mechanisms. 
+* Delay (or latency): we have one-way (time from source to destination) and two-way delay (from source to destination and back)
   * Processing delay: the time for a device to perform the tasks
-  * Queuing delay: the time that a packet is waiting in the queue
-  * Serialization delay: the time that takes to send all bits of a frame to the PHY for transmission
-  * Propagation delay: the time it takes for bits to cross the PHY. We cannot change this type of delay.
+  * Queuing delay: the time that a packet is waiting in the memory until resources become available to transmit it
+  * Serialization delay: the time that takes to send all bits of a frame from NIC to the PHY for transmission
+  * Propagation delay: the variable amount of time it takes for bits to cross the PHY. We cannot change this type of delay.
+  * Code delay: The fixed amount of time time it takes to compress data at the source before transmitting
+  to the first internetworking device
 * Jitter: variation of one-way delay. The receiver of packets (for voice experience)
 must deal with jitter, making sure the packets have a steady delay. 
-* Loss: usually as a percentage of lost packets sent. When there is a congestion,
+* Loss: Without any QoS mechanisms in place, packets are processed in the order in which they are received.
+When congestion occurs, network devices such as routers and switches can drop packets. This means that
+time-sensitive packets, such as real-time video and voice, will be dropped with the same frequency as
+data that is not time-sensitive, such as email and web browsing.
+Usually as a percentage of lost packets sent. When there is a congestion,
 packets will be queued but once the the queue is ful, packets will be dropped. With QoS
-we can decide which packets drop when this happens.  
+we can decide which packets drop when this happens. In a properly designed network, packet loss should be near zero.
 
 ## Traffic types
 What we need to configure depends on the application that we use.
@@ -31,15 +46,18 @@ What we need to configure depends on the application that we use.
   *  Does't require a lot of bandwidth
   * Sensitive to delay and packet loss
 * Voice and video
-  * Very sensitive to delay, jitter, and packet loss
-  * For voice traffic we need
-    * One-way delay < 150 ms
-    * Jitter < 30 ms
-    * Loss < 1%
-  * For interactive video traffic we have this guide:
-    * One-way delay" 200-400 ms
-    * Jitter: 30-50 ms
-    * Loss: 0.1%-1% 
+
+  | Voice | Video |
+  | --- | --- | 
+  | Smooth | Bursty |
+  | Benign | Greedy |
+  | Drop sensitive | Drop sensitive |
+  | Delay sensitive | Delay sensitive |
+  | UDP priority | UDP priority |
+  | Latency <= 150 ms | Latency 200-400 ms |
+  | Jitter <= 30 ms | Jitter <= 30 - 50 ms |
+  | Loss <= 1% | Loss <= 0.1% - 1$ |
+  | Bandwidth >30 | >384Kbps |
 
 ## QoS Tools
 * **Classification and marking:** Before we can give certain packets a
