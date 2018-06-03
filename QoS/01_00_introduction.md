@@ -11,7 +11,7 @@ is prioritized before data traffic.
 Wetwork congestion causes delay:
 * Examples of typical congestion points
 
-    ![whenqos](https://user-images.githubusercontent.com/31813625/40891607-a5891a1e-6756-11e8-80bb-6924d89d6166.png)
+    ![qos](https://user-images.githubusercontent.com/31813625/40891958-8cc737e8-675d-11e8-985a-4c4cccb3ffb6.png)
 
 ## Characteristics of network traffic
 There are four characteristics of network traffic that we must deal with:
