@@ -1,40 +1,64 @@
 # Quality of Service (QoS):
 Internet is best effort of FIFO (First In First Out). This is not QoS.
 
-QoS controls help you better manage available bandwidth. QoS is about
-using tools to change how the router or switch deals with different
-packets. For example, we can configure the router so that voice traffic
-is prioritized before data traffic.
+QoS controls help you better manage available bandwidth. QoS is about using tools to change how the router or switch
+deals with different packets. For example, we can configure the router so that voice traffic is prioritized before data traffic.
 
 ## When QoS is needed?
 
-Wetwork congestion causes delay:
+Network congestion causes delay:
 * Examples of typical congestion points
 
     ![qos](https://user-images.githubusercontent.com/31813625/40891958-8cc737e8-675d-11e8-985a-4c4cccb3ffb6.png)
 
 ## Characteristics of network traffic
 There are four characteristics of network traffic that we must deal with:
-* Bandwidth: the speed of the link. bits per second (bps)
-* Congestion: An interface experiences congestion when it is presented with more traffic than it can
+#### 1. Bandwidth
+the speed of the link. bits per second (bps)
+#### 2. Congestion
+An interface experiences congestion when it is presented with more traffic than it can
 handle. Network congestion points are strong candidates for QoS mechanisms. 
-* Delay (or latency): we have one-way (time from source to destination) and two-way delay (from source to destination and back)
+* What is the difference between congestion control and flow control?
+  * Congestion control
+    * Global issue (network)
+    * Indirect feedback
+    * Sometimes slowdown messages are used
+  * Flow control
+    * Local issue (line, point-to-point connection )
+    * Direct feedback from neighbor
+* Time Scale of applying congestion control techniques
+
+    ![image](https://user-images.githubusercontent.com/31813625/40932368-203be21e-67fc-11e8-83c7-f08d49cf078c.png)
+  
+  * Network provisioning: network design
+  * Traffic-aware routing: avoid congested paths/routes
+  * Admission control: if network is congested, don't accept new traffic
+  * Traffic throttling: bring down the rate of the network device which is sending packets in a higher rates
+  * Load shedding: discard packets
+
+#### 3. Delay (or latency)
+we have one-way (time from source to destination) and two-way delay (from source to destination and back)
   * Processing delay: the time for a device to perform the tasks
   * Queuing delay: the time that a packet is waiting in the memory until resources become available to transmit it
   * Serialization delay: the time that takes to send all bits of a frame from NIC to the PHY for transmission
   * Propagation delay: the variable amount of time it takes for bits to cross the PHY. We cannot change this type of delay.
   * Code delay: The fixed amount of time time it takes to compress data at the source before transmitting
   to the first internetworking device
-* Jitter: variation of one-way delay. The receiver of packets (for voice experience)
+
+#### 3. Jitter
+variation of one-way delay. The receiver of packets (for voice experience)
 must deal with jitter, making sure the packets have a steady delay. 
-* Loss: Without any QoS mechanisms in place, packets are processed in the order in which they are received.
+
+![image](https://user-images.githubusercontent.com/31813625/40934269-42eeab88-6802-11e8-93db-0154cbd1dee0.png)
+
+#### 4. Loss
+Without any QoS mechanisms in place, packets are processed in the order in which they are received.
 When congestion occurs, network devices such as routers and switches can drop packets. This means that
 time-sensitive packets, such as real-time video and voice, will be dropped with the same frequency as
 data that is not time-sensitive, such as email and web browsing.
 Usually as a percentage of lost packets sent. When there is a congestion,
 packets will be queued but once the the queue is ful, packets will be dropped. With QoS
 we can decide which packets drop when this happens. In a properly designed network, packet loss should be near zero.
-
 
 ## Traffic types
 What we need to configure depends on the application that we use.
@@ -59,6 +83,19 @@ What we need to configure depends on the application that we use.
   | Jitter <= 30 ms | Jitter <= 30 - 50 ms |
   | Loss <= 1% | Loss <= 0.1% - 1$ |
   | Bandwidth >30 | >384Kbps |
+
+* Traffic Engineering table
+
+| Application | Reliability | Delay | Jitter | Bandwidth |
+| --- | --- | --- | --- | --- |
+| E-mail | High | Low | Low | Low |
+| File transfer | High | Low | Low | Medium |
+| Web access | High | Medium | Low | Medium |
+| Remote login | High | Medium | Medium | Low |
+| Audio on demand | Low | Low | High | Medium |
+| Video on demand | Low | Low | High | High |
+| Telephony | Low | High | High | Low |
+| Videoconferencing | Low | High | High | High |
 
 ## QoS Algorithms
 
@@ -199,6 +236,12 @@ trunks. The tag that is added by 802.1Q has a priority field.
   * IPv4 and IPv6: Layer 3, Field: DSCP, 6 bits 
 
 ### Congestion avoidance
+#### Buffer Management
+* It is best to drop packets as soon as there is congestion
+* If there is congestion in a particular port, it is difficult to know whose fault it is (Or who is the source that has
+caused the congestion)
+* Random Early Detection (RED): This is a proactive approach in which the router discards one or more packets before the buffer becomes completely full
+ 
 The congestion avoidance tool can randomly drop packets from output queue, or we can
 configure it to give certain packets a different treatment based on their marking. Main tool is weighted random early detection or WRED
 * **Policing and selective dropping:**
@@ -247,7 +290,6 @@ IP packets have a field called the Type of Service field (TOS byte)
 ### IPv4 and IPv6 Packet Header
 
 ![image](https://user-images.githubusercontent.com/31813625/40928868-d1b379e6-67f0-11e8-8bd0-22f24801eda6.png)
-
 
 * **Type of Service byte/Differentiate Services field (8 bits):** 
   * In 1981 (RFC 791)
