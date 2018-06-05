@@ -6,7 +6,7 @@ deals with different packets. For example, we can configure the router so that v
 
 ## When QoS is needed?
 
-Network congestion causes delay:
+Network congestion causes delay.
 * Examples of typical congestion points
 
     ![qos](https://user-images.githubusercontent.com/31813625/40891958-8cc737e8-675d-11e8-985a-4c4cccb3ffb6.png)
@@ -116,7 +116,7 @@ WFQ applies priority, or weights, to identified traffic and classifies it into c
   ![priority](https://user-images.githubusercontent.com/31813625/40922219-aac6bdcc-67df-11e8-82e3-1a737a827e89.png)
 
 WFQ then determines how much bandwidth each flow is allowed relative to other flows.
-The flow-based algorithm used by WFQ simultaneously schedules interactive traffic to the front of a queue to reduce
+The flow-based algorithm used by WFQ simultaneously **schedules** interactive traffic to the front of a queue to reduce
 response time. It then fairly shares the remaining bandwidth among high-bandwidth flows. WFQ allows you to give
 low-volume, interactive traffic, such as Telnet sessions and voice, priority over high-volume traffic, such as FTP
 sessions.
@@ -191,9 +191,13 @@ The three models for implementing QoS are:
       <li>IntServ uses a connection-oriented approach inherited from telephony network design. Each individual communication must explicitly specify its traffic descriptor and requested resources to the network</li>
       <li>It defines a signaling process for applications to signal to the network that they require special QoS for a period and that bandwidth should be reserved.</li>
       <li>In the IntServ model, the application requests a specific kind of service from the network before sending data. The application informs the network of its traffic profile and requests a particular kind of service that can encompass its bandwidth and delay requirements.</li>
-      <li>IntServ uses the Resource Reservation Protocol (RSVP) to signal the QoS needs of an application’s traffic along devices in the end-to-end path through the network. </li>
+      <li>IntServ uses the <b>Resource Reservation Protocol (RSVP)</b> to signal the QoS needs of an application’s traffic along devices in the end-to-end path through the network. </li>
       <li>IntServ can severely limit tghe scalability of a network.</li>
-      </ul></td> 
+      </ul>Critical resources<ul>
+      <li>Bandwidth</li>
+      <li>Buffer space</li>
+      <li>CPU processing cycle</li>
+      </ul></td>
   </tr>
   <tr>
   <td>Differentiated services (DiffServ)</td>
@@ -274,15 +278,13 @@ provides congestion management. Packets are queued during congestion to prevent 
         is something we configure on our PBX which ensure that you can only have X amount
         of voice calls simultaneously.
 * **Shaping:**
-  * Shaping: will hold packets in a queue, adding delay. This is done on
-    the customer side. The shaper will queue messages, delaying them to a
-    certain CIR rate.
+  * Shaping: will hold packets in a queue, adding delay, to avoid bursty traffic.
     * Buffers the exceeding traffic
     * Use when you are trying to match the bandwidth on a WAN link. For example you 
       have a 100Mi interface but your CIR is 20Mi. Shaping makes sure that the traffic rate
       you are sending to the provider matches what they are limiting you to.
     * Only outbound
-
+    * *Simple algorithms*; implemented in Data Plane.
 
 ## Type of Service (TOS)
 IP packets have a field called the Type of Service field (TOS byte)
