@@ -185,10 +185,14 @@ GigabitEthernet0/0 is up, line protocol is up
   ND reachable time is 30000 milliseconds (using 30000)
   ND NS retransmit interval is 1000 milliseconds
 </pre>
-#### 2. Modified EUI-64
+#### 2. Static with EUI-64 (Extended Unique Identifier)
 * Can be used to generate *global unicast* and the *link-local* addresses
 * A /64 prefix is manually specified
 * The remaining 64 bits of the address are generated automatically
+
+<pre>
+R2(config-if)#<b>ipv6 address 2001:1234:5678:9abc::/64 eui-64</b></pre>
+
 #### 3. DHCPv6
 * Client/Server architecture
 * Uses UDP multicasts instead of broadcasts
