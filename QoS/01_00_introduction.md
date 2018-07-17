@@ -1,8 +1,20 @@
 # Quality of Service (QoS):
-Internet is best effort of FIFO (First In First Out). This is not QoS.
 
-QoS are tools which tunes bandwidth, delay, jitter, and loss for every your interested traffic
-
+* IP has been originally designed to provide "best effort" service
+* Internet is best effort of FIFO (First In First Out). This is not QoS
+* Over provisioning of IP networks is an easy option to start with
+* In many cases, congestion that causes degraded quality of service is a local issue in the network of an ISP
+* Bandwidth cost is steadily decreasing, thereby many ISPs use this method to address the problem
+* This method cannot ensure the necessary QoS; for example jitter cannot be controlled by over provisioning
+* QoS are tools which tunes bandwidth, delay, jitter, and loss for every your interested traffic
+* Some critical applications are moving to IP
+  * Voice over IP
+  * Grid computing
+* QoS is not limited to IP network and packet level traffic control. The research in this area has extended into 
+wireless and optical domain as well
+  * 802.11e: Service differentiation in WLAN
+  * Automatic configuration and management in next generation optical networks (ASON)
+  
 ## When QoS is needed?
 
 Network congestion causes delay.
@@ -168,3 +180,19 @@ What we need to configure depends on the application that we use.
   <li>Guarantee delay and jitter</li>
   <li>Not packet loss</li></ul></li>
 </ol>
+
+## Key Element of QoS Management
+* Per packet operations
+  * Shaping
+  * Policing
+  * Classification
+  * Scheduling
+  * Queue Management
+* Per Flow Operations
+  * Admission Control
+  * Resource Management
+  * Signaling
+  * Routing
+  * Resource Management
+* Congestion Control
+* QoS Pricing

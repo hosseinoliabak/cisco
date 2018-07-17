@@ -186,8 +186,6 @@ The three models for implementing QoS are:
   </tr>
 </table>
 
-
-
 ## Type of Service (TOS)
 IP packets have a field called the Type of Service field (TOS byte)
 
