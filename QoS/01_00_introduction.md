@@ -40,25 +40,26 @@ for particular types of packets
 #### 2. Delay (or latency)
 we have one-way (time from source to destination) and
 two-way delay (from source to destination and back)
+  * Codec delay (fixed): The fixed amount of time time it takes to compress data at the source before transmitting
+  to the first internetworking device; usually between 2.5 ms to 10 ms
+    * This delay overlaps with packetization delay
+  * Packetization delay (fixed): The IP phone or voice gateway must collect 20 ms of voice before it can 
+  put 20 ms worth of voice payload into a packet  
+  * Queuing delay (variable)(could be significant): the time that a packet is waiting in the memory until resources become available to transmit it
   * Serialization delay (fixed)(negligible on T3 and faster links): the time that takes to send all bits of a frame from NIC to the
   PHY for transmission.
     * serialization delay (milliseconds) = number of bits sent ÷ link speed (kbps)
+  For voice should be almost 0
   * Propagation delay (fixed)(not significant): the variable amount of time it takes for bits to cross the PHY.
   We cannot change this type of delay.
     * Propagation delay (milliseconds) = Length of the link (meters) ÷ (2.1 × 10<sup>8</sup> meters/seconds)
   * Forwarding/Processing delay (variable)(not really significant): the time for a device to perform the tasks
-  * Queuing delay (variable)(could be significant): the time that a packet is waiting in the memory until resources become available to transmit it
-  For voice should be almost 0
-  * Packetization delay (fixed): The IP phone or voice gateway must collect 20 ms of voice before it can 
-  put 20 ms worth of voice payload into a packet
-  * Codec delay (fixed): The fixed amount of time time it takes to compress data at the source before transmitting
-  to the first internetworking device; usually between 2.5 ms to 10 ms
-    * This delay overlaps with packetization delay
+  * Shaping delay (variable): Sending packets more slowly, but not having them be dropped. (traffic shaping)
+  * Network delay (variable): In some cases, the provider will include delay limits in the contracted SLA
   * De-jitter buffer delay (variable): At receiving side. receiving side buffers for example 2 packets (40 ms), then
   when the 3rd packet arrives, it delivers 1st packet. Why? to maintain the jitter as lowest as possible. For
   **interactive videos**, this delay can be up to 70 ms. De-jitter buffer for **streaming videos** can run into the tens of seconds!
-  * Shaping delay (variable): Sending packets more slowly, but not having them be dropped. (traffic shaping)
-  * Network delay (variable): In some cases, the provider will include delay limits in the contracted SLA
+
 
 Tools that affect delay:
 * Queuing: enables you to order packets so that delay-sensitive packets leave their queues more quickly
