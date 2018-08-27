@@ -92,8 +92,6 @@ resulting hash can correctly verify the hash. HMAC defeats man-in-the-middle att
 
 ## Classical Encryption Algorithms
 
-### Transposition based
-Rearranging the letters in a string of text: i.e. HELLO -> OLLEH
 
 ### Substitution based
 
@@ -138,8 +136,16 @@ Like Caesar Cypher but added some complexity into it; Vigenère cipher is the se
 | Key | 11010110 10110101 10101101 01101011 |
 |__XOR Result__|__10011011 11111100 11100110 00101110__|
 
+### Transposition based
+Rearranging the letters in a string of text: i.e. HELLO -> OLLEH
+
+Modern examples:
+* DES
+* 3DES
+
 ## Modern substitution based
 The followings are modern Ciphers. I decided to keep the root titles style in heading 2.
+
 ## Symmetric-Key Algorithms
 * Key lengths between 40 - 256 bits. Nowadays we don't use less than 80-bit keys
 * Fast: Useful for VPN
@@ -165,13 +171,49 @@ A block cipher is a deterministic algorithm operating on fixed-length groups of 
   * In 1997 DES was broken by an exhastive search attack
 #### Alternatives of DES
 ##### 3DES:
-64-bit block size; 16 rounds; Key size: 3 times of DES process x56 bit= 168 bit
+* 64-bit block size; 16 rounds; Key size: 3 times of DES process x56 bit= 168 bit
+* With advances in computer processing power, the original 56-bit DES key became too vulnerable to brute force attacks.
+One way to increase the DES effective key length, without changing the well-analyzed algorithm itself,
+is to use the same algorithm with different keys several times in a row. The technique of applying DES
+three times in a row to a plaintext block is called 3DES. Brute-force attacks on 3DES are considered
+unfeasible today. Because the basic algorithm has been well tested in the field for more than 35 years,
+it is considered very trustworthy.
+
+3DES uses a method that is called 3DES-Encrypt-Decrypt-Encrypt (3DES-EDE) to encrypt plaintext.
+3DES-EDE includes the following steps:
+• The message is encrypted using the first 56-bit key, which is known as K1.
+• The data is decrypted using the second 56-bit key, which is known as K2.
+• The data is encrypted again, now using the third 56-bit key, which is known as K3.
+The 3DES-EDE procedure provides encryption with an effective key length of 168 bits.
+If the keys K1 and K3 are equal, as in some implementations, then a less secure encryption of 112 bits
+is achieved. To decrypt the message, the opposite of the 3DES-EDE method is used, using the keys in
+reverse order.
+
+##### Advanced Encryption Standard (AES):
+* 128-bit block size; 10, 12, or 14 rounds; Key size:128, 192, or 256 bits depending on rounds (WPA-2 Encryption)
+* AES was chosen to replace DES and 3DES, because the key length of AES is much stronger than DES,
+and AES runs faster than 3DES on comparable hardware. AES is more efficient than DES and 3DES on
+comparable hardware, usually by a factor of five when it is compared with DES. Also, AES is more suitable
+for high-throughput, low-latency environments, especially if pure software encryption is used.
+* Existing technology and computing power has resulted in cracking machines that are able to crack DES
+in just a few hours. It is estimated that it would take 149 trillion years to crack AES using the
+same method.
+
+To encrypt using AES
+<pre>
+root@sp-srv:/var/www/files#<b>openssl enc -aes-128-cbc -in artofwar.txt -out artofwar.crypt</b>
+enter aes-128-cbc encryption password: Cisco123!
+Verifying - enter aes-128-cbc encryption password: Cisco123!
+</pre>
+
+To decrypt using AES
+<pre>
+root@sp-srv:/var/www/files#<b>openssl enc -d -aes-128-cbc -in artofwar.crypt -out artofwar2.txt</b>
+enter aes-128-cbc decryption password:Cisco123!
+</pre>
 
 ##### Blowfish:
 64-bit block size; 16 rounds; Key size: variable 32 - 448 bits. Overshadowed by AES.
-
-##### Advanced Encryption Standard (AES):
-128-bit block size; 10, 12, or 14 rounds; Key size:128, 192, or 256 bits depending on rounds (WPA-2 Encryption)
 
 #### Streaming ciphers
 One bit at a time (pseudo-random)
@@ -184,11 +226,12 @@ These days is used for SSL and HTTPs
 
 ## Asymmetric-Key Algorithms (AKA Public key Cryptography)
 Consist of key-pairs: We use 2 different keys that mathematically work together as a pair (Public Key and Private Key).
-* **Private key** is never shared - must be kept secret
 * **Public key** is freely shared
+* **Private key** is never shared - must be kept secret. The private key cannot, in any reasonable amount of time, be calculated from the public key. 
 * Anything encrypted with the public key can be decrypted with the matching private key
 * Anything encrypted with the private key can be decrypted with the public key (Digital Signature)
 * Key length from 512 to 4096 bits
+  * You cannot directly compare the key length of asymmetric and symmetric algorithms, because the underlying design of the two algorithm families differs greatly.
 
 1. **Proof of Origin:** provides proof of original sender. This does not provide confidentiality as anyone could access the public key
 2. **Add confidentiality to the Proof of Origin:** Senders borrow receiver's public key and encrypts the message then sends it to the receiver. The receiver party then can decrypt the message by his private key
@@ -202,8 +245,9 @@ send a symmetric key between the two and switch to symmetric encryption (SSL and
 
 ### Key-based Asymmetric Encryption
 #### Rivest, Shamir, and Adleman (RSA):
-Published in 1977. Cornerstone is to take two large prime number and multiply them together to generate a big-semiprime number;
-with that we have generated key pairs.
+* Published in 1977. Cornerstone is to take two large prime number and multiply them together to generate
+a big-semiprime number; with that we have generated key pairs.
+* Of all the public-key algorithms that have been proposed over the years, RSA is by far the easiest to understand and implement.
 
 ##### How an RSA key exchange takes place:
 Alex and Bob want to communicate via RSA asymmetric encryption. First thing they’re going to generate each of their
@@ -224,8 +268,8 @@ certificates just to give you an idea).
 Senders and receiver may have no access to a PKI solution
 #### Diffie-Hellman (DH):
 * Public key and private keys are not generated as pairs
-* DH allows two devices that do not yet have a secure connection to establish shared secret keying material (keys that can be used with symmetrical
-algorithms, such as AES)
+* DH allows two devices that do not yet have a secure connection to establish shared secret keying material
+(keys then can be used with symmetrical algorithms, such as AES)
 * Complicated
 * Sender and receiver negotiate a shared key. Each has public and private integers
 * Public integers are exchanged and then calculated over several passes to derive shared-secret key
@@ -235,7 +279,13 @@ so that Eve could see it. Now to do this, we’re going to use DH. DH is a key e
   * 3? mod 17=2314692094782383457
 
 ##### How DH works:
-We want Alice and Bob to have the unique value; so, to do this we actually use asymmetric encryption here, and that first of all either Bob or Alice define a particular public key, this public key is a big long number. Both Alex and Bob generate a random private value then using this groovy mathematics, in essence they’re gonna mix these values together creating third value, then Alice and Bob exchange this mix, then Alice and Bob add their own private value to this mix and it creates the exact same value, and this is the number that we can go ahead and do symmetric encryption with, and Eve will never know what that number is.
+We want Alice and Bob to have the unique value; so, to do this we actually use asymmetric encryption here,
+and that first of all either Bob or Alice define a particular public key, this public key is a big long
+number. Both Alex and Bob generate a random private value then using this groovy mathematics, in
+essence they’re gonna mix these values together creating third value, then Alice and Bob exchange this
+mix, then Alice and Bob add their own private value to this mix and it creates the exact same value,
+and this is the number that we can go ahead and do symmetric encryption with, and Eve will never know
+what that number is.
 
 #### ElGamal
 * Based on DH
