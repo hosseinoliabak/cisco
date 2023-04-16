@@ -1,100 +1,34 @@
-# VXLAN Fabric External Connectivity
-Users connect to our data centers above the application layer. They are typically external to data centre resources. In this post, we will discuss how to connect our VXLAN-based data centre to an external Layer 3 network as well as the external connectivity to a Layer 2 network.
+# vPC in VXLAN BGP EVPN
+Your endpoints still connect through classic ethernet to the leafs. In most practical implementations, we need redundancy between the endpoints and the leaf switches. So, we typically leverage vPC to provide us MC-LAG. vPC allows an endpoint connects to two leafs. The endpoint sees those switches as a single switch to which connected via a single port channel link.
 
-  * Layer 3 could involve: the Internet, WAN, branch, other data centres, or the campus network
-  * Layer 2 could involve: Integrate CE to VXLAN BGP EVPN, Layer 4-7 service insertion L2 connectivity, non-IP communication – for example, Reverse ARP (RARP) for endpoint mobility
+### vPC design consideration
 
-### VXLAN External Connectivity Placement
-With leaf and spine topology, the node which connects the VXLAN fabric to the external (Layer 2 or Layer 3) is called the border node. You can terminate the external connection to either spine or leaf switches. Placing the external connectivity on leaf switches is desirable. Because if you place the external connectivity on the spines, they become VTEPs.
+1. Configure vPC. In this post, we previously talked about how we configure vPC.
+2. Configure each leaf as a single VTEP. As usual, each VTEP has a dedicated NVE interface (PIP).
+  * PIP is short for “Primary IP address.”
+3. Configure anycast VTEP:
+  * Configure a common virtual IP for VTEPs – This address is the next hop advertised in VXLAN.
+    * You can achieve this by assigning a secondary IP address on your NVE loopback interface
+  * So far, every vPC member should have a unique PIP and a shared VIP
+    * PIP is used for Type 5
+    * VIP is used for Type 2
+4. Issue command advertise-pip under BGP L2VPN AFI and advertise virtual-rmac command under NVE interface.
+  * Advertises the external prefixes with PIP of the individual VTEP as the next hop in route type 5.
+    * Allows return traffic to reach that VTEP
+  * Route type 2 (MAC/IP) continues using VIP.
+  * PIP uses the switch Router MAC (non-transitive extended community).
+  * VIP uses locally derived MAC based on VIP itself.
 
-#### Border Spine:
-
-* Adding a switch to (scaling out) spine layer impacts external connectivity.
-* You combine the transport for both north-south and east-west traffic.
-* The spine is now a VTEP which performs VXLAN encapsulation and decapsulation for north-south flow.
-* For east-west flows, the spine continues to provide underlay functionality.
-
-#### Border Leaf:
-
-* Border leaf is responsible for north-south traffic.
-* Adding a leaf node does not impact north-south traffic.
-* We discuss border leaf throughout this course.
-
-### External Layer 3 Connectivity
-
-Let’s review the options for physically cabling the border leaf to the external network.
-* Full mesh: most common and recommended
-* U-shaped: not recommended and we won’t discuss it here.
-
-![vxlan-external-Full-mesh drawio-1](https://user-images.githubusercontent.com/31813625/232337073-648f071c-df59-4c40-af91-80df7140dbd4.svg)
-<br /> *VXLAN Fabric Full-Mesh Border Connectivity*
-
-The border leaf is still a VTEP. So configure it as VTEP. In the snippet below, I am going to show you the BGP configuration as far as concerned for external connectivity.
-
-Here is a sample BGP configuration on Border Leaf:
-
-```c
-BLEAF01(config)# router bgp 65000
-BLEAF01(config-router)# address-family l2vpn evpn
-! iBGP neighbours (Spines)
-BLEAF01(config-router-af)# neighbor 192.168.0.1
-BLEAF01(config-router-neighbor)# remote-as 65000
-BLEAF01(config-router-neighbor)# update-source loopback0
-BLEAF01(config-router-neighbor)# address-family l2vpn evpn
-BLEAF01(config-router-neighbor-af)# send-community extended
-BLEAF01(config-router-neighbor-af)# neighbor 192.168.0.2
-BLEAF01(config-router-neighbor)# remote-as 65000
-BLEAF01(config-router-neighbor)# update-source loopback0
-BLEAF01(config-router-neighbor)# address-family l2vpn evpn
-BLEAF01(config-router-neighbor-af)# send-community extended
-BLEAF01(config-router-neighbor-af)# vrf SMENODE
-! The next two lines are only needed when you want to send an aggregate
-! route instead of whole individual host routes
-BLEAF01(config-router-vrf)# address-family ipv4 unicast
-BLEAF01(config-router-vrf-af)# aggregate-address 192.168.0.0/16 summary-only
-BLEAF01(config-router-vrf-af)# maximum-paths 4
-! eBGP neighbours
-BLEAF01(config-router-vrf-af)# neighbor 198.51.100.1
-BLEAF01(config-router-vrf-neighbor)# remote-as 19851100
-BLEAF01(config-router-vrf-neighbor)# address-family ipv4 unicast
-BLEAF01(config-router-vrf-neighbor-af)# send-community
-BLEAF01(config-router-vrf-neighbor-af)# send-community extended
-BLEAF01(config-router-vrf-neighbor-af)# neighbor 203.0.113.1
-BLEAF01(config-router-vrf-neighbor)# remote-as 2030113
-BLEAF01(config-router-vrf-neighbor)# address-family ipv4 unicast
-BLEAF01(config-router-vrf-neighbor-af)# send-community
-BLEAF01(config-router-vrf-neighbor-af)# send-community extended
-```
-Here is a sample configuration on the ISP (or external router)
-```c
-INET01(config)# router bgp 19851100
-INET01(config-router)# neighbor 198.51.100.2 remote-as 65000
-INET01(config-router)# neighbor 198.51.100.10 remote-as 65000
-INET01(config-router)# address-family ipv4
-INET01(config-router-af)# network 8.8.8.8 mask 255.255.255.255
-INET01(config-router-af)# neighbor 198.51.100.2 activate
-INET01(config-router-af)# neighbor 198.51.100.10 activate
-```
-
-
-![vxlan-external-U-Shaped drawio](https://user-images.githubusercontent.com/31813625/232337233-fe3b9a48-4d4c-42aa-a8dc-3dec5a80d630.svg)
-<br /> *VXLAN Fabric U-Shaped Border Connectivity*
-
-On the border leaf, we have all VRF instances. We then send the associated Layer 3 route from the EVPN network into the individual VRF routing tables toward the edge router.
-
-External routers don’t need your host routes, you can aggregate at MP-BGP to BGP/IGP redistribution point.
-
-### External Layer 2 Connectivity
-When creating external L2 connectivity between your CE and VXLAN fabric, make sure your design does not introduce a loop.
-
-![vxlan-external-L2 drawio-1](https://user-images.githubusercontent.com/31813625/232337376-04d304a5-704c-43f1-afac-7064baea03ff.svg)
-<br /> *Layer 2 Connectivity with VXLAN Fabric*
+![VXLAN-VPC](https://user-images.githubusercontent.com/31813625/232338537-1982c012-12d4-475f-8a84-1f399cf77366.svg)
+<br /> *vPC advertise-pip*
 
 ## Workshop
-In this workshop, we are building a full mesh external connectivity. I am trying to keep it very simple and basic. Note that there is no multi-tenancy.
+In this post, we are going to configure the leaf pairs as vPC.
+* vPC domain 11 includes leaf-1 and leaf-2
+* vPC domain 12 includes leaf-3 and leaf-4
 
-![external-connectivity-workshop](https://user-images.githubusercontent.com/31813625/232337435-1fed07e1-cb8f-4132-8f97-93a5ac587dd0.jpg)
-<br /> *VXLAN Fabric L3 External Connectivity Workshop*
+![vxlan vpc workshop](https://user-images.githubusercontent.com/31813625/232338536-b47e59a8-c115-4119-b1fa-2991b311eb55.jpg)
+<br /> *Workshop – vPC in VXLAN BGP EVPN*
 
 <details>
  
@@ -110,6 +44,8 @@ feature isis
 feature fabric forwarding
 feature interface-vlan
 feature vn-segment-vlan-based
+feature lacp
+feature vpc
 feature nv overlay
 
 fabric forwarding anycast-gateway-mac 0001.0001.0001
@@ -130,27 +66,44 @@ vrf context SMENODE
   address-family ipv4 unicast
     route-target both auto
     route-target both auto evpn
+vrf context management
+vpc domain 11
+  peer-switch
+  peer-keepalive destination 192.168.10.4 source 192.168.10.3
+  peer-gateway
 
 interface Vlan100
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip address 192.168.100.254/24
+  no ipv6 redirects
   fabric forwarding mode anycast-gateway
 
 interface Vlan200
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip address 192.168.200.254/24
+  no ipv6 redirects
   fabric forwarding mode anycast-gateway
 
 interface Vlan3967
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip forward
+  no ipv6 redirects
+
+interface port-channel11
+  switchport mode trunk
+  spanning-tree port type network
+  vpc peer-link
 
 interface nve1
   no shutdown
   host-reachability protocol bgp
+  advertise virtual-rmac
   source-interface loopback1
   member vni 20100
     mcast-group 239.1.1.100
@@ -176,6 +129,16 @@ interface Ethernet1/2
   ip pim sparse-mode
   no shutdown
 
+interface Ethernet1/5
+  switchport mode trunk
+  spanning-tree port type network
+  channel-group 11 mode active
+
+interface Ethernet1/6
+  switchport mode trunk
+  spanning-tree port type network
+  channel-group 11 mode active
+
 interface Ethernet1/41
   switchport access vlan 100
   spanning-tree port type edge
@@ -183,6 +146,10 @@ interface Ethernet1/41
 interface Ethernet1/42
   switchport access vlan 200
   spanning-tree port type edge
+
+interface mgmt0
+  vrf member management
+  ip address 192.168.10.3/24
 
 interface loopback0
   ip address 192.168.1.1/32
@@ -192,6 +159,7 @@ interface loopback0
 interface loopback1
   description NVE
   ip address 192.168.250.1/32
+  ip address 192.168.254.1/32 secondary
   ip router isis UNDERLAY
   ip pim sparse-mode
 
@@ -199,6 +167,8 @@ router isis UNDERLAY
   net 49.0000.0000.1001.00
   is-type level-2
 router bgp 65000
+  address-family l2vpn evpn
+    advertise-pip
   neighbor 192.168.0.1
     remote-as 65000
     update-source loopback0
@@ -229,6 +199,7 @@ evpn
 ```elixir
 hostname LEAF02
 
+cfs eth distribute
 nv overlay evpn
 feature bgp
 feature pim
@@ -236,6 +207,8 @@ feature isis
 feature fabric forwarding
 feature interface-vlan
 feature vn-segment-vlan-based
+feature lacp
+feature vpc
 feature nv overlay
 
 fabric forwarding anycast-gateway-mac 0001.0001.0001
@@ -256,27 +229,48 @@ vrf context SMENODE
   address-family ipv4 unicast
     route-target both auto
     route-target both auto evpn
+vrf context management
+vpc domain 11
+  peer-switch
+  peer-keepalive destination 192.168.10.3 source 192.168.10.4
+  peer-gateway
+
+interface Vlan1
+  no ip redirects
+  no ipv6 redirects
 
 interface Vlan100
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip address 192.168.100.254/24
+  no ipv6 redirects
   fabric forwarding mode anycast-gateway
 
 interface Vlan200
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip address 192.168.200.254/24
+  no ipv6 redirects
   fabric forwarding mode anycast-gateway
 
 interface Vlan3967
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip forward
+  no ipv6 redirects
+
+interface port-channel11
+  switchport mode trunk
+  spanning-tree port type network
+  vpc peer-link
 
 interface nve1
   no shutdown
   host-reachability protocol bgp
+  advertise virtual-rmac
   source-interface loopback1
   member vni 20100
     mcast-group 239.1.1.100
@@ -302,6 +296,16 @@ interface Ethernet1/2
   ip pim sparse-mode
   no shutdown
 
+interface Ethernet1/5
+  switchport mode trunk
+  spanning-tree port type network
+  channel-group 11 mode active
+
+interface Ethernet1/6
+  switchport mode trunk
+  spanning-tree port type network
+  channel-group 11 mode active
+
 interface Ethernet1/41
   switchport access vlan 100
   spanning-tree port type edge
@@ -312,6 +316,7 @@ interface Ethernet1/42
 
 interface mgmt0
   vrf member management
+  ip address 192.168.10.4/24
 
 interface loopback0
   ip address 192.168.1.2/32
@@ -321,6 +326,7 @@ interface loopback0
 interface loopback1
   description NVE
   ip address 192.168.250.2/32
+  ip address 192.168.254.1/32 secondary
   ip router isis UNDERLAY
   ip pim sparse-mode
 
@@ -328,6 +334,8 @@ router isis UNDERLAY
   net 49.0000.0000.1002.00
   is-type level-2
 router bgp 65000
+  address-family l2vpn evpn
+    advertise-pip
   neighbor 192.168.0.1
     remote-as 65000
     update-source loopback0
@@ -364,6 +372,8 @@ feature isis
 feature fabric forwarding
 feature interface-vlan
 feature vn-segment-vlan-based
+feature lacp
+feature vpc
 feature nv overlay
 
 fabric forwarding anycast-gateway-mac 0001.0001.0001
@@ -384,27 +394,44 @@ vrf context SMENODE
   address-family ipv4 unicast
     route-target both auto
     route-target both auto evpn
+vrf context management
+vpc domain 12
+  peer-switch
+  peer-keepalive destination 192.168.10.6 source 192.168.10.5
+  peer-gateway
 
 interface Vlan100
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip address 192.168.100.254/24
+  no ipv6 redirects
   fabric forwarding mode anycast-gateway
 
 interface Vlan200
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip address 192.168.200.254/24
+  no ipv6 redirects
   fabric forwarding mode anycast-gateway
 
 interface Vlan3967
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip forward
+  no ipv6 redirects
+
+interface port-channel12
+  switchport mode trunk
+  spanning-tree port type network
+  vpc peer-link
 
 interface nve1
   no shutdown
   host-reachability protocol bgp
+  advertise virtual-rmac
   source-interface loopback1
   member vni 20100
     mcast-group 239.1.1.100
@@ -430,6 +457,16 @@ interface Ethernet1/2
   ip pim sparse-mode
   no shutdown
 
+interface Ethernet1/5
+  switchport mode trunk
+  spanning-tree port type network
+  channel-group 12 mode active
+
+interface Ethernet1/6
+  switchport mode trunk
+  spanning-tree port type network
+  channel-group 12 mode active
+
 interface Ethernet1/41
   switchport access vlan 100
   spanning-tree port type edge
@@ -437,6 +474,10 @@ interface Ethernet1/41
 interface Ethernet1/42
   switchport access vlan 200
   spanning-tree port type edge
+
+interface mgmt0
+  vrf member management
+  ip address 192.168.10.5/24
 
 interface loopback0
   ip address 192.168.1.3/32
@@ -446,13 +487,19 @@ interface loopback0
 interface loopback1
   description NVE
   ip address 192.168.250.3/32
+  ip address 192.168.254.2/32 secondary
   ip router isis UNDERLAY
   ip pim sparse-mode
+icam monitor scale
 
+line console
+line vty
 router isis UNDERLAY
   net 49.0000.0000.1003.00
   is-type level-2
 router bgp 65000
+  address-family l2vpn evpn
+    advertise-pip
   neighbor 192.168.0.1
     remote-as 65000
     update-source loopback0
@@ -489,6 +536,8 @@ feature isis
 feature fabric forwarding
 feature interface-vlan
 feature vn-segment-vlan-based
+feature lacp
+feature vpc
 feature nv overlay
 
 fabric forwarding anycast-gateway-mac 0001.0001.0001
@@ -509,27 +558,43 @@ vrf context SMENODE
   address-family ipv4 unicast
     route-target both auto
     route-target both auto evpn
+vpc domain 12
+  peer-switch
+  peer-keepalive destination 192.168.10.5 source 192.168.10.6
+  peer-gateway
 
 interface Vlan100
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip address 192.168.100.254/24
+  no ipv6 redirects
   fabric forwarding mode anycast-gateway
 
 interface Vlan200
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip address 192.168.200.254/24
+  no ipv6 redirects
   fabric forwarding mode anycast-gateway
 
 interface Vlan3967
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip forward
+  no ipv6 redirects
+
+interface port-channel12
+  switchport mode trunk
+  spanning-tree port type network
+  vpc peer-link
 
 interface nve1
   no shutdown
   host-reachability protocol bgp
+  advertise virtual-rmac
   source-interface loopback1
   member vni 20100
     mcast-group 239.1.1.100
@@ -555,6 +620,16 @@ interface Ethernet1/2
   ip pim sparse-mode
   no shutdown
 
+interface Ethernet1/5
+  switchport mode trunk
+  spanning-tree port type network
+  channel-group 12 mode active
+
+interface Ethernet1/6
+  switchport mode trunk
+  spanning-tree port type network
+  channel-group 12 mode active
+
 interface Ethernet1/41
   switchport access vlan 100
   spanning-tree port type edge
@@ -562,6 +637,10 @@ interface Ethernet1/41
 interface Ethernet1/42
   switchport access vlan 200
   spanning-tree port type edge
+
+interface mgmt0
+  vrf member management
+  ip address 192.168.10.6/24
 
 interface loopback0
   ip address 192.168.1.4/32
@@ -571,6 +650,7 @@ interface loopback0
 interface loopback1
   description NVE
   ip address 192.168.250.4/32
+  ip address 192.168.254.2/32 secondary
   ip router isis UNDERLAY
   ip pim sparse-mode
 
@@ -578,6 +658,8 @@ router isis UNDERLAY
   net 49.0000.0000.1004.00
   is-type level-2
 router bgp 65000
+  address-family l2vpn evpn
+    advertise-pip
   neighbor 192.168.0.1
     remote-as 65000
     update-source loopback0
@@ -599,6 +681,7 @@ evpn
     route-target export auto
 ```
 </details>
+The following configurations remain intact compared to the last post.
 
 <details>
 
@@ -664,6 +747,10 @@ interface Ethernet1/6
   ip router isis UNDERLAY
   ip pim sparse-mode
   no shutdown
+
+interface mgmt0
+  vrf member management
+  ip address 192.168.10.1/24
 
 interface loopback0
   ip address 192.168.0.1/32
@@ -776,6 +863,10 @@ interface Ethernet1/6
   ip router isis UNDERLAY
   ip pim sparse-mode
   no shutdown
+
+interface mgmt0
+  vrf member management
+  ip address 192.168.10.2/24
 
 interface loopback0
   ip address 192.168.0.2/32
@@ -897,6 +988,10 @@ interface Ethernet1/12
   ip address 203.0.113.2/29
   no shutdown
 
+interface mgmt0
+  vrf member management
+  ip address 192.168.10.7/24
+
 interface loopback0
   ip address 192.168.4.252/32
   ip router isis UNDERLAY
@@ -962,6 +1057,7 @@ feature isis
 feature fabric forwarding
 feature interface-vlan
 feature vn-segment-vlan-based
+feature lacp
 feature nv overlay
 
 ip pim ssm range 232.0.0.0/8
@@ -975,11 +1071,18 @@ vrf context SMENODE
   address-family ipv4 unicast
     route-target both auto
     route-target both auto evpn
+vrf context management
+
+interface Vlan1
+  no ip redirects
+  no ipv6 redirects
 
 interface Vlan3967
   no shutdown
   vrf member SMENODE
+  no ip redirects
   ip forward
+  no ipv6 redirects
 
 interface nve1
   no shutdown
@@ -1023,6 +1126,7 @@ interface Ethernet1/12
 
 interface mgmt0
   vrf member management
+  ip address 192.168.10.8/24
 
 interface loopback0
   ip address 192.168.4.253/32
@@ -1034,7 +1138,7 @@ interface loopback1
   ip address 192.168.253.253/32
   ip router isis UNDERLAY
   ip pim sparse-mode
-
+  
 router isis UNDERLAY
   net 49.0000.0000.2002.00
   is-type level-2
