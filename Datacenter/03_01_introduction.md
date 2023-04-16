@@ -29,6 +29,7 @@ vPC provides multihoming from an L2 perspective. You will also have active-activ
 Virtual eXtensible LAN, which is an open standard, addresses all the STP limitations.
 * Data Plane: VXLAN RFC-7348
 * Control Plane: EVPN MP-BGP RFC-7432
+
 It supports up to 16M broadcast domains (as opposed to the 4K limitation). With VXLAN, you will have ECMP because VXLAN runs over IP. It also allows for Multitenancy and includes scaling enhancements.
 
 ### What is VXLAN
