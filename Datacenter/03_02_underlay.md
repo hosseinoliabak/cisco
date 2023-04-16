@@ -94,7 +94,7 @@ IS-IS routers are identified by NET (NET Entity Title). Here is an example of a 
 | Component | Description                                                                      | Example                        |
 | --------- | -------------------------------------------------------------------------------- | ------------------------------ |
 | Area      | Can range from 1 to 13 Byte(s) in length                                         | 49.0002                        |
-| System ID | Always 6 Bytes. Can be any set of hexadecimal digits                             | 1921.6803.6001 <br /> 1921.6803.6001 |
+| System ID | Always 6 Bytes. Can be any set of hexadecimal digits                             | 1921.6802.4001 <br /> 1921.6803.6001 |
 | Selector  | Identifies the destination network layer service that should receive the traffic | 00                             |
 
 
