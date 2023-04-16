@@ -77,25 +77,37 @@ LEAF01(config-if)#description VXLAN-VTEP-NVE-IF
 LEAF01(config-if)#ip address 192.168.250.1/32
 LEAF01(config-if)#ip router isis UNDERLAY
 ```
-### OSPF as an Underlay
+### OSPF as an Underlay Routing Protocol
 
 The default OSPF network type for Ethernet interfaces is broadcast. Since we are only having two points on each side of the link, we will change the interface type to point-to-point to avoid DR/BDR election process.
 
-In order to optimize SPF calculation, we issue the ispf command (to enable incremental SPF) under the OSPF process. When an interface which does not belong to SPT (stub network or a transit link not participating in SPT) goes down, instead of running full SPF, the switch runs incremental SPF. Nevertheless, when a link comes up, the full SPF must still run.
+In order to optimize SPF calculation, we issue the `ispf` command (to enable incremental SPF) under the OSPF process. When an interface which does not belong to SPT (stub network or a transit link not participating in SPT) goes down, instead of running full SPF, the switch runs incremental SPF. Nevertheless, when a link comes up, the full SPF must still run.
 
-### IS-IS as an Underlay
+OSPF routers are identified by router-id which has nothing to do with area ID
 
-IS-IS routers are identified by NSAP address where the first 13 bits define the IS-IS area and the next 48 bits identify the router. (Remember that OSPF routers are identified by router-id which has nothing to do with area ID).
+### IS-IS as an Underlay Routing Protocol
 
-### BGP as an Underlay
+IS-IS routers are identified by NET (NET Entity Title). Here is an example of a NET address:
+  * 49.0002.1921.6802.4001.00
+  * 49.0002.1921.6803.6001.00
+
+| Component | Description                                                                      | Example                        |
+| --------- | -------------------------------------------------------------------------------- | ------------------------------ |
+| Area      | Can range from 1 to 13 Byte(s) in length                                         | 49.0002                        |
+| System ID | Always 6 Bytes. Can be any set of hexadecimal digits                             | 1921.6802.4001
+
+1921.6803.6001 |
+| Selector  | Identifies the destination network layer service that should receive the traffic | 00                             |
+
+### BGP as an Underlay Routing Protocol
 
 BGP as a hard state protocol sends updates only when there is a change in NRLI. Spines usually do not host VTEP interface; so, we set the next-hop attribute to unchanged. If you use BGP in your underlay, remember that you will be having two different address-families per leaf: ipv4 unicast for underlay and L2VPN EVPN for overlay. Also, if the leaf connects to MPLS, you would also require VPNv4 as the third address-family.
 
 ## Overlay
 
-Then NVO requires a mechanism to know which end hosts (identities) are behind which edge device (Location). The Leaf switch builds a location-identity mapping database. There are three ways to facilitate the mapping.
+The NVO requires a mechanism to know which end hosts (identities) are behind which edge device (location). The Leaf switch builds a location-identity mapping database. There are three ways to facilitate the mapping.
   * Via Data Plane: through Flood and learn (F&L)
   * Via Overlay Control Plane: BGP EVPN
   * Via a central controller: Such as Cisco APIC or OpenDaylight
 
-Note that in this context, I mention the leaf switch pushes and pops the overlay headers. But this is under the umbrella of network overlay. We can also have Host Overlay runs on a virtual switch or router on a physical server. Both network overlay and host overlays are very popular.
+Note that in this context, under the umbrella of **Network Overlay**, the *leaf switch* pushes and pops the overlay headers. We can also have **Host Overlay** runs on a virtual switch or router on a physical server. Both network overlay and host overlays are very popular.
