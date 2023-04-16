@@ -15,7 +15,7 @@ In this section Let’s talk about IP addressing in our VXLAN Clos network archi
 | Loopback0     | Leafs and Spines | Unnumbered interfaces, IGP RID, BGP, PIM |
 | Loopback1     | Leafs            | NVE interface                            |
 | Loopback254   | Spines           | PIM Anycast RP                           |
-*IP Addressing Summary*
+[IP Addressing Summary]
 
 We will talk about Loopback254 later in another post.
 
