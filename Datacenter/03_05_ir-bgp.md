@@ -2,7 +2,11 @@
 
 In this post, I am going to explain how the location-identity mapping database populates using MP-BGP. Consider the image below where VTEP01 takes the original ARP L2 frame from HOST01. VTEP01 learns the IP-MAC binding of the end host. BGP Update sends the information to the Route-Reflector (iBGP), which in turn forwards this update message to all its BGP peers. With the support of BGP EVPN, the discovery of the VTEP neighbor is more dynamic.
 
-![VXLAN-FL_Multicast drawio-1](https://user-images.githubusercontent.com/31813625/232263028-9016fcb8-8cab-42d1-93ae-4f3f9093e7f0.svg "VXLAN IR with MP-BGP as control plane")
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/232263028-9016fcb8-8cab-42d1-93ae-4f3f9093e7f0.svg" alt="VXLAN IR with MP-BGP as control plane">
+  <figcaption>VXLAN Fabric Ingress Replication with BGP EVPN as Control Plane Workshop</figcaption>
+</figure>
+
 
 MP-BGP in combination with Ethernet VPN (EVPN) provides the control plane aspect. EVPN does not entirely remove the need for flooding. Broadcast traffic may still incur flooding.
 
@@ -99,7 +103,10 @@ The last note before we jump into the workshop is that we will discuss the verif
 
 In this scenario, we will configure our very first VXLAN topology with Flood and Learn as well as with Ingress Replication for BUM traffic. In this scenario, IS-IS is configured for underlay:
 
-![VXLAN Fabric Ingress Replication with BGP EVPN as Control Plane Workshop](https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg "VXLAN Fabric IR with MP-BGP Control Plane Workshop")
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg" alt="VXLAN Fabric IR with MP-BGP Control Plane Workshop">
+  <figcaption>VXLAN Fabric IR with MP-BGP Control Plane Workshop</figcaption>
+</figure>
 
 <details>
  

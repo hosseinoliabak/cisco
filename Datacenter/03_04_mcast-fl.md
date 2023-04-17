@@ -4,7 +4,11 @@ In the previous post, we talked about F&L with Ingress Replication (AKA head-end
 
 With multicast, VTEP V1 determines that the multidestination traffic needs to be sent to all members of VNI 20100. (As with IR, at the configuration time, when you configure the VNI, you also map it to a particular multicast group). VTEP V1 then encapsulates the packet with VXLAN header.
 
-![VXLAN-FL_Multicast](https://user-images.githubusercontent.com/31813625/232262481-cec126c2-f684-498d-aabf-88b0b68771d6.svg "VXLAN Flood and Learn with Multicast")
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/232262481-cec126c2-f684-498d-aabf-88b0b68771d6.svg" alt="VXLAN Flood and Learn with Multicast">
+  <figcaption>VXLAN Flood and Learn with Multicast</figcaption>
+</figure>
+
 
 VTEP V1 then sends out the packet toward the IP core. The multicast tree forwards the packet until it reaches all interested receivers.
 
@@ -30,7 +34,11 @@ LEAF01(config-if-nve-vni)# mcast-group 239.1.1.100
 
 In this scenario, we will elaborate and modify our first lab in the previous post to work with VXLAN Flood and Learn as well as with multicast instead of Ingress Replication to handle BUM traffic. In this scenario, IS-IS is configured for underlay:
 
-![VXLAN Flood and Learn with Multicast Workshop](https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg "VXLAN F&L and Multicast Workshop")
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg" alt="VXLAN F&L and Multicast Workshop">
+  <figcaption>VXLAN Flood and Learn with Multicast Workshop</figcaption>
+</figure>
+
 
 <details>
  
