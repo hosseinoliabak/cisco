@@ -1,23 +1,26 @@
 # VXLAN Fabric Ingress Replication with BGP EVPN as Control Plane
-In this post, I am going to explain how the location-identity mapping database populates using MP-BGP. Consider the image below where VTEP01 takes the original ARP L2 frame from the HOST01. VTEP01 learns IP-MAC binding of the end host. BGP Update sends the information to the Route-Reflector (iBGP), which in turn forwards this update message to all its BGP peers. With the support of BGP EVPN, the discovery of the VTEP neighbour is more dynamic.
 
-![VXLAN-FL_Multicast drawio-1](https://user-images.githubusercontent.com/31813625/232263028-9016fcb8-8cab-42d1-93ae-4f3f9093e7f0.svg)
-*VXLAN IR with MP-BGP as control plane*
+In this post, I am going to explain how the location-identity mapping database populates using MP-BGP. Consider the image below where VTEP01 takes the original ARP L2 frame from HOST01. VTEP01 learns the IP-MAC binding of the end host. BGP Update sends the information to the Route-Reflector (iBGP), which in turn forwards this update message to all its BGP peers. With the support of BGP EVPN, the discovery of the VTEP neighbor is more dynamic.
+
+![VXLAN-FL_Multicast drawio-1](https://user-images.githubusercontent.com/31813625/232263028-9016fcb8-8cab-42d1-93ae-4f3f9093e7f0.svg "VXLAN IR with MP-BGP as control plane")
 
 MP-BGP in combination with Ethernet VPN (EVPN) provides the control plane aspect. EVPN does not entirely remove the need for flooding. Broadcast traffic may still incur flooding.
 
 ### VXLAN with BGP EVPN Configuration Overview
-n this scenario, multidestination traffic is handled using IR (as opposed to PIM). In order to use BGP EVPN as the control plane, you need nv overlay evpn global configuration.
 
-MP-BGP is known for its scalability, multitenancy, and routing policy capabilities. BGP EVPN address family (address-family l2vpn evpn) carries the MAC, IP, Network, VRF, and VTEP information of the hosts. Once a VTEP leans about a host behind it, BGP EVPN distributes this information to all other BGP EVPN neighbours. We have already discussed MP-BGP in this post. But I am going to give a brief summary in our BGP EVPN context.
+In this scenario, multidestination traffic is handled using IR (as opposed to PIM). In order to use BGP EVPN as the control plane, you need `nv overlay evpn` global configuration.
 
-Route Distinguisher helps us differentiate between different routes stored in MP-BGP table. For separation and path efficiency, use a unique RD on a per-VRF, per- router basis.
+MP-BGP is known for its scalability, multitenancy, and routing policy capabilities. BGP EVPN address family (`address-family l2vpn evpn`) carries the MAC, IP, Network, VRF, and VTEP information of the hosts. Once a VTEP learns about a host behind it, BGP EVPN distributes this information to all other BGP EVPN neighbors. We have already discussed MP-BGP in this post. But I am going to give a brief summary in our BGP EVPN context.
 
-Route Target – which happens to have a similar notation as RD – associates with a particular route which then allows that route placed in the VRF which imports that route.
-  * Export route-target: what routes will go from VRF into BGP
-  * Import route-target: what routes will go from BGP into VRF
+Route Distinguisher helps us differentiate between different routes stored in the MP-BGP table. For separation and path efficiency, use a unique RD on a per-VRF, per-router basis.
+
+Route Target – which happens to have a similar notation as RD – associates with a particular route which then allows that route to be placed in the VRF which imports that route.
+
+* Export route-target: what routes will go from VRF into BGP
+* Import route-target: what routes will go from BGP into VRF
 
 NX-OS provides automated derivation of RDs and RTs for simplification. The snippet below is an example of the configuration in one of the leafs.
+
 
 ```c
 LEAF01(config)# nv overlay evpn
@@ -57,7 +60,7 @@ LEAF01(config-evpn-evi)# rd auto
 LEAF01(config-evpn-evi)# route-target both auto
 ```
 
-VXLAN core which is unaware of the inner header (identity), forwards the VXLAN frame based on only outer header (location). So, in our case, VXLAN core – which is typically our spines, are unaware of endpoint addresses (identities). But in order to carry the MP-BGP routes, you need to enable nv overlay evpn on them. Spines are good choice of being BGP RRs.
+VXLAN core which is unaware of the inner header (identity), forwards the VXLAN frame based on only outer header (location). So, in our case, VXLAN core – which is typically our spines, are unaware of endpoint addresses (identities). But in order to carry the MP-BGP routes, you need to enable `nv overlay evpn` on them. Spines are good choice of being BGP RRs.
 
 ```c
 SPIN01(config)# nv overlay evpn
@@ -93,10 +96,10 @@ There are two other notes here to mention: the subsequent messages are unicast i
 The last note before we jump into the workshop is that we will discuss the verification commands along with BGP EVPN Route types in the next post.
 
 ## Workshop
+
 In this scenario, we will configure our very first VXLAN topology with Flood and Learn as well as with Ingress Replication for BUM traffic. In this scenario, IS-IS is configured for underlay:
 
-![vxlaws1](https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg)
-*VXLAN Fabric IR with MP-BGP Control Plane Workshop*
+![VXLAN Fabric Ingress Replication with BGP EVPN as Control Plane Workshop](https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg "VXLAN Fabric IR with MP-BGP Control Plane Workshop")
 
 <details>
  

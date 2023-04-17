@@ -1,9 +1,8 @@
 # VXLAN Fabric Multicast with MP-BGP as Control Plane
 
-In this section, we are going to discuss MP-BGP VXLAN with PIM to handle multi-destination traffic. So, your complete bipartite graph must support PIM. This is why in this post, we happened to choose loopback 254 on the spines for our PIM Anycast RP.
+In this section, we are going to discuss MP-BGP VXLAN with PIM to handle multi-destination traffic. So, your complete bipartite graph must support PIM. This is why in [this post](https://github.com/hosseinoliabak/cisco/blob/master/Datacenter/03_02_underlay.md), we happened to choose loopback 254 on the spines for our PIM Anycast RP.
 
-![VXLAN-BGP_MULTI-CAST](https://user-images.githubusercontent.com/31813625/232263601-6aff1eb2-048b-4104-ac3e-014383cb079b.svg)
-*VXLAN MP-BGP EVPN with Multicast in the fabric*
+![VXLAN-BGP_MULTI-CAST](https://user-images.githubusercontent.com/31813625/232263601-6aff1eb2-048b-4104-ac3e-014383cb079b.svg "VXLAN MP-BGP EVPN with Multicast in the fabric") 
 
 VTEP V1 then sends out the packet toward the IP core. The multicast tree forwards the packet until it reaches all interested receivers.
 
@@ -151,8 +150,8 @@ LEAF01(config-evpn-evi)# route-target export auto
 
 In this scenario, we will elaborate and modify our first lab in the previous post to work with VXLAN Flood and Learn as well as with multicast instead of Ingress Replication to handle BUM traffic. In this scenario, IS-IS is configured for underlay:
 
-![vxlaws1](https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg)
-*VXLAN Fabric Multicast with MP-BGP Control Plane Workshop*
+![VXLAN Fabric Multicast with MP-BGP as Control Plane](https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg "VXLAN Fabric Multicast with MP-BGP Control Plane Workshop")
+
 
 <details>
  

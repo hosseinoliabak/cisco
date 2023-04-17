@@ -77,7 +77,7 @@ LEAF01(config-if)#description VXLAN-VTEP-NVE-IF
 LEAF01(config-if)#ip address 192.168.250.1/32
 LEAF01(config-if)#ip router isis UNDERLAY
 ```
-### OSPF as an Underlay Routing Protocol
+### OSPF as the Underlay Routing Protocol
 
 The default OSPF network type for Ethernet interfaces is broadcast. Since we are only having two points on each side of the link, we will change the interface type to point-to-point to avoid DR/BDR election process.
 
@@ -85,7 +85,7 @@ In order to optimize SPF calculation, we issue the `ispf` command (to enable inc
 
 OSPF routers are identified by router-id which has nothing to do with area ID
 
-### IS-IS as an Underlay Routing Protocol
+### IS-IS as the Underlay Routing Protocol
 
 IS-IS routers are identified by NET (NET Entity Title). Here is an example of a NET address:
   * 49.0002.1921.6802.4001.00
@@ -98,7 +98,7 @@ IS-IS routers are identified by NET (NET Entity Title). Here is an example of a 
 | Selector  | Identifies the destination network layer service that should receive the traffic | 00                             |
 
 
-### BGP as an Underlay Routing Protocol
+### BGP as the Underlay Routing Protocol
 
 BGP as a hard state protocol sends updates only when there is a change in NRLI. Spines usually do not host VTEP interface; so, we set the next-hop attribute to unchanged. If you use BGP in your underlay, remember that you will be having two different address-families per leaf: ipv4 unicast for underlay and L2VPN EVPN for overlay. Also, if the leaf connects to MPLS, you would also require VPNv4 as the third address-family.
 
