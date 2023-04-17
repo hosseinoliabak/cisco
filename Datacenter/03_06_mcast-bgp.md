@@ -4,7 +4,7 @@ In this section, we are going to discuss MP-BGP VXLAN with PIM to handle multi-d
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232263601-6aff1eb2-048b-4104-ac3e-014383cb079b.svg" alt="VXLAN MP-BGP EVPN with Multicast in the fabric">
-  <figcaption>VXLAN-BGP_MULTI-CAST</figcaption>
+  <figcaption>VXLAN MP-BGP EVPN with Multicast in the fabric</figcaption>
 </figure>
 
 VTEP V1 then sends out the packet toward the IP core. The multicast tree forwards the packet until it reaches all interested receivers.
