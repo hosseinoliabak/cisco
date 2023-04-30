@@ -260,6 +260,7 @@ Windows
   <img src="https://user-images.githubusercontent.com/31813625/235331687-4dc4405b-c001-4640-bb77-a731d2168d29.png" alt="NIC Teaming – LACP OK">
   <figcaption>Figure 6: NIC Teaming – LACP OK</figcaption>
 </figure>
+
 </details>
 
 ### Verification
