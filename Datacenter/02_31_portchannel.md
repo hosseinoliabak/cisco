@@ -247,7 +247,7 @@ Windows
 </figure>
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/235331669-45a1ae93-c9a3-48e9-9460-a2cdbe036511.png alt="NIC Teaming – Add to New Team">
+  <img src="https://user-images.githubusercontent.com/31813625/235331669-45a1ae93-c9a3-48e9-9460-a2cdbe036511.png" alt="NIC Teaming – Add to New Team">
   <figcaption>Figure 4: NIC Teaming – Add to New Team</figcaption>
 </figure>
 
