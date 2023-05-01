@@ -8,7 +8,7 @@
 
 * **Itself:** Host can use it’s own interface IP or its loopback address to send a packet to itself.
 * **Same local network:** When a host wants to send a packet to someone else, it checks if the destination is in the different network or in the same network (how? with its IP/Mask parameters). If the destination is in the same network, host sends an ARP request to find the destination MAC.
-**Different network:** If the destination is in the different network than our host, the host will send an ARP request to find the destination MAC address of it’s default gateway.
+* **Different network:** If the destination is in the different network than our host, the host will send an ARP request to find the destination MAC address of it’s default gateway.
 
 Another role of the network layer is to provide a/some loop-free path(s). There is three general classes of solutions which widely deployed to provide a loop-free path for packet forwarding:
 
