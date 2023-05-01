@@ -177,7 +177,7 @@ The goal with MCLAG is make the server think that it is multihomed to a single s
   <figcaption>Figure 2: Port-Channel Workshop</figcaption>
 </figure>
 
-Configuration
+#### Configuration
 
 <details>
  
@@ -263,7 +263,7 @@ Windows
 
 </details>
 
-### Verification
+#### Verification
 
 <details>
 

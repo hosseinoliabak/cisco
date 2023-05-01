@@ -75,6 +75,7 @@ In this workshop, we are going to cover the all topics in this post.
   <figcaption>Figure 3: vPC Topology in the Workshop</figcaption>
 </figure>
 
+#### Configuration 
 
 <details>
  
@@ -224,10 +225,7 @@ interface vlan 200
 
 </details>
 
-
-
-
-### Verification
+#### Verification
 
 <details>
 

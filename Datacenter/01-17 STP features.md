@@ -121,6 +121,8 @@ N9K01, N9K02, and N9K03 connect together in a triangle topology:
   <figcaption>Figure 4: Multiple Spanning Tree Configuration Topology</figcaption>
 </figure>
 
+#### Configuration
+
 <details>
  
 <summary>N9K01</summary>
@@ -164,6 +166,8 @@ N9K01, N9K02, and N9K03 connect together in a triangle topology:
     spanning-tree loopguard default
 ```
 </details>
+
+#### Verification
 
 <details>
 

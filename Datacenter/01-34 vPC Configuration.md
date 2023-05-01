@@ -52,6 +52,7 @@ Next, we are going to multihome two servers to two different Nexus switches; the
   <figcaption>Figure 1: vPC Topology in the Workshop</figcaption>
 </figure>
 
+#### Configuration
 
 <details>
  
@@ -164,7 +165,7 @@ Windows
 
 </details>
 
-### Verification
+#### Verification
 
 In this section I am going to describe some important switch knife troubleshooting commands with vPC. I will be explaining the output of these verification commands in the next post.
 

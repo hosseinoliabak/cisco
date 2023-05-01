@@ -20,6 +20,7 @@ There is another use case for back-to-back vPC which is for Datacenters Intercon
 
 In this workshop, we are going to demonstrate back-to-back vPC configuration in three different domains (Figure 1). With domain 1 being aggregation layer, domain 2 and 3 being access layer.
 
+#### Configuration
 
 <details>
  

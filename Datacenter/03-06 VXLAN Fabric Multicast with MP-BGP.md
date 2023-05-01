@@ -158,6 +158,7 @@ In this scenario, we will elaborate and modify our first lab in the previous pos
   <figcaption>VXLAN Fabric Multicast with MP-BGP Control Plane Workshop</figcaption>
 </figure>
 
+#### Configuration
 
 <details>
  

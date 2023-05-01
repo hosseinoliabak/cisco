@@ -30,6 +30,8 @@ In this post, we are going to configure the leaf pairs as vPC.
 ![vxlan vpc workshop](https://user-images.githubusercontent.com/31813625/232338536-b47e59a8-c115-4119-b1fa-2991b311eb55.jpg)
 <br /> *Workshop – vPC in VXLAN BGP EVPN*
 
+#### Configuration
+
 <details>
  
 <summary>LEAF01</summary>
