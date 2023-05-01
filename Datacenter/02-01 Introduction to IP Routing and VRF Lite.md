@@ -82,6 +82,8 @@ In this workshop are are going to interconnect two nexus switches each with two 
   <figcaption>Figure 1: VRF Lite Workshop</figcaption>
 </figure>
 
+#### Configuration
+
 <details>
  
 <summary>N9K01</summary>
@@ -148,8 +150,9 @@ vrf context CX-1
 vrf context CX-2
   ip route 172.20.20.0/24 100.64.2.0
 ```
-</details>  
-Verification:
+</details>
+
+#### Verification
 
 Verify the routing table for each VRF:
 <details>
@@ -193,7 +196,8 @@ IP Route Table for VRF "CX-2"
 172.31.31.0/24, ubest/mbest: 1/0
     *via 100.64.2.1, [1/0], 00:06:08, static
 ```
-</details>    
+</details>
+
 Verify the end host reachability:
 
 <details>
