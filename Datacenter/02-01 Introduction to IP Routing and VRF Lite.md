@@ -78,7 +78,7 @@ In this workshop are are going to interconnect two nexus switches each with two 
 ![image](https://user-images.githubusercontent.com/31813625/235474911-e6de81b9-3bb6-45e2-b158-f6dcb12ee7f1.png)
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/235373850-b08a57b6-b90d-4e13-ad4a-c48c72cbfe12.png" alt="VRF Lite Workshop">
+  <img src="https://user-images.githubusercontent.com/31813625/235474911-e6de81b9-3bb6-45e2-b158-f6dcb12ee7f1.png" alt="VRF Lite Workshop">
   <figcaption>Figure 1: VRF Lite Workshop</figcaption>
 </figure>
 
