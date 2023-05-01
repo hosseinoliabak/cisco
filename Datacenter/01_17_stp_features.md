@@ -126,8 +126,6 @@ N9K01, N9K02, and N9K03 connect together in a triangle topology:
 <summary>N9K01</summary>
 
 ```elixir
-N9K01
-
   configure terminal
     spanning-tree vlan 1-3967 priority 0
     interface ethernet 1/7
