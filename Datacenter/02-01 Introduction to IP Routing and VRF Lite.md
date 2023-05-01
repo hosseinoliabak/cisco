@@ -155,7 +155,7 @@ vrf context CX-2
 Verify the routing table for each VRF:
 <details>
 
-<summary>N9K01</summary>
+<summary>N9K01 (On the left)</summary>
 
 ```go
 N9K01# show ip route vrf CX-1
@@ -200,7 +200,7 @@ Verify the end host reachability:
 
 <details>
 
-<summary>N9K02</summary>
+<summary>N9K02 (On the right)</summary>
 
 ```go
 N9K01# ping 172.30.30.1 source-interface loopback 101
