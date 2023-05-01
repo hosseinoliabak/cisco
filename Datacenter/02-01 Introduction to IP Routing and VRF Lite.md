@@ -84,7 +84,7 @@ In this workshop are are going to interconnect two nexus switches each with two 
 
 <details>
  
-<summary>N9K01</summary>
+<summary>N9K01 (On the left)</summary>
 
 ```go
 vrf context CX-1
@@ -118,7 +118,7 @@ vrf context CX-2
 
 <details>
 
-<summary>N9K02</summary>
+<summary>N9K02 (On the right)</summary>
 
 ```go
 vrf context CX-1
