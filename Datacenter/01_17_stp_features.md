@@ -114,8 +114,6 @@ Number of inconsistent ports (segments) in the system : 1
 
 We will continue from the same topology and configuration in the workshop that we have had if the this post.
 
-## Workshop: MST Configuration
-
 N9K01, N9K02, and N9K03 connect together in a triangle topology:
 
 <figure>
