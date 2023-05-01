@@ -108,6 +108,8 @@ In this scenario, we will configure our very first VXLAN topology with Flood and
   <figcaption>VXLAN Fabric IR with MP-BGP Control Plane Workshop</figcaption>
 </figure>
 
+#### Configuration
+
 <details>
  
 <summary>SPINE01</summary>

@@ -96,8 +96,10 @@ In this workshop, we are building a full mesh external connectivity. I am trying
 ![external-connectivity-workshop](https://user-images.githubusercontent.com/31813625/232337435-1fed07e1-cb8f-4132-8f97-93a5ac587dd0.jpg)
 <br /> *VXLAN Fabric L3 External Connectivity Workshop*
 
+#### Configuration
+
 <details>
- 
+
 <summary>LEAF01</summary>
 
 ```elixir
