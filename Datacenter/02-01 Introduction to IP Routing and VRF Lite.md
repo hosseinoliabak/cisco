@@ -75,8 +75,6 @@ N9K01(config-vrf)# ip route 172.30.30.0/24 100.64.1.1
 
 In this workshop are are going to interconnect two nexus switches each with two VRFs
 
-![image](https://user-images.githubusercontent.com/31813625/235474911-e6de81b9-3bb6-45e2-b158-f6dcb12ee7f1.png)
-
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/235474911-e6de81b9-3bb6-45e2-b158-f6dcb12ee7f1.png" alt="VRF Lite Workshop">
   <figcaption>Figure 1: VRF Lite Workshop</figcaption>
