@@ -20,7 +20,7 @@ Now it is time to talk about some jargons in multicast, then we will continue sp
   <figcaption>Figure 1: Multicast Terminologies</figcaption>
 </figure>
   
-
+  
 ### Shortest Path Tree (SPT)
 
 With shortest path tree or the source tree, traffic flows from the source and FHR (the root of the tree) to the receivers (the leaves) via the shortest path (that is closest to the receivers). Multicast forwarding table represents the source tree by (S, G). S indicates the Source address and G indicates group address.
@@ -29,8 +29,8 @@ With shortest path tree or the source tree, traffic flows from the source and FH
   <img src="https://user-images.githubusercontent.com/31813625/235806165-ce35dd6c-b0ef-4954-ac70-490748ca833e.png" alt="Distinct Source Trees">
   <figcaption>Figure 2: Distinct Source Trees</figcaption>
 </figure>
+   
   
-
 With SPT, each router in the path must share and maintain state information. It would be very difficult for every router to manage this process completely independently in a very large network, or if there were a great number of sources. That is why the IETF introduced another type of network tree: the shared tree.
 
 Summary:
@@ -52,7 +52,7 @@ The drawback of shared trees is that the subscribers to the same multicast group
   <figcaption>Figure 3: Shared Tree (RPT)</figcaption>
 </figure>
   
-
+  
 Summary:
   * RPT roots at RP for (*,G)
   * There are two trees. (S,G) from the source to RP. and (*,G) from receivers to RP.
@@ -65,5 +65,6 @@ Bidirectional shared tree scales very well with M-to-M applications. Let’s say
   <img src="https://user-images.githubusercontent.com/31813625/235806530-9896c35f-916c-4843-afab-8b926a33421d.png" alt="Bidirectional shared tree">
   <figcaption>Figure 4: Bidirectional shared tree</figcaption>
 </figure>
+  
   
 With bidirectional shared-tree, multicast groups are carried across the network over bidirectional shared trees, hence we never would have the (S,G) entry. We only have wildcard-source (*,G) routes. So, for the example above, we only need one (*,G) which is rooted on RP. With bidirectional shared tree, traffic can flow on both directions to and from the sources for each group. Loop prevention in bidirectional tree is different than RPF check. We will use Designated Forwarder for this purpose. With designated forwarder, only one router in each link (including point-to-point links) can forward the multicast traffic. DF accepts data on its OIL then sends out all other interfaces including IIF.
