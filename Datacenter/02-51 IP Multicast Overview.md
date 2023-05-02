@@ -53,7 +53,7 @@ Multicast is data transmission from one or a group of publishers to a group of s
 </figure>
 
 
-**So, what is the advantage of Multicast, again?**
+#### So, what is the advantage of Multicast, again?
 
 * The publisher does not need to know who the subscriber is. It’s the job of the network to find the subscribers.
 * Publisher transmits a single feed for all subscribers.
