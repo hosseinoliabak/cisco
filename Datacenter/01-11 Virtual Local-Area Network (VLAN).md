@@ -81,7 +81,7 @@ N9K01(config)# system default switchport
 ```
 
 ### IEEE 802.1Q Trunk
-Up to now, we have logically broke a single physical switch down to multiple broadcast domains. Think that now we want to extend this broadcast domain to another switch. Hence, we need to configure the same VLANs on the second switch. Well, we have so far, configured the VLANs on both switches; next, we want to connect them together. One option is to extend each broadcast domain to the other switch by interconnecting each broadcast domain (meaning each VLAN) physically together. In another word, for VLAN A if you want to extend, you need at least one physical Ethernet cable to connect one of the switchports in VLAN A to one of the switchports in VLAN A on the other side. Do you see any problem with this? What if you have 20 VLANs on each switch?
+Up to now, we have logically broken a single physical switch down to multiple broadcast domains. Think that now we want to extend this broadcast domain to another switch. Hence, we need to configure the same VLANs on the second switch. Well, we have so far, configured the VLANs on both switches; next, we want to connect them together. One option is to extend each broadcast domain to the other switch by interconnecting each broadcast domain (meaning each VLAN) physically together. In another word, for VLAN A if you want to extend, you need at least one physical Ethernet cable to connect one of the switchports in VLAN A to one of the switchports in VLAN A on the other side. Do you see any problem with this? What if you have 20 VLANs on each switch?
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/235381319-fa6ca47d-93d8-4062-bffc-b12c2c011007.png" alt="Inter-Switch Link without Trunking">
