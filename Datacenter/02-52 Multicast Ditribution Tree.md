@@ -19,7 +19,7 @@ Now it is time to talk about some jargons in multicast, then we will continue sp
   <img src="https://user-images.githubusercontent.com/31813625/235804011-bd6145b0-6522-42cb-a2cf-188593ee8adb.png" alt="Multicast Terminologies">
   <figcaption>Figure 1: Multicast Terminologies</figcaption>
 </figure>
-  
+<p>&nbsp</p>   
   
 ### Shortest Path Tree (SPT)
 
@@ -30,7 +30,7 @@ With shortest path tree or the source tree, traffic flows from the source and FH
   <figcaption>Figure 2: Distinct Source Trees</figcaption>
 </figure>
 <p>&nbsp</p>   
-  
+
 With SPT, each router in the path must share and maintain state information. It would be very difficult for every router to manage this process completely independently in a very large network, or if there were a great number of sources. That is why the IETF introduced another type of network tree: the shared tree.
 
 Summary:
@@ -51,7 +51,7 @@ The drawback of shared trees is that the subscribers to the same multicast group
   <img src="https://user-images.githubusercontent.com/31813625/235806357-69738839-e5e7-4b35-b62c-853de7dd6b18.png" alt="Shared Tree (RPT)">
   <figcaption>Figure 3: Shared Tree (RPT)</figcaption>
 </figure>
-  
+<p>&nbsp</p>   
   
 Summary:
   * RPT roots at RP for (*,G)
@@ -65,6 +65,6 @@ Bidirectional shared tree scales very well with M-to-M applications. Let’s say
   <img src="https://user-images.githubusercontent.com/31813625/235806530-9896c35f-916c-4843-afab-8b926a33421d.png" alt="Bidirectional shared tree">
   <figcaption>Figure 4: Bidirectional shared tree</figcaption>
 </figure>
-  
+<p>&nbsp</p>   
   
 With bidirectional shared-tree, multicast groups are carried across the network over bidirectional shared trees, hence we never would have the (S,G) entry. We only have wildcard-source (*,G) routes. So, for the example above, we only need one (*,G) which is rooted on RP. With bidirectional shared tree, traffic can flow on both directions to and from the sources for each group. Loop prevention in bidirectional tree is different than RPF check. We will use Designated Forwarder for this purpose. With designated forwarder, only one router in each link (including point-to-point links) can forward the multicast traffic. DF accepts data on its OIL then sends out all other interfaces including IIF.
