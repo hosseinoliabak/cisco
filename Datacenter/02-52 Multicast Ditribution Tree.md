@@ -29,7 +29,7 @@ With shortest path tree or the source tree, traffic flows from the source and FH
   <img src="https://user-images.githubusercontent.com/31813625/235806165-ce35dd6c-b0ef-4954-ac70-490748ca833e.png" alt="Distinct Source Trees">
   <figcaption>Figure 2: Distinct Source Trees</figcaption>
 </figure>
-   
+<p>&nbsp</p>   
   
 With SPT, each router in the path must share and maintain state information. It would be very difficult for every router to manage this process completely independently in a very large network, or if there were a great number of sources. That is why the IETF introduced another type of network tree: the shared tree.
 
