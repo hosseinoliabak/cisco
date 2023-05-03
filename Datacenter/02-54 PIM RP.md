@@ -41,7 +41,7 @@ N9K04(config)# ip pim bsr listen
 Auto-RP propagates RP information via Auto-RP messages. RPs (Candidate RPs) announce their availability to the mapping agents who is listening on 224.0.1.39. Downstream routers listen to 224.0.1.40 for mapping advertisements from mapping agent.
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/235809486-64266e6a-10a4-44c2-9fb0-d9174f424211.png" alt="Auto-RP">
+  <img src="https://user-images.githubusercontent.com/31813625/235810359-dcd19063-c773-4182-a925-ff12aed6f6d3.png" alt="Auto-RP">
   <figcaption>Figure 2: Auto-RP</figcaption>
 </figure>
 <p>&nbsp</p>   
