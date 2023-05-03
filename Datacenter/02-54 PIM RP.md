@@ -10,10 +10,11 @@ You can configure – for different groups – as many rendezvous points as you 
     * Bootstrap Router (BSR): Makes sure that all routers in the multicast domain have the same RP as the BSR.
     * Auto-RP: Cisco proprietary which was used prior to BSR standard.
   * Active/Active RPs
-    * Anycast RP
-    * Phantom RP
+    * Anycast RP: For PIM ASM
+    * Phantom RP: For PIM BiDir
 
 > Note: Static RP can coexist with Dynamic RP. But dynamic RP takes precedence over the static RP.
+
 > Note: You cannot configure BSR and Auto-RP at the same time.
 
 ### BSR
@@ -158,7 +159,7 @@ N9K01(config)# ip pim anycast-rp 192.168.0.254 192.168.0.2
 N9K01(config)# ip pim rp-address 192.168.0.254
 ```
 
-Configuration on non-RPs remain unchanged
+Configuration on non-RPs remain unchanged: It is the same as it would be for a single RP
 
 ```elixir
 N9K03(config)# ip pim rp-address 192.168.0.254
@@ -243,3 +244,37 @@ The Nexus platform supports both Anycast PIM and MSDP modes. So, This is a good 
 ### Phantom RP
 
 PIM BiDir uses phantom RP or virtual RP for HA. It doesn’t need to be a physical router because there is no PIM Register message with PIM BiDir; so, there is no unicast packet to the RP address. Unlike PIM ASM, with BiDir the RP does not handle any control plane load and RP information. It is just an indication towards the root of the RPT.
+
+The preferred method for providing PIM BiDir RP redundancy is to use logical loopback interfaces with different prefix lengths. This method relies on the unicast routing longest prefix match route lookups to guarantee a consistent path to the RP. The RP address remains a phantom address (one not associated with any physical entity), but it is still necessary to ensure that a route to the RP exists.
+
+![multicast-Phantom RP drawio]()
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/235812425-b5296942-cd2f-4fdb-9259-a21841761b84.svg" alt="Phantom RP">
+  <figcaption>Figure 5: Phantom RP</figcaption>
+</figure>
+<p>&nbsp</p>   
+
+As long as both routes are present and both routers are functional and available, unicast routing chooses the longest match and converges to the primary router. The secondary router’s advertised route is chosen only when the primary router goes offline or all of its interfaces are not operational.
+
+Define Phantom Rendezvous-Point SPINE01
+```elixir
+ip pim rp address 192.168.0.254 bidir
+! Loopback Interface Configuration (RP) (Redundancy)
+interface loopback 254
+ip address 192.168.0.253/30
+ip pim sparse-mode
+```
+
+Define Phantom Rendezvous-Point SPINE02
+```elixir
+ip pim rp address 192.168.0.254 bidir
+! Loopback Interface Configuration (RP) (Redundancy)
+interface loopback 254
+ip address 192.168.0.253/29
+ip pim sparse-mode
+```
+On Non-RP routers, or leafs the configuration remains unchanged: It is the same as it would be for a single RP.
+
+```elixir
+ip pim rp address 192.168.0.254 bidir
+```
