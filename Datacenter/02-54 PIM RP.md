@@ -247,7 +247,6 @@ PIM BiDir uses phantom RP or virtual RP for HA. It doesn’t need to be a physic
 
 The preferred method for providing PIM BiDir RP redundancy is to use logical loopback interfaces with different prefix lengths. This method relies on the unicast routing longest prefix match route lookups to guarantee a consistent path to the RP. The RP address remains a phantom address (one not associated with any physical entity), but it is still necessary to ensure that a route to the RP exists.
 
-![multicast-Phantom RP drawio]()
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/235812425-b5296942-cd2f-4fdb-9259-a21841761b84.svg" alt="Phantom RP">
   <figcaption>Figure 5: Phantom RP</figcaption>
