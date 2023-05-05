@@ -14,7 +14,7 @@ Route Type 2 has a mandatory MAC address and MAC address Length field. We can al
 
 Once a VTEP learns MAC/IP information of an end host, it sends a BGP update including route type 2 to other VTEPs. The total length of route type 2 can be:
 
-  * 216 bits: Mac-Only
+  * 216 bits: MAC-Only
   * 272 bits: MAC + IPv4 + L3VNI
   * 386 bits: MAC + IPv6 + L3VNI
 
