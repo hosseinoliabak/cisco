@@ -51,6 +51,39 @@ Flags: (0x000202) (high32 00000000) on xmit-list, is not in l2rib/evpn, is not i
 
   Path-id 1 not advertised to any peer
 ``` 
+
+
+<pre class="wp-block-code" style="font-size:15px"><code><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-cyan-bluish-gray-color">LEAF01(config)# </mark><strong><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-vivid-red-color">show bgp l2vpn evpn 5000.000e.0000</mark></strong><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-cyan-bluish-gray-color">
+BGP routing table information for VRF default, address family L2VPN EVPN
+
+</mark><strong><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-vivid-green-cyan-color">Route Distinguisher: 192.168.1.4:32967</mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-luminous-vivid-orange-color">
+</mark></strong><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-cyan-bluish-gray-color">BGP routing table entry for </mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-vivid-green-cyan-color"><strong>[2]:[0]:[0]:[48]:[5000.000e.0000]:[0]:[0.0.0.0]</strong></mark><strong><mark style="background-color:#7bdcb5" class="has-inline-color has-black-color">/216</mark></strong><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-black-color">,</mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-cyan-bluish-gray-color">
+</mark>Route_Type_2:ESI:ETI:MAC_Address_Length:MAC_Addr:IP_Address_Length:IP_Address:/Whole_Length
+ <mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-cyan-bluish-gray-color">version 335
+Paths: (2 available, best #2)
+Flags: (0x000202) (high32 00000000) on xmit-list, is not in l2rib/evpn, is not in HW
+
+  Path type: internal, path is valid, not best reason: Neighbor Address, no labeled nexthop
+  AS-Path: NONE, path sourced internal to AS
+    192.168.250.4 (metric 81) from 192.168.0.2 (192.168.0.2)
+      Origin IGP, MED not set, localpref 100, weight 0
+      Received label 20200
+      Extcommunity: RT:65000:20200 ENCAP:8
+      Originator: 192.168.1.4 Cluster list: 192.168.0.2
+
+  Advertised path-id 1
+  Path type: internal, </mark><mark style="background-color:#8ed1fc" class="has-inline-color has-black-color">path is valid, is best path</mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-cyan-bluish-gray-color">, no labeled nexthop
+             Imported to 1 destination(s)
+             Imported paths list: L2-20200
+  AS-Path: NONE, path sourced internal to AS
+    192.168.250.4 (metric 81) from 192.168.0.1 (192.168.0.1)
+      Origin IGP, MED not set, localpref 100, weight 0
+      Received label </mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-luminous-vivid-orange-color">20200</mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-cyan-bluish-gray-color"> </mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-black-color">(L2VNI)</mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-cyan-bluish-gray-color">
+      Extcommunity: </mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-luminous-vivid-orange-color">RT:65000:20200 ENCAP:8</mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-cyan-bluish-gray-color"> </mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-black-color">(Overlay Encapsulation 8 means VXLAN)</mark><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-cyan-bluish-gray-color">
+      Originator: 192.168.1.4 Cluster list: 192.168.0.1
+
+  Path-id 1 not advertised to any peer</mark></code></pre>
+
 The example below shows BGP EVPN Route Type 2 (MAC + IPv4 + L3VNI):
 
 ```c
