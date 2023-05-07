@@ -7,43 +7,43 @@ This is facilitated by creating a Switch Virtual Interface (SVI) which is a logi
 ### How to Configure IVR
 To configure IVR, you only need to create the SVIs and give them their IP addresses. In order to create an SVI, you would need to enable the feature on NX-OS (Nexus Operating System). In the example below, I have created two SVIs, one for each VLAN 100 and VLAN 200. Remember that these SVIs can be the default gateway of their respective VLANs:
 
-```c
-N9K01# configure terminal
-N9K01(config)#feature interface-vlan
+<pre>
+N9K01# <b><ins>configure</ins></b>
+N9K01(config)#<b><ins>feature interface-vlan</ins></b>
 
-N9K01(config)# vlan 100
-N9K01(config-vlan)# name VLAN100
-N9K01(config)# vlan 200
-N9K01(config-vlan)# name VLAN200
+N9K01(config)# <b><ins>vlan 100</ins></b>
+N9K01(config-vlan)# <b><ins>name VLAN100</ins></b>
+N9K01(config)# <b><ins>vlan 200</ins></b>
+N9K01(config-vlan)# <b><ins>name VLAN200</ins></b>
 
-N9K01(config)#interface Vlan 100
-N9K01(config-if)#no shutdown
-N9K01(config-if)#ip address 192.168.100.1/24
+N9K01(config)# <b><ins>interface Vlan 100</ins></b>
+N9K01(config-if)# <b><ins>no shutdown</ins></b>
+N9K01(config-if)# <b><ins>ip address 192.168.100.1/24</ins></b>
 
-N9K01(config)#interface Vlan 200
-N9K01(config-if)#no shutdown
-N9K01(config-if)#ip address 192.168.200.1/24
-```
+N9K01(config)# <b><ins>interface Vlan 200</ins></b>
+N9K01(config-if)# <b><ins>no shutdown</ins></b>
+N9K01(config-if)# <b><ins>ip address 192.168.200.1/24</ins></b>
+</pre>
 
 From this point, we don’t need to do anything further as the SVIs are Layer-3 interfaces and they will appear as *attached* in the routing table.
 
-```c
-N9K01# show ip route
+<pre>
+N9K01# <b><ins>show ip route</ins></b>
 IP Route Table for VRF "default"
 '*' denotes best ucast next-hop
 '**' denotes best mcast next-hop
 '[x/y]' denotes [preference/metric]
 '%<string>' in via output denotes VRF <string>
 
-192.168.100.0/24, ubest/mbest: 1/0, attached
-    *via 192.168.100.1, Vlan100, [0/0], 00:14:34, direct
+<b>192.168.100.0/24, ubest/mbest: 1/0, attached
+    *via 192.168.100.1, Vlan100, [0/0], 00:14:34, direct</b>
 192.168.100.1/32, ubest/mbest: 1/0, attached
     *via 192.168.100.1, Vlan100, [0/0], 00:14:34, local
-192.168.200.0/24, ubest/mbest: 1/0, attached
-    *via 192.168.200.1, Vlan200, [0/0], 00:14:03, direct
+<b>192.168.200.0/24, ubest/mbest: 1/0, attached
+    *via 192.168.200.1, Vlan200, [0/0], 00:14:03, direct</b>
 192.168.200.1/32, ubest/mbest: 1/0, attached
     *via 192.168.200.1, Vlan200, [0/0], 00:14:03, local
-```
+</pre>
 
 NX-OS can now perform IVR between the two VLANs.
 
@@ -64,30 +64,30 @@ In this post, you will learn how to change this default expectation and exclude 
 
 Here is an example of how we exclude an Ethernet interface from the calculation
 
-```c
-N9K01# configure terminal
-N9K01(config)# interface ethernet 1/1
-N9K01(config-if)# switchport autostate exclude
-```
+<pre>
+N9K01# <b><ins>configure</ins></b>
+N9K01(config)# <b><ins>interface ethernet 1/1</ins></b>
+N9K01(config-if)# <b><ins>switchport autostate exclude</ins></b>
+</pre>
 
 #### Negate SVI autostate globally for all interfaces
 
 Below is an example of how to disable the autostate calculation globally by default
 
-```c
-N9K01# configure terminal
-N9K01(config)# no system default interface-vlan autostate
-```
+<pre>
+N9K01# <b><ins>configure</ins></b>
+N9K01(config)# <b><ins>no system default interface-vlan autostate</ins></b>
+</pre>
 
 #### Negate SVI autostate per SVI basis
 
 Here is an example of how to disable autostate feature per SVI itself
 
-```c
-N9K01# configure terminal
-N9K01(config)# interface vlan 100
-N9K01(config-if)# no autostate
-```
+<pre>
+N9K01# <b><ins>configure</ins></b>
+N9K01(config)# <b><ins>interface vlan 100</ins></b>
+N9K01(config-if)# <b><ins>no autostate</ins></b>
+</pre>
 
 ## Workshop
 

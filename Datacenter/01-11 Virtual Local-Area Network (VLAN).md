@@ -52,7 +52,7 @@ N9K01# <b><ins>configure terminal</ins></b>
 N9K01(config)# <b><ins>interface ethernet 1/2</ins></b>
 N9K01(config-if)# <b><ins>switchport host</ins></b>
 <b>
-configure
+configure terminal
 interface Ethernet1/2
 no channel-group
 switchport mode access
