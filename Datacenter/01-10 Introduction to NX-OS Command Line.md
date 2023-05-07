@@ -4,7 +4,7 @@ In this section, we assume that you know how to connect to a NX-OS CLI via a ter
 
 If you **skip** Power On Auto Provisioning, you must configure the password later, you also must tell the switch with global configuration command of `boot nxos64-cs.10.2.2.F.bin` where to boot the NX-OS from. Failing to do so, would result in loosing the configuration and starting from boot loader after the reboot.
 
-<pre><code class="language-java">2022 Apr 22 23:49:35 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] (yes/skip/no)[no]:
+<pre><code>2022 Apr 22 23:49:35 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] (yes/skip/no)[no]:
 skip
 
 !!! NOTE: You have selected skip option. POAP will be aborted and password configuration will be skipped !!!
@@ -52,7 +52,7 @@ switch# {Here you have jumped to privilege EXEC mode. No User Mode Like with Cat
 
 Upon typing yes Power On Auto Provisioning, you will continue with normal setup starting by setting up a password. (This is recommended)
 
-<pre><code class="language-java">2022 Apr 23 00:38:43 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] (yes/skip/no)[no]: yes
+<pre><code>2022 Apr 23 00:38:43 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] (yes/skip/no)[no]: yes
 
 Disabling POAP...                                                                                                                                                                                                    2022 Apr 23 00:38:56 switch %$ VDC-1 %$ poap: Rolling back, please wait... (This may take 5-15 minutes)
 Disabling lldp
@@ -158,7 +158,7 @@ To move in to global configuration mode, use `configure` command in the privileg
 
 To check the chassis host name and base MAC address use `show sprom backplane` followed by supervisor number command :
 
-<pre><code class="language-java">N9K01# show sprom backplane 1
+<pre><code>N9K01# show sprom backplane 1
 DISPLAY backplane sprom contents:
 Common block:
  Block Signature : 0xABAB
@@ -215,7 +215,7 @@ License software-module specific block:
 
 To check the NX-OS Software Version along with memory and disk information as well as the system uptime use `show version` command:
 
-<pre><code class="language-java">N9K01(config)# show version
+<pre><code>N9K01(config)# show version
 Cisco Nexus Operating System (NX-OS) Software
 TAC support: http://www.cisco.com/tac
 Documents: http://www.cisco.com/en/US/products/ps9372/tsd_products_support_serie
@@ -260,7 +260,7 @@ Active Package(s):
 
 With NX-OS software we have the ability to enable and disable specific features, such as Interface-vlan, OSPF. To verify which features are already enabled:
 
-<pre><code class="language-java">N9K01(config)# show feature | include enable
+<pre><code>N9K01(config)# show feature | include enable
 icam                   1          enabled
 license-smart          1          enabled
 sshServer              1          enabled
@@ -268,7 +268,7 @@ sshServer              1          enabled
 
 To enable a feature type the command `feature FEATURE-NAME`:
 
-<pre><code class="language-java">N9K01(config)# feature ?
+<pre><code>N9K01(config)# feature ?
   analytics               Enable/Disable Analytics!!!
   bash-shell              Enable/Disable bash-shell
   bfd                     Bfd
@@ -285,7 +285,7 @@ To enable a feature type the command `feature FEATURE-NAME`:
 
 The command where returns what your present working context is
 
-<pre><code class="language-java">N9K01(config)# where
+<pre><code>N9K01(config)# where
 
   conf      admin@N9K01%default
 N9K01(config)# interface ethernet 1/1
@@ -299,7 +299,7 @@ N9K01(config-if)#
 
 If you want to revert a configuration, you would use command no in the beginning of the regular command:
 
-<pre><code class="language-java">N9K01(config)# ip route 0.0.0.0/0 192.168.0.1
+<pre><code>N9K01(config)# ip route 0.0.0.0/0 192.168.0.1
 N9K01(config)# no ip route 0.0.0.0/0 192.168.0.1
 </code></pre>
 
@@ -307,7 +307,7 @@ N9K01(config)# no ip route 0.0.0.0/0 192.168.0.1
 
 You might be wanting using aliases for frequently used commands.
 
-<pre><code class="language-java">N9K01(config)# wr
+<pre><code>N9K01(config)# wr
 
                  ^
 % Incomplete command at &#39;^&#39; marker.
@@ -322,7 +322,7 @@ N9K01(config)# wr
 
 Unlike IOS or IOS-XE, you don’t need to run privilege EXEC command by adding do in the beginning of the command. You can run privilege EXEC commands directly from configuration mode:
 
-<pre><code class="language-java">N9K01(config-if)# show vlan brief
+<pre><code>N9K01(config-if)# show vlan brief
 
 VLAN Name                             Status    Ports
 ---- -------------------------------- --------- -------------------------------
@@ -345,14 +345,14 @@ N9K01(config)# show cli history unformatted | last 7
 
 You can separate multiple commands to the CLI using `;` .
 
-<pre><code class="language-java">N9K01# configure terminal ; interface ethernet 1/1 ; shutdown ; no shutdown
+<pre><code>N9K01# configure terminal ; interface ethernet 1/1 ; shutdown ; no shutdown
 </code></pre>
 
 ##### Toggling Between Different Command Modes
 
 You can toggle between different configuration mode using `push` and `pop`
 
-<pre><code class="language-java">N9K01(config)# interface ethernet 1/1
+<pre><code>N9K01(config)# interface ethernet 1/1
 N9K01(config-if)# push
 N9K01(config-if)# end
 N9K01# pop
@@ -365,7 +365,7 @@ N9K01(config-if)# where
 
 In order you take a snapshot of the current startup config you can use `checkpoint` global configuration command along with choosing a snapshot name. To restore the configuration, you would use the `rollback` global command.
 
-<pre><code class="language-java">N9K01(config)# show running-config interface ethernet 1/1
+<pre><code>N9K01(config)# show running-config interface ethernet 1/1
 
 !Command: show running-config interface Ethernet1/1
 !Running configuration last done at: Sat Apr 23 01:34:36 2022
@@ -433,5 +433,5 @@ N9K01(config-if)#
 
 Some commands have long output. By default you the output comes in pages in the terminal standard output. In order to see the whole command output outright, you need to turn of the pagination. Try this:
 
-<pre><code class="language-java">N9K01(config-if)# show running-config | no-more
+<pre><code>N9K01(config-if)# show running-config | no-more
 </code></pre>
