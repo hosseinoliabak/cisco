@@ -267,26 +267,26 @@ Active Package(s):
 
 With NX-OS software we have the ability to enable and disable specific features, such as Interface-vlan, OSPF. To verify which features are already enabled:
 
-```
-N9K01(config)# show feature | include enable
-icam                   1          enabled
-license-smart          1          enabled
-sshServer              1          enabled
-```
+<pre>
+N9K01(config)# <b><ins>show feature | include enable</ins></b>
+<b>icam</b>                   1          enabled
+<b>license-smart</b>          1          enabled
+<b>sshServer</b>              1          enabled
+</pre>
 
 To enable a feature type the command `feature FEATURE-NAME`:
 
-```
-N9K01(config)# feature ?
+<pre>
+N9K01(config)# <b><ins>feature ?</ins></b>
   analytics               Enable/Disable Analytics!!!
   bash-shell              Enable/Disable bash-shell
-  bfd                     Bfd
-  bgp                     Enable/Disable Border Gateway Protocol (BGP)
+  <b>bfd</b>                     Bfd
+  <b>bgp</b>                     Enable/Disable Border Gateway Protocol (BGP)
   container-tracker       Enable/Disable NXOS Container Tracker
   dhcp                    Enable/Disable DHCP Manager
   dot1x                   Enable/Disable dot1x
 ...
-```
+</pre>
 
 ### Some handy commands while working with CLI
 
@@ -294,93 +294,95 @@ N9K01(config)# feature ?
 
 The command where returns what your present working context is
 
-```
-N9K01(config)# where
+<pre>
+N9K01(config)# <b></ins>where</ins></b>
 
-  conf      admin@N9K01%default
+  <b>conf</b>      admin@N9K01%default
 N9K01(config)# interface ethernet 1/1
 N9K01(config-if)# where
 
-  conf; interface Ethernet1/1      admin@N9K01%default
+  <b>conf; interface Ethernet1/1</b>      admin@N9K01%default
 N9K01(config-if)#
-```
+</pre>
 
 ##### Negate a command using no
 
 If you want to revert a configuration, you would use command no in the beginning of the regular command:
 
-```
-N9K01(config)# ip route 0.0.0.0/0 192.168.0.1
-N9K01(config)# no ip route 0.0.0.0/0 192.168.0.1
-```
+<pre>
+N9K01(config)# <b><ins>ip route 0.0.0.0/0 192.168.0.1</ins></b>
+N9K01(config)# <b><ins>no ip route 0.0.0.0/0 192.168.0.1</ins></b>
+</pre>
 
 ##### Alias
 
 You might be wanting using aliases for frequently used commands.
 
-```
-N9K01(config)# wr
+<pre>
+N9K01(config)# <b><ins>wr</ins></b>
 
-                 ^
+                 <b>^</b>
 % Incomplete command at '^' marker.
-N9K01(config)# cli alias name wr copy running startup
-N9K01(config)# wr
+N9K01(config)# <b><ins>cli alias name wr copy running startup</ins></b>
+N9K01(config)# <b><ins>wr</ins></b>
 
 2022 Apr 23 01:34:41 N9K01
 [########################################] 100%
-```
+</pre>
 
 ##### Run show commands from CLI
 
 Unlike IOS or IOS-XE, you don’t need to run privilege EXEC command by adding do in the beginning of the command. You can run privilege EXEC commands directly from configuration mode:
 
-```
-N9K01(config-if)# show vlan brief
+<pre>
+N9K01(<b>config-if</b>)# <b><ins>show vlan brief</ins></b>
 
 VLAN Name                             Status    Ports
 ---- -------------------------------- --------- -------------------------------
 1    default                          active    Eth1/1, Eth1/2, Eth1/3, Eth1/4
-                                                Eth1/5, Eth1/6, Eth1/7, Eth1/8
-CLI History
+</pre>                                                Eth1/5, Eth1/6, Eth1/7, Eth1/8
+
+#### CLI History
 You can access the CLI history for the current session
 
-N9K01(config)# show cli history unformatted | last 7
-    ip route 0.0.0.0/0 192.168.0.1
+<pre>
+N9K01(config)# <b><ins>show cli history unformatted | last 7</ins></b>
+    <b>ip route 0.0.0.0/0 192.168.0.1
     no ip route 0.0.0.0/0 192.168.0.1
     interface ethernet 1/1
       shutdown
       no shutdown
     exit
-  show cli history unformatted | last 7
-```
+  show cli history unformatted | last 7</b>
+</pre>
 
 ##### Issue multiple commands in a single line
 
 You can separate multiple commands to the CLI using `;` .
 
-```
-N9K01# configure terminal ; interface ethernet 1/1 ; shutdown ; no shutdown
-```
+<pre>
+N9K01# <b><ins>configure ; interface ethernet 1/1 ; shutdown ; no shutdown</ins></b>
+</pre>
 
 ##### Toggling Between Different Command Modes
 
 You can toggle between different configuration mode using `push` and `pop`
 
-```
-N9K01(config)# interface ethernet 1/1
-N9K01(config-if)# push
-N9K01(config-if)# end
-N9K01# pop
+<pre>
+N9K01(config)# <b><ins>interface ethernet 1/1</ins></b>
+N9K01(config-if)# <b><ins>push</ins></b>
+N9K01(config-if)# <b><ins>end</ins></b>
+N9K01# <b></ins>pop</ins></b>
 Enter configuration commands, one per line. End with CNTL/Z.
 N9K01(config-if)# where
-  conf; interface Ethernet1/1      admin@N9K01%default
-```
+  <b>conf; interface Ethernet1/1</b>      admin@N9K01%default
+</pre>
 
 ##### Checkpoint and Rollback
 
 In order you take a snapshot of the current startup config you can use `checkpoint` global configuration command along with choosing a snapshot name. To restore the configuration, you would use the `rollback` global command.
 
-```
+<pre>
 N9K01(config)# show running-config interface ethernet 1/1
 
 !Command: show running-config interface Ethernet1/1
@@ -389,29 +391,29 @@ N9K01(config)# show running-config interface ethernet 1/1
 
 version 10.2(2) Bios:version
 
-interface Ethernet1/1
+<b>interface Ethernet1/1
 
 ! No Configuration Here
-N9K01(config)#
-N9K01(config)# checkpoint CHK01
+N9K01(config)#</b>
+N9K01(config)# <b><ins>checkpoint CHK01</ins></b>
 .Done
 ! Let's do some arbitrary configuration changes
-N9K01(config)# interface ethernet 1/1
-N9K01(config-if)# switchport access vlan 100
-N9K01(config-if)# show running-config interface ethernet 1/1
+N9K01(config)# <b><ins>interface ethernet 1/1</ins></b>
+N9K01(config-if)# <b><ins>switchport access vlan 100</ins></b>
+N9K01(config-if)# <b><ins>show running-config interface ethernet 1/1</ins></b>
 
 !Command: show running-config interface Ethernet1/1
 !Running configuration last done at: Sat Apr 23 01:47:39 2022
 !Time: Sat Apr 23 01:47:52 2022
 
 version 10.2(2) Bios:version
-
+<b>
 interface Ethernet1/1
   switchport access vlan 100
+</b>
 
-
-! Let's restore our last snapshot to  the running configuration
-N9K01(config-if)# rollback running-config checkpoint CHK01
+<b><i>! Let's restore our last snapshot to  the running configuration</i></b>
+N9K01(config-if)# <b><ins>rollback running-config checkpoint CHK01</ins></b>
 ADVISORY: Rollback operation started...
 Modifying running configuration from another VSH terminal in parallel
 is not recommended, as this may lead to Rollback failure.
@@ -430,25 +432,26 @@ Generating Rollback Patch
 Rollback completed successfully.
 
 
-! Let's verify if our configuration has been restored
-N9K01(config-if)# show running-config interface ethernet 1/1
+<b><i>! Let's verify if our configuration has been restored</i></b>
+N9K01(config-if)# <b><ins>show running-config interface ethernet 1/1</ins></b>
 
 !Command: show running-config interface Ethernet1/1
 !Running configuration last done at: Sat Apr 23 01:48:34 2022
 !Time: Sat Apr 23 01:48:51 2022
 
 version 10.2(2) Bios:version
-
+<b>
 interface Ethernet1/1
 
-! Nothing Here
+<i>! Nothing Here</i>
 N9K01(config-if)#
-```
+</b>
+</pre>
 
 ##### Terminal Length 0 (Turn off Pagination)
 
 Some commands have long output. By default you the output comes in pages in the terminal standard output. In order to see the whole command output outright, you need to turn of the pagination. Try this:
 
-```
-N9K01(config-if)# show running-config | no-more
-```
+<pre>
+N9K01(config-if)# <b><ins>show running-config | no-more</ins></b>
+</pre>
