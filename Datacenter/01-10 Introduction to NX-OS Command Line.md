@@ -57,9 +57,9 @@ Upon typing yes Power On Auto Provisioning, you will continue with normal setup 
 Disabling POAP...                                                                                                                                                                                                    2022 Apr 23 00:38:56 switch %$ VDC-1 %$ poap: Rolling back, please wait... (This may take 5-15 minutes)
 Disabling lldp
 
-
+<span color="red">
          ---- System Admin Account Setup ----
-
+</span>
 
 Do you want to enforce secure password standard (yes/no) [y]:
 
@@ -84,11 +84,12 @@ to skip the remaining dialogs.
 
 2022 Apr 23 00:39:52 switch %$ VDC-1 %$ %COPP-2-COPP_POLICY: Control-Plane is protected with policy copp-system-p-policy-strict.
 
-<mark>
+<color=red>
 User Access Verification
  login: admin
 Password:
-<mark>
+</color>
+
 Cisco NX-OS Software
 Copyright (c) 2002-2021, Cisco Systems, Inc. All rights reserved.
 Nexus 9000v software (&quot;Nexus 9000v Software&quot;) and related documentation,
