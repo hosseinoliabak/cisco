@@ -6,7 +6,7 @@ If you **skip** Power On Auto Provisioning, you must configure the password late
 
 <pre>
 2022 Apr 22 23:49:35 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] <b>(yes/skip/no)</b>[no]:
-<b></u>skip</u></b>
+<b><u>skip</u></b>
 
 !!! NOTE: You have selected skip option. POAP will be aborted and password configuration will be skipped !!!
 Disabling POAP.......Disabling POAP
@@ -19,7 +19,7 @@ Disabling lldp
 
 User Access Verification
  login: admin
-Password: {No Password Was Entered Here}
+Password: <i><b>{No Password Was Entered Here}</b></i>
  
 Cisco NX-OS Software
 Copyright (c) 2002-2021, Cisco Systems, Inc. All rights reserved.
@@ -48,7 +48,7 @@ http://www.gnu.org/licenses/lgpl.html
 *  purposes is expressly prohibited except as otherwise authorized by     *
 *  Cisco in writing.                                                      *
 ***************************************************************************
-switch# {Here you have jumped to privilege EXEC mode. No User Mode Like with Catalyst}
+switch# <i><b>{Here you have jumped to privilege EXEC mode. No User Mode Like with Catalyst}</b></i>
 </pre>
 
 Upon typing yes Power On Auto Provisioning, you will continue with normal setup starting by setting up a password. (This is recommended)
