@@ -19,7 +19,7 @@ Disabling lldp
 
 User Access Verification
  login: admin
-Password: <em>{No Password Was Entered Here}</em>
+Password: <b><i>{No Password Was Entered Here}</i></b>
  
 Cisco NX-OS Software
 Copyright (c) 2002-2021, Cisco Systems, Inc. All rights reserved.
@@ -54,7 +54,7 @@ switch# <i><b>{Here you have jumped to privilege EXEC mode. No User Mode Like wi
 Upon typing yes Power On Auto Provisioning, you will continue with normal setup starting by setting up a password. (This is recommended)
 
 <pre>
-2022 Apr 23 00:38:43 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] <b>(yes/skip/no)</b>[no]: <b><u>yes</u></b>
+2022 Apr 23 00:38:43 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] <b>(yes/skip/no)</b>[no]: <b><ins>yes</ins></b>
 
 Disabling POAP... 
 2022 Apr 23 00:38:56 switch %$ VDC-1 %$ poap: Rolling back, please wait... (This may take 5-15 minutes)
@@ -162,7 +162,7 @@ To move in to global configuration mode, use `configure` command in the privileg
 To check the chassis host name and base MAC address use `show sprom backplane` followed by supervisor number command :
 
 </pre>
-N9K01# <strong><u>show sprom backplane 1</strong></u>
+N9K01# <strong><ins>show sprom backplane 1</strong></ins>
 DISPLAY backplane sprom contents:
 Common block:
  Block Signature : 0xABAB
@@ -222,7 +222,7 @@ License software-module specific block:
 To check the NX-OS Software Version along with memory and disk information as well as the system uptime use `show version` command:
 
 <pre>
-N9K01(config)# <b><u>show version</b></u>
+N9K01(config)# <b><ins>show version</b></ins>
 Cisco Nexus Operating System (NX-OS) Software
 TAC support: http://www.cisco.com/tac
 Documents: http://www.cisco.com/en/US/products/ps9372/tsd_products_support_serie
