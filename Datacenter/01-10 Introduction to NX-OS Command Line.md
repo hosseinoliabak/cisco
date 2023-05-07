@@ -85,7 +85,7 @@ to skip the remaining dialogs.
 2022 Apr 23 00:39:52 switch %$ VDC-1 %$ %COPP-2-COPP_POLICY: Control-Plane is protected with policy copp-system-p-policy-strict.
 
 
-
+<span style="background-color: #FFFF00">This text is highlighted in yellow.</span>
 
 User Access Verification
  login: admin
