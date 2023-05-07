@@ -4,9 +4,9 @@ In this section, we assume that you know how to connect to a NX-OS CLI via a ter
 
 If you **skip** Power On Auto Provisioning, you must configure the password later, you also must tell the switch with global configuration command of `boot nxos64-cs.10.2.2.F.bin` where to boot the NX-OS from. Failing to do so, would result in loosing the configuration and starting from boot loader after the reboot.
 
-```
-2022 Apr 22 23:49:35 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] **(yes/skip/no)**[no]:
-**skip**
+<pre>
+2022 Apr 22 23:49:35 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] <b>(yes/skip/no)</b>[no]:
+<b></u>skip</u></b>
 
 !!! NOTE: You have selected skip option. POAP will be aborted and password configuration will be skipped !!!
 Disabling POAP.......Disabling POAP
@@ -49,7 +49,7 @@ http://www.gnu.org/licenses/lgpl.html
 *  Cisco in writing.                                                      *
 ***************************************************************************
 switch# {Here you have jumped to privilege EXEC mode. No User Mode Like with Catalyst}
-```
+</pre>
 
 Upon typing yes Power On Auto Provisioning, you will continue with normal setup starting by setting up a password. (This is recommended)
 
