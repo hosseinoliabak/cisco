@@ -1,6 +1,6 @@
 # Introduction to NX-OS Command Line
 
-In this section, we assume that you know how to connect to a NX-OS CLI via a terminal emulator program. Here is how we bootstrap our Nexus switch for the first time.
+In this section, we assume <span style="color: green"> that you know how to connect </span> to a NX-OS CLI via a terminal emulator program. Here is how we bootstrap our Nexus switch for the first time.
 
 If you **skip** Power On Auto Provisioning, you must configure the password later, you also must tell the switch with global configuration command of `boot nxos64-cs.10.2.2.F.bin` where to boot the NX-OS from. Failing to do so, would result in loosing the configuration and starting from boot loader after the reboot.
 
@@ -57,9 +57,7 @@ Upon typing yes Power On Auto Provisioning, you will continue with normal setup 
 Disabling POAP...                                                                                                                                                                                                    2022 Apr 23 00:38:56 switch %$ VDC-1 %$ poap: Rolling back, please wait... (This may take 5-15 minutes)
 Disabling lldp
 
-<span color="red">
          ---- System Admin Account Setup ----
-</span>
 
 Do you want to enforce secure password standard (yes/no) [y]:
 
