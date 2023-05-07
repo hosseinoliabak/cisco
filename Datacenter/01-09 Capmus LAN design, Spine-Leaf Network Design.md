@@ -1,4 +1,4 @@
-# Capmus LAN design, Spine-Leaf Network Design
+# Campus LAN design, Spine-Leaf Network Design
 
 In this post I am going to talk about different network architecture: the traditional campus design, then Spine-Leaf (AKA Leaf-and-spine architecture) and what problems the spine-leaf network design addresses.
 
