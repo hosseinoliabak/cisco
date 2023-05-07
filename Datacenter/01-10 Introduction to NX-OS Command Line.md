@@ -53,10 +53,11 @@ switch# <i><b>{Here you have jumped to privilege EXEC mode. No User Mode Like wi
 
 Upon typing yes Power On Auto Provisioning, you will continue with normal setup starting by setting up a password. (This is recommended)
 
-```
-2022 Apr 23 00:38:43 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] (yes/skip/no)[no]: yes
+<pre>
+2022 Apr 23 00:38:43 switch %$ VDC-1 %$ %POAP-2-POAP_INFO: - Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] <b>(yes/skip/no)</b>[no]: <b><u>yes</u></b>
 
-Disabling POAP...                                                                                                                                                                                                    2022 Apr 23 00:38:56 switch %$ VDC-1 %$ poap: Rolling back, please wait... (This may take 5-15 minutes)
+Disabling POAP... 
+2022 Apr 23 00:38:56 switch %$ VDC-1 %$ poap: Rolling back, please wait... (This may take 5-15 minutes)
 Disabling lldp
 
 
@@ -88,11 +89,11 @@ to skip the remaining dialogs.
 
 
 
-
+<b>
 User Access Verification
  login: admin
 Password:
-
+</b>
 Cisco NX-OS Software
 Copyright (c) 2002-2021, Cisco Systems, Inc. All rights reserved.
 Nexus 9000v software ("Nexus 9000v Software") and related documentation,
@@ -121,7 +122,7 @@ http://www.gnu.org/licenses/lgpl.html
 *  Cisco in writing.                                                      *
 ***************************************************************************
 switch#
-```
+</pre>
 
 Choosing **no** or if you hit return key you have noed the prompt. In this case, you will stick in the Power On Auto Provisioning asking the same question.
 
@@ -160,8 +161,8 @@ To move in to global configuration mode, use `configure` command in the privileg
 
 To check the chassis host name and base MAC address use `show sprom backplane` followed by supervisor number command :
 
-```
-N9K01# show sprom backplane 1
+</pre>
+N9K01# <strong><u>show sprom backplane 1</strong></u>
 DISPLAY backplane sprom contents:
 Common block:
  Block Signature : 0xABAB
@@ -173,8 +174,10 @@ Common block:
  FRU Major Type  : 0x0
  FRU Minor Type  : 0x0
  OEM String      :
+<b>
  Product Number  : N9K-C9300v
  Serial Number   : 9GRZKIVE65I
+</b>
  Part Number     :
  Part Revision   :
  Mfg Deviation   :
@@ -194,7 +197,7 @@ Chassis specific block:
  Feature Bits    : 0x0
  HW Changes Bits : 0x0
  Stackmib OID    : 0
- MAC Addresses   : 50-00-00-02-00-00
+ <b>MAC Addresses   : 50-00-00-02-00-00</b>
  Number of MACs  : 128
  OEM Enterprise  : 0
  OEM MIB Offset  : 0
@@ -214,12 +217,12 @@ License software-module specific block:
  Block Checksum  : 0x77
  lic usage bits:
  00 00 00 00 00 00 00 00
- ```
+</pre>
 
 To check the NX-OS Software Version along with memory and disk information as well as the system uptime use `show version` command:
 
-```
-N9K01(config)# show version
+<pre>
+N9K01(config)# <b><u>show version</b></u>
 Cisco Nexus Operating System (NX-OS) Software
 TAC support: http://www.cisco.com/tac
 Documents: http://www.cisco.com/en/US/products/ps9372/tsd_products_support_serie
@@ -237,17 +240,17 @@ Software
   BIOS: version
   NXOS: version 10.2(2) [Feature Release]
   BIOS compile time:
-  NXOS image file is: bootflash:///nxos64-cs.10.2.2.F.bin
+  NXOS image file is: <strong>bootflash:///nxos64-cs.10.2.2.F.bin</strong>
   NXOS compile time:  12/14/2021 23:00:00 [12/15/2021 11:59:34]
 
 Hardware
   cisco Nexus9000 C9300v Chassis
-   with 16399552 kB of memory.
+   <b>with 16399552 kB of memory.</b>
   Processor Board ID 90HFD7LJVD4
   Device name: N9K01
-  bootflash:    4287040 kB
+  <strong>bootflash:    4287040 kB</strong>
 
-Kernel uptime is 1 day(s), 1 hour(s), 14 minute(s), 14 second(s)
+Kernel uptime is <b>1 day(s), 1 hour(s), 14 minute(s), 14 second(s)</b>
 
 Last reset
   Reason: Unknown
@@ -258,7 +261,7 @@ plugin
   Core Plugin, Ethernet Plugin
 
 Active Package(s):
-```
+</pre>
 
 ### Features
 
