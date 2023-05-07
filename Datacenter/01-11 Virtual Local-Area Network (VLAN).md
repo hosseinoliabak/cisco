@@ -10,8 +10,8 @@ Here is the list of VLAN IDs you can configure on a switch:
   * On NX-OS platforms, you can use these VLANs out of the box – as opposed to with Catalyst switches wherein you need to have VTP version 3 or VTP mode transparent.
 * Internal:
   * These VLANs are being used for internal applications.
-```c
-N9K01# show vlan internal usage
+<pre>
+N9K01# <b><ins>show vlan internal usage</ins></b>
 
 VLANs                   DESCRIPTION
 -------------------     -----------------
@@ -24,38 +24,40 @@ VLANs                   DESCRIPTION
 4041                    VXLAN Encap
 4046                    VXLAN Decap
 4047                    VXLAN DCI Decap
-```
+</pre>
 
 ### How to create VLANs and Break the Switch to Multiple Broadcast Domains?
 
 You are breaking a switch to multiple broadcast domains, by assigning its *ports* to different VLANs (VLANs with the same VLAN IDs are part of the same broadcast domain). There is a terminology for assigning a switchport to a VLAN – that is *Access Switchport*. Here is how you can assign a switchport to a particular VLAN, but prior to that, we need to create the VLAN :
 
-```c
-N9K01# configure terminal
-N9K01(config)# vlan 100
-N9K01(config-vlan)# name OPTIONAL
-N9K01(config-vlan)# exit
-```
+<pre>
+N9K01# <b><ins>configure</ins></b>
+N9K01(config)# <b><ins>vlan 100</ins></b>
+N9K01(config-vlan)# <b><ins>name OPTIONAL</ins></b>
+N9K01(config-vlan)# <b><ins>exit</ins></b>
+</pre>
 
 Assign a switchport to VLAN 100 which was created above
 
-```c
-N9K01(config)# interface ethernet 1/2
-N9K01(config-if)# switchport mode access
-N9K01(config-if)# switchport access vlan 100
-```
+<pre>
+N9K01(config)# <b><ins>interface ethernet 1/2</ins></b>
+N9K01(config-if)# <b><ins>switchport mode access</ins></b>
+N9K01(config-if)# <b><ins>switchport access vlan 100</ins></b>
+</pre>
 
 Since we are frequently configuring access ports and since access ports are typically edge ports, we can leverage a command-line macro which is a shortcut to configure your access ports.
 
-```c
-N9K01# configure terminal
-N9K01(config)# interface ethernet 1/2
-N9K01(config-if)# switchport host
-configure terminal
+<pre>
+N9K01# <b><ins>configure terminal</ins></b>
+N9K01(config)# <b><ins>interface ethernet 1/2</ins></b>
+N9K01(config-if)# <b><ins>switchport host</ins></b>
+<b>
+configure
 interface Ethernet1/2
 no channel-group
 switchport mode access
 spanning-tree port type edge
+</b>
 Edge port type (portfast) should only be enabled on ports connected to a single
  host. Connecting hubs, concentrators, switches, bridges, etc...  to this
  interface when edge port type (portfast) is enabled, can cause temporary bridging loops.
@@ -63,22 +65,22 @@ Edge port type (portfast) should only be enabled on ports connected to a single
 
 Edge Port Type (Portfast) has been configured on Ethernet1/2 but will only
  have effect when the interface is in a non-trunking mode.
-N9K01(config-if)# switchport access vlan 100
-```
+N9K01(config-if)# <b><ins>switchport access vlan 100</ins></b>
+</pre>
 
-Before we continue further, I want to introduce you to two handy commands on NX-OS switches. With global default interface ethernet x/y command, you can clear all the configuration of an Interface:
+Before we continue further, I want to introduce you to two handy commands on NX-OS switches. With global `default interface ethernet x/y` command, you can clear all the configuration of an Interface:
 
-```c
-N9K01# configure terminal
-N9K01(config)# default interface ethernet 1/2
-```
+<pre>
+N9K01# <b><ins>configure</ins></b>
+N9K01(config)# <b><ins>default interface ethernet 1/2</ins></b>
+</pre>
 
 Next, with global system default switchport, you can convert all the interfaces to Layer-2 interfaces. Then you can configure the Layer-3 interfaces when you need.
 
-```c
-N9K01# configure terminal
-N9K01(config)# system default switchport
-```
+<pre>
+N9K01# <b><ins>configure</ins></b>
+N9K01(config)# <b><ins>system default switchport</ins></b>
+</pre>
 
 ### IEEE 802.1Q Trunk
 Up to now, we have logically broken a single physical switch down to multiple broadcast domains. Think that now we want to extend this broadcast domain to another switch. Hence, we need to configure the same VLANs on the second switch. Well, we have so far, configured the VLANs on both switches; next, we want to connect them together. One option is to extend each broadcast domain to the other switch by interconnecting each broadcast domain (meaning each VLAN) physically together. In another word, for VLAN A if you want to extend, you need at least one physical Ethernet cable to connect one of the switchports in VLAN A to one of the switchports in VLAN A on the other side. Do you see any problem with this? What if you have 20 VLANs on each switch?
@@ -100,13 +102,13 @@ What if we could tag each frame with a VLAN ID on one side, then pass the traffi
 
 To configure a trunk switchport, we simply need to issue command `switchport mode trunk`. By default, a trunk switchport will allow all VLANs across the Inter-switch link. however, you can restrict to a certain set of VLANs using `switchport trunk allowed vlan` followed by VLAN IDs (separated by `,`) or range (separated by `-`)
 
-```c
-N9K01# configure terminal
-N9K01(config)# interface ethernet 1/1
-N9K01(config-if)# switchport mode trunk
-N9K01(config-if)# switchport trunk native vlan 100
-N9K01(config-if)# switchport trunk allowed vlan 100,200
-```
+<pre>
+N9K01# <b><ins>configure</ins></b>
+N9K01(config)# <b><ins>interface ethernet 1/1</ins></b>
+N9K01(config-if)# <b><ins>switchport mode trunk</ins></b>
+N9K01(config-if)# <b><ins>switchport trunk native vlan 100</ins></b>
+N9K01(config-if)# <b><ins>switchport trunk allowed vlan 100,200</ins></b>
+</pre>
 
 ### IEEE 802.1Q Native VLAN
 
@@ -116,21 +118,21 @@ On IEEE 802.1Q trunk, there is one Native VLAN whose frames are untagged by defa
 
 #### Tag Native VLAN
 
-```c
-N9K01# configure terminal
-N9K01(config)# vlan dot1Q tag native
-```
+<pre>
+N9K01# <b><ins>configure</ins></b>
+N9K01(config)# <b><ins>vlan dot1Q tag native</ins></b>
+</pre>
 
 #### Prune Native VLAN
 
 As mentioned earlier, you can also prune the native VLAN from the trunk. Here is how:
 
-```c
-N9K01# configure terminal
-N9K01(config)# interface ethernet 1/1
-N9K01(config-if)# switchport trunk native vlan 999
-N9K01(config-if)# switchport trunk allowed vlan remove 999
-```
+<pre>
+N9K01# <b><ins>configure</ins></b>
+N9K01(config)# <b><ins>interface ethernet 1/1</ins></b>
+N9K01(config-if)# <b><ins>switchport trunk native vlan 999</ins></b>
+N9K01(config-if)# <b><ins>switchport trunk allowed vlan remove 999</ins></b>
+</pre>
 
 > Note: Although maintenance protocols such as CDP, PAgP, and DTP are normally carried over the native VLAN of a trunk, they will not be affected if the native VLAN is removed or manually pruned from the trunk. They still will be sent and received on the native VLAN.
 
