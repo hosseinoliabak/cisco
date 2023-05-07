@@ -84,13 +84,11 @@ to skip the remaining dialogs.
 
 2022 Apr 23 00:39:52 switch %$ VDC-1 %$ %COPP-2-COPP_POLICY: Control-Plane is protected with policy copp-system-p-policy-strict.
 
-
-<span style="background-color: #FFFF00">This text is highlighted in yellow.</span>
-
+<mark>
 User Access Verification
  login: admin
 Password:
-
+<mark>
 Cisco NX-OS Software
 Copyright (c) 2002-2021, Cisco Systems, Inc. All rights reserved.
 Nexus 9000v software (&quot;Nexus 9000v Software&quot;) and related documentation,
