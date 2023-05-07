@@ -295,7 +295,7 @@ N9K01(config)# <b><ins>feature ?</ins></b>
 The command where returns what your present working context is
 
 <pre>
-N9K01(config)# <b></ins>where</ins></b>
+N9K01(config)# <b><ins>where</ins></b>
 
   <b>conf</b>      admin@N9K01%default
 N9K01(config)# interface ethernet 1/1
@@ -372,7 +372,7 @@ You can toggle between different configuration mode using `push` and `pop`
 N9K01(config)# <b><ins>interface ethernet 1/1</ins></b>
 N9K01(config-if)# <b><ins>push</ins></b>
 N9K01(config-if)# <b><ins>end</ins></b>
-N9K01# <b></ins>pop</ins></b>
+N9K01# <b><ins>pop</ins></b>
 Enter configuration commands, one per line. End with CNTL/Z.
 N9K01(config-if)# where
   <b>conf; interface Ethernet1/1</b>      admin@N9K01%default
