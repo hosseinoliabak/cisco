@@ -210,7 +210,7 @@ Fibre Channel architecture provides three topologies
 
 ```mermaid
 graph TD
-  Initiaror --> F[(fa:fa-database Target)]
+  Initiaror --- F[(fa:fa-database Target)]
 ```
 
   * Arbitrated Loop
