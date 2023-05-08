@@ -6,7 +6,7 @@ Let’s architect our Clos topologies with L2 links. Then STP blocks some ports.
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232259851-98834f21-0728-4858-882a-b6f22c2c7882.svg" alt="vxlan-Page-3">
-  <figcaption>STP Drawbacks</figcaption>
+  <figcaption>Figure 1: STP Drawbacks</figcaption>
 </figure>
 
 Spanning-tree had some drawbacks for us which I am going to summarize here:
@@ -27,7 +27,7 @@ vPC provides multihoming from an L2 perspective. You will also have active-activ
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232260139-dcc9f159-cff6-4a19-a248-8c92ccae4a11.svg" alt="vxlan-vpc">
-  <figcaption>STP to vPC Improvement</figcaption>
+  <figcaption>Figure 2: STP to vPC Improvement</figcaption>
 </figure>
 
 
@@ -54,7 +54,7 @@ Virtual eXtensible LAN is a Layer 2 overlay Data Plane technology. With that bei
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232260297-1d6b26b5-daa9-4d9e-857f-7f88228cfc72.svg" alt="Overlay">
-  <figcaption>Overlay</figcaption>
+  <figcaption>Figure 3: Overlay</figcaption>
 </figure>
 
 
@@ -62,7 +62,7 @@ I should note that overlays incur overhead of n bytes, where n is the size of th
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232260318-5c366b57-8ca3-4ec5-abd2-a54d64bc7593.svg" alt="VXLAN Frame Format">
-  <figcaption>VXLAN Frame Format</figcaption>
+  <figcaption>Figure 4: VXLAN Frame Format</figcaption>
 </figure>
 
 

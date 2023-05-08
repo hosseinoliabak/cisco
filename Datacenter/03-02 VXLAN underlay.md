@@ -97,6 +97,7 @@ IS-IS routers are identified by NET (NET Entity Title). Here is an example of a 
 | System ID | Always 6 Bytes. Can be any set of hexadecimal digits                             | 1921.6802.4001 <br /> 1921.6803.6001 |
 | Selector  | Identifies the destination network layer service that should receive the traffic | 00                             |
 
+*Table 4: SIS-IS NSAP Addressing*
 
 ### BGP as the Underlay Routing Protocol
 

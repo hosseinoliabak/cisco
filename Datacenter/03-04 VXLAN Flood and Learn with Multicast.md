@@ -6,7 +6,7 @@ With multicast, VTEP V1 determines that the multidestination traffic needs to be
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232262481-cec126c2-f684-498d-aabf-88b0b68771d6.svg" alt="VXLAN Flood and Learn with Multicast">
-  <figcaption>VXLAN Flood and Learn with Multicast</figcaption>
+  <figcaption>Figure 1: VXLAN Flood and Learn with Multicast</figcaption>
 </figure>
 
 
@@ -36,7 +36,7 @@ In this scenario, we will elaborate and modify our first lab in the previous pos
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg" alt="VXLAN F&L and Multicast Workshop">
-  <figcaption>VXLAN Flood and Learn with Multicast Workshop</figcaption>
+  <figcaption>Figure 2: VXLAN Flood and Learn with Multicast Workshop</figcaption>
 </figure>
 
 #### Configuration

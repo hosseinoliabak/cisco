@@ -4,7 +4,7 @@ In this post, I am going to explain how the location-identity mapping database p
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232263028-9016fcb8-8cab-42d1-93ae-4f3f9093e7f0.svg" alt="VXLAN IR with MP-BGP as control plane">
-  <figcaption>VXLAN Fabric Ingress Replication with BGP EVPN as Control Plane Workshop</figcaption>
+  <figcaption>Figure 1: VXLAN Fabric Ingress Replication with BGP EVPN as Control Plane Workshop</figcaption>
 </figure>
 
 
@@ -105,7 +105,7 @@ In this scenario, we will configure our very first VXLAN topology with Flood and
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg" alt="VXLAN Fabric IR with MP-BGP Control Plane Workshop">
-  <figcaption>VXLAN Fabric IR with MP-BGP Control Plane Workshop</figcaption>
+  <figcaption>Figure 2: VXLAN Fabric IR with MP-BGP Control Plane Workshop</figcaption>
 </figure>
 
 #### Configuration

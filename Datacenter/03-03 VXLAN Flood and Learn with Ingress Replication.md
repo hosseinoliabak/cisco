@@ -4,7 +4,7 @@ In this post, I am going to explain how the **location-identity** mapping databa
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232261065-c59a1dbb-26d7-4e92-8766-6b72a9fd61a1.svg" alt="VXLAN Flood and Learn with Ingress Replication">
-  <figcaption>VXLAN Flood and Learn with Ingress Replication</figcaption>
+  <figcaption>Figure 1: VXLAN Flood and Learn with Ingress Replication</figcaption>
 </figure>
 
 
@@ -42,7 +42,7 @@ In this scenario, we will configure our very first VXLAN topology with Flood and
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg" alt="VXLAN F&L and IR Workshop">
-  <figcaption>VXLAN Flood and Learn with Ingress Replication Workshop</figcaption>
+  <figcaption>Figure 2: VXLAN Flood and Learn with Ingress Replication Workshop</figcaption>
 </figure>
 
 #### Configuration
