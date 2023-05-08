@@ -13,8 +13,10 @@ For now, forget the VXLAN and imagine you connect two switches via an L2 trunk l
 
 Bringing the aforementioned trunk example to VXLAN by replacing VLAN A and B over trunk with L2VNI A and B.
 
-![IRB-Asymetric](https://user-images.githubusercontent.com/31813625/232263971-dd1393a5-f7df-4e33-b3eb-bb9f505a2ae5.svg)
-*Asymmetric IRB: bridge-route-bridge*
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/232263971-dd1393a5-f7df-4e33-b3eb-bb9f505a2ae5.svg" alt="Asymmetric IRB: bridge-route-bridge">
+  <figcaption>Figure 1: Asymmetric IRB: bridge-route-bridge</figcaption>
+</figure>
 
 Asymmetric IRB can be done with or without BGP EVPN as the control plane.
 
@@ -28,8 +30,10 @@ Let’s elaborate on our legacy trunk example. Now, remove the trunk link betwee
 
 The example above made it simpler to understand the Bridge-Route-Route-Bridge operation between VTEPs with a dedicated L3VNI (which plays a role like our L3 interface in the example above).
 
-![IRB-symetric](https://user-images.githubusercontent.com/31813625/232263975-7bf783ba-354b-43de-98e1-16c04ae611d6.svg)
-*Symmetric IRB: bridge-route-route-bridge*
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/232263975-7bf783ba-354b-43de-98e1-16c04ae611d6.svg" alt="Symmetric IRB: bridge-route-route-bridge">
+  <figcaption>Figure 2: Symmetric IRB: bridge-route-route-bridge</figcaption>
+</figure>
 
 Since you need to configure L3VNI, you need to have BGP EVPN for symmetric routing.
 
@@ -87,8 +91,11 @@ LEAF01(config-router-neighbor-af)# send-community extended
 ### Distributed Anycast Gateway
 For the endpoints mobility, we are not intending to change the gateway IP address of the endpoints when they roam from one rack to another. The same gateway for a subnet can coexist at multiple leafs. The distributed anycast gateway shares the same MAC address across all fabric. That is the Anycast Gateway Mac address (AGM) for all subnets. Each subnet share its own unique default gateway IP.
 
-![Anycast-Gateway](https://user-images.githubusercontent.com/31813625/232264079-036d9432-7e9e-40a6-8ee4-5120aff638be.svg)
-*Distributed Anycast Gateway*
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/232264079-036d9432-7e9e-40a6-8ee4-5120aff638be.svg" alt="Distributed Anycast Gateway">
+  <figcaption>Figure 3: Distributed Anycast Gateway</figcaption>
+</figure>
+
 
 With command `fabric forwarding anycast-gateway-mac 0001.0001.0001` (where 0001.0001.0001 is an example MAC address), you will configure the anycast Gateway MAC address globally. Then, you will require to configure the anycast SVI.
 
@@ -103,8 +110,12 @@ LEAF01(config-if)# fabric forwarding mode anycast-gateway
 
 ## Workshop
 In this workshop we will continue working on our previous workshop, but with introducing L3VNI Configuration:
-![vxlaws1](https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg)
-*VXLAN MPBGP EVPN L3VNI Workshop*
+
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/232261114-774992f1-bed8-4042-b95a-5de440b84077.jpg" alt="VXLAN MPBGP EVPN L3VNI Workshop">
+  <figcaption>Figure 4: VXLAN MPBGP EVPN L3VNI Workshop</figcaption>
+</figure>
+
 
 #### Configuration
 
