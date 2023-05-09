@@ -108,26 +108,21 @@ Just a Bunch Of Disks (JBOD) is not configured as a RAID
     * Block level - transports an entire block of data
    
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236717167-df652b22-a8cd-4414-bbdb-9f4c4dd5d5b3.png" alt="Figure 1: Network Storage Comparison">
-  <figcaption>Figure 1: Network Storage Comparison</figcaption>
+  <img src="https://user-images.githubusercontent.com/31813625/236717167-df652b22-a8cd-4414-bbdb-9f4c4dd5d5b3.png" alt="Figure 3: Network Storage Comparison">
+  <figcaption>Figure 3: Network Storage Comparison</figcaption>
 </figure>
 
 ### Storage Area Network (SAN)
 
 SAN is a dedicated network that is scalable and highly available with the primary purpose of providing high-speed and low latency access to storage. SANs are typically implemented using Fibre Channel (FC). In a SAN architecture, storage devices are typically consolidated into a storage array, which is connected to a network of servers through a storage fabric. The storage fabric provides a high-speed interconnect between the servers and the storage devices, enabling high-performance access to data.
 
-<figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236726695-f44ce53c-cfd6-470b-b159-144b2a439190.svg" alt="Figure 3: Storage Area Network">
-  <figcaption>Figure 2: Storage Area Network</figcaption>
-</figure>
-
 #### Lugical Unit
 
 The storage capacity if SAN storage array has to be shared among the hosts, so it is devided into logical disks assigned to the hosts. These logical disks appear to the host as local disks and are identified by a unique number called the logical unit number (LUN).
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236722377-bbe25e33-cb6f-4b5c-88f9-b82c3bb68202.svg" alt="Figure 2: LUN">
-  <figcaption>Figure 3: Lugical Unit</figcaption>
+  <img src="https://user-images.githubusercontent.com/31813625/236722377-bbe25e33-cb6f-4b5c-88f9-b82c3bb68202.svg" alt="Figure 4: LUN">
+  <figcaption>Figure 4: Lugical Unit</figcaption>
 </figure>
 
 ## Fibre Channel Architecture
@@ -207,18 +202,23 @@ A fibre Channel switch is a device that provides central connection points for s
 Fibre Channel architecture provides three topologies
   * Point-to-point
     * Dirrect connection between the initiator and the server
+    * For example if a Storage array has four FC ports, then four servers can connect to the Storage Array
 
-```mermaid
-flowchart LR
-  subgraph Point-to-Point Topology
-    direction LR
-    Initiator["Initiator"]---|"tx #nbsp;rx"|stor1[("Target")]
-    Initiator["Initiator"]---|"rx #nbsp;tx"|stor1[("Target")]
-end
-```
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/236722377-bbe25e33-cb6f-4b5c-88f9-b82c3bb68202.svg" alt="Figure 5: Point-to-Point Topology">
+  <figcaption>Figure 5: Point-to-Point Topology</figcaption>
+</figure>
 
   * Arbitrated Loop
-  * Switches Fabric
+    * The devices are connected to each other to form a circular data path, called a loop
+  * Switched Fabric
+    * A fabric is a storage area network buil with at least one FC switch
+    * In a switched-fabric topology each device connects to a FC switch
+
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/236726695-f44ce53c-cfd6-470b-b159-144b2a439190.svg" alt="Figure 6: Storage Area Network">
+  <figcaption>Figure 6: Storage Area Network: Switched Fabric</figcaption>
+</figure>
 
 ### Fibre Channel Addressing
 
