@@ -20,7 +20,7 @@ There are many types of disk drive interfaces including:
 | FC, FCoE               | FCP, iSCSI, NVMEoFC                      |
 | PCIe NVMe              | NVMe, PCIe                               |
 
-*Table 1: Different Disk Drive Interfaces and Protocols
+*Table 1: Different Disk Drive Interfaces and Protocols*
 
 #### SCSI and/or NVMe
 
@@ -116,7 +116,7 @@ Just a Bunch Of Disks (JBOD) is not configured as a RAID
 
 SAN is a dedicated network that is scalable and highly available with the primary purpose of providing high-speed and low latency access to storage. SANs are typically implemented using Fibre Channel (FC). In a SAN architecture, storage devices are typically consolidated into a storage array, which is connected to a network of servers through a storage fabric. The storage fabric provides a high-speed interconnect between the servers and the storage devices, enabling high-performance access to data.
 
-#### Lugical Unit
+#### Logical Unit
 
 The storage capacity if SAN storage array has to be shared among the hosts, so it is devided into logical disks assigned to the hosts. These logical disks appear to the host as local disks and are identified by a unique number called the logical unit number (LUN).
 
@@ -124,6 +124,10 @@ The storage capacity if SAN storage array has to be shared among the hosts, so i
   <img src="https://user-images.githubusercontent.com/31813625/236722377-bbe25e33-cb6f-4b5c-88f9-b82c3bb68202.svg" alt="Figure 4: LUN">
   <figcaption>Figure 4: Lugical Unit</figcaption>
 </figure>
+
+#### LUN Provisioning
+
+LUN provisioning is the process of allocating the physical storage capacity of a storage array to the servers. 
 
 ## Fibre Channel Architecture
 
@@ -214,6 +218,11 @@ Fibre Channel architecture provides three topologies
   * Switched Fabric
     * A fabric is a storage area network buil with at least one FC switch
     * In a switched-fabric topology each device connects to a FC switch
+    * Highly available ans scalable
+    * A good SAN
+      * A server with two HBAs
+      * Two Fibre Channel switches
+      * A dual-controller storage arrays
 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/236726695-f44ce53c-cfd6-470b-b159-144b2a439190.svg" alt="Figure 6: Storage Area Network">
@@ -235,99 +244,192 @@ Each entity in a Fibre Channel network is uniquely identified by a 64-bit addres
       * This is important - You need this to manually create the boot policies of either UCS-C or B servers
       * Boot policy is like a static route - you don't know where the disk is, you need to program it in on the UCS servers
       * You also need pWWN in zoning
-    
+
+ Fibre Channel Identifier (FCID)
+  * 3 bytes
+    * assigned by FCNS by lldp
+      * `show topology` replaced `show lldp`
+    * Domain ID: 1 Byte - equivalent to subnet - used for routing by FSPF (/8 is for routing)
+      * The FC standard allows a maximum of 239 port addresses that can be used for domain IDs
+      * Can be manually assigned, otherwise automatically assigned --> principal switch assigns automatically as soon as you no shut the link
+    * Area ID: 1 Byte - unique for a group of ports
+    * Port ID: 1 Byte - unique per port
+			
+## Charactristics of FC switches
+
+Each switch is ientified by a unique domain ID. Domain IDs are assigned to the switches in the fabric by a switch in the fabric, called the proncipla switch. FC switches provide fabric services to the devices in the fabric. The fabric services provide information to the devices connected to the fabric. Some of fabric services include:
+  * Name Server:
+    * Central repository of information about the fabric
+    * Whenever a device is added to the network, it registers itself with the name server
+    * There is only one name server for the entire fabric
+    * The name server information is shared with the name servers of all the switches, making it a distributed name server
+	  * Mapping between pWWNs and FCIDs
+	  * Resolution of physical address to logical address
+	  * No configuration required
+	  * `show fcns database`
+      * shared with all switches in the fabric
+  * Login Server:
+    * A device that needs to connect to the fabric must send a login request to the well-known address (0xFFFFFE) of the login server
+  * Fibre Channel Routing
+    * Remember WWNs are not part of data plane -> no flood and learn
+    * FSPF is used to route traffic between switches
+      * Based on Domain ID part of FCID
+      * ECMP is supported for equal SPT branches
+    * No configuration required
+
+### Fabric Registeration Process
+
+Fibre Channel networks are connection oriented. All end stations must first register with control plane. Fabric Registration has three parts
+
+1. Fabric login (FLOGI)
+
+Though a server or a storage device is physically connected to a fabric, the logical connection is established only when it executes the fabric login, or FLOGI process.
+  * The goal is to assign FCID to the node
+  * N_Port tells switch's Fabric F_Port it wants to register
+  * Switches learn WWNN and WWPN of Node
+  * You can find this as a three-way handshake
+  * `show flogi database`
+  * Local to the switch
+
+2. Port Login (PLOGI)
+  * Necessary for the data exchange to take place between the end devices
+  * Like TCP 3-way handshake; end to end between the initiator and target
+  * Used for apps such as e2e flow control
+
+3. Process Login (PLRI)
+  * PLRI (Process Login)
+  * Like SCSI registration - to read and write traffic
+
+
+### Zoning
+
+Initiators are not aware of targets. Techniques were developed to provide the servers restricted access to the storage devices by subdeviding the SAN into private networks. Each such private network provided coordinated sharing of shared storage within its network. These techniques have diferent names depending on where they are implemented:
+  * If it is implemented in a switch, it is called zoning
+  * If it is implemented in an HBA, it is called LUN masking
+  * It it is implemented in a RAID, it is called LUN mapping
+
+All thechniques work on the principla of restricting access by blocking a range of addresses.
+
+The device in a zone cannot communicate with devices outside the zone. Devices not included in any zone are not accessible to any other devices in the fabric. When no zoning is enabled, the fabric is said to be in a default zone
+  * Access can be either open or closed
+
+Zoning is a distributed fabric service
+  * Switches must agree on the zoneset before they can forward the traffic
+  * If zoneset merge fails, the port becomes disabled
+  * Zoning should be your very final step in FC configuration
+
+A zone is esstentially a collection of end device, or N_ports, that are allowed to communicate with each other.
+  * It is recommended for a zone to have a single server and one or more storage ports. This approach is called single initiator zoning.
+
+There are two types of zoning:
+  * WWN zoning: Allows the connectivity between the nodes based on their WWNs
+  * Port Zoning: Allows the connectivity based on the port number of the switch
+
+A **zone set** is a collection of zones. There can be hundreds of zones in a zoneset. Only one zoneset including all those zones can be active in the fabric at a time.
+
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/236979897-04ba4385-4c5a-44b7-8c48-221d7e27df58.svg" alt="Figure 7: Zone Set">
+  <figcaption>Figure 7: Zone Set</figcaption>
+</figure>
+
+
+A **zone alias** is the custom name that is assigned to a port address or WWN address in a zone.
+  * This is because port addresses and WWN addresses are difficult to read and memorize.
+
+			
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/236979283-ee218207-7805-4418-913b-6cc9a1974771.svg" alt="Figure 8: Zone Alias">
+  <figcaption>Figure 8: Zone Alias</figcaption>
+</figure>
+
+#### LUN Masking
+
+LUN masking provides the servers with restricted access to the logical units of the storage array. It determines which logical units can be accessed by which servers. It does so by mapping a server's pWWN to multiple Storages.
+  * Storage array listens on separate port for separate initiator - then maps to the same logical volume
+  * Server sees both of the paths going to the same storage
+
+
+### Virtual Fabric or Virtual SAN (VSAN)
+
+The VSAN tachnology allows a large SAN to be logically partitioned into small SANs called virtual fabrics or VSANs. 
+  * E_ports now become TE_Ports
+  * Behind the scenes the switch runs multiple copies of routing (FSPF)
+    * Same logic as multiple separate OSPF processes
+  * VSAN is routing topology - link state flooding domain
+    * Separate FLOGI database
+    * Separate Zone set
+  * VLAN ID is important for FCoE
+  * VSAN ID is important for native FC
+
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/236982677-768328eb-46cb-49e0-a00f-2850cc270636.svg" alt="Figure 9: Virtual SAN">
+  <figcaption>Figure 9: Virtual SAN</figcaption>
+</figure>
+
+### N_Port ID Virtualization (NPIV)
+
+The present day trend is datacenters is to use server virtualization to avoid proliferation of physical server. The VMs share the same physical HBA, as a result, has the same WWN to the LUN.
+
+In a non-virtualized environment, an N_Port has both a WWPN and an N_Port ID. N_Port ID virtualization, or NPIV is an ANSI standard that allows:
+  * Single HBA port to register as multiple WWPNs in the fabric
+  * Each registered WWPN is assigned a unique N_Port ID
+  * NPIV allows a single physical N_Port to acquire multiple N_Port IDs
+  * Each N_Port ID can be mapped to a difefrent initiator, such as a VM
+  * This allows the creation of multiple virtual links over a single physical link by mapping many N_Port IDs with one F_Port
+  * NPIV-capable HBAs and NPIV-capable of switches required
+    * Configuration requires `feature npiv`
+  * Each VM can now have a separate WWPN and its zoning can be managed independently
+  * Logical equivalent of NAT translation
+
+### N_Port Virtualization (NPV)
+
+The N_Port Virtualizer, or NPV, is based on N_Port ID virtualization but implemented at switch level. NPV allows an NPI-enabled edge switch to bundle the connections it receives from end devices or N_Ports into one or more connections that link to a core switch. The requirement is that the core switch supports NPIV features. An NPIV-enabled edge switch doesn't require separate domain IDs to receive connectivity from the fabric and doesn'r participate in fabric services.
+
+
+### SAN Port Channeling
+
+Like Ethernet PortChannel. But If you don't do port channel, you are routing equal cost. That is why Between switches you don't need PO. However, end hosts can do default route one-way; hence, you need PO here at access layer.
+
+* The negotiation protocol is called PCP (logically like 802.3ad)
+   * UCS FI supports only active mode
+   * First step: wwn the port
+   * Then Configure the PO
+   * Very last step: No shutdown the port
+   * Why?
+     * Otherwise the interface goes down and you might need to reboot the box.
+* Types of PO
+  * Actice/Passive mode: takes care of only fail-over recovery
+  * Active/Active mode: I/O requests are shared equally across all the available paths
+
+## Converged Networking
+
+Network convergence concerns combining an Ethrnet LAN and a Fibre Channel SAN into a single unified network that can carry both server trafic and storage traffic over a single network cable.
+
+The challenge is that with Ethernet when there is network congestion, the Ethernet drops frames, so the higher-layer protocols are used to ensure that the frames are retransmitted whenb they drop. Since Ethernet drops the frames, it is considered as a lossy network. Compared to Ethernet, Fibre Channel is considered lossless network.
+
+In the simple context of data transmission speeds, the speeds of Ethernet have exceeded the available speeds of FC. Furthuremore, Ethernet can now be enriches with the capabilities that makes it a low-latency and lossless network similar to FC.
+
+The converghed network uses enhanced Ethernet capabilities to combine both storage and network trafficon a single network. The server is using only one converged network adapter.
 
 ### FCoE
+
 Most people assume FC and FCoE are either 1) totally different or 2) different enough that they cannot be intermixed. In reality, FC and FCoE are the same Fibre Channel protocols running on different physical media.
-That means everything traditional FC offers (fabric services, zoning, etc) are identical between FC and FCoE
+That means everything traditional FC offers (fabric services, zoning, etc) are identical between FC and FCoE.
 
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/236992198-ccdfb4e8-46f3-4def-9126-6870585abd07.svg" alt="Figure 10: FC vs FCoE">
+  <figcaption>Figure 10: FC vs FCoE</figcaption>
+</figure>
 
+The FCoE infrastructure consists if three components:
+  * A Convergged Network Adapter (CNA)
+    * A single CNA connects the server to an FCoE switch, which in turn provides connectivity to LAN and SAN
+    * Server OS does not see FCoE device. IT sees two deparate devices: an HBA and a NIC
+  * FCoE switch
+    * inspects the EtherType of the frame
+      * can convert FC to FCoE
+      * can convert FCoE to FC
+  * Losseless Ethernet links
 
-	FCID:  logical address - like IP
-		3 bytes
-		Assigned by switches by lldp
-		 (Fiber-Channel Name Server)
-			Domain ID: 1 Byte - equivalent to subnet - used for routing by FSPF (/8 is for routing)
-				Can be manually assigned, otherwise automatically assigned--> principal switch assigns automatically as soon as you no shut the link
-			Area ID: 1 Byte - unique for a group of ports
-			Port ID: 1 Byte - unique per port
-			
-			show topology --> replaced show lldp
-			
-	Fibre Channel Routing
-		Remember WWNs are not part of data plane -> no flood and learn
-		FSPF is used to route traffic between switches
-			Based on Domain ID part of FCID
-		ECMP is supported for equal SPT branches
-		No configuration required - but you can customize knobs
-		
-	Ethernet is Connectionless
-	
-	Fibre Channel networks are connection oriented
-		All end stations must first register with control plane
-		
-	Fabric Registration has three parts
-		FLOGI (Fabric Login)
-			N_Port tells switch's Fabric F_Port it wants to register
-			Switches learn WWNN and WWPN of Node
-			The goal is to assign FCID to the node
-			You can find this as a three-way handshake
-			show flogi database
-		PLOGI (Port Login)
-			Like TCP 3-way handshake ; end to end between the initiator and target
-			Used for apps such as e2e flow control
-		PLRI (Process Login)
-			Like SCSI registration - to read and write traffic
-	
-	Fiber-Channel Name Server (FCNS) process
-		Equivalent to DHCP database/ARP cache
-		Mapping between pWWNs and FCIDs
-		Resolution of physical address to logical address
-		No configuration required
-		
-		show fcns database
-		show fcns database local
+With FCoE, any lost frames can be recovered only at the SCSI layer because it has no TCP. Fortunately, a set of enhancements are available to the Ethernet to support the lossless behavior; that is called Data Center Bridging (DCB). DCB is also referred to as Converged Enhanced Ethernet.
 
-	Zoning:
-		Like ACL
-		Initiator X is allowed to talk to Target Y
-		To ensure that the server don't write into wrong volume
-		Resource consuming
-		Zoning is a distributed fabric service
-			Switches must agree on the zoneset before they can forward the traffic
-			If zoneset merge fails, the port becomes disabled
-			Common misconfiguration for troubleshooting
-			Syslog is generated
-			Zoning should be your very final step in FC configuration
-			
-	Virtual SANs (VSANs)
-		Cisco-specific implementation
-		To separate the storage networks
-		Physical separation is costly
-		E_ports now become TE_Ports
-			Behind the scenes --> the switch runs multiple copies of routing
-			Same logic as multiple separate OSPF processes
-		
-		VSAN is routing topology - link state flooding domain
-			Separate FLOGI database
-			Separate Zone set
-			Separate …
-			
-	SAN Port Channeling
-		Like Ethernet PortChannel
-		The negotiation protocol is called PCP (logically like 802.3ad) - the configuration order is very finicky
-			UCS FI supports only active mode
-			First step: wwn the port
-			Then Configure the PO
-			Very last step: No shutdown the port
-		Why?
-			Otherwise the interface goes down and you might need to reboot the box.
-			
-		If you don't do port channel, you are routing equal cost
-			Between switches you don't need PO
-			End host can do default route one-way
-				You need PO here at access layer
-	----------------------------------------------------------------------
-	VLAN ID is important for FCoE
-	VSAN ID is important for native FC
-	
