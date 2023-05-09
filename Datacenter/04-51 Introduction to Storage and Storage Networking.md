@@ -99,7 +99,7 @@ Just a Bunch Of Disks (JBOD) is not configured as a RAID
 
 ## Network Storage
 
-  * DAS: Direct-Attached Storage is a storage connected directly to the server; just for file access in most cases; Small business solution: fast performance, simple, economical and efficient
+  * DAS: Direct-Attached Storage is a storage connected directly to the server; just for file access in most cases
   * NAS: Network-Attached Storage is a storage made available on the network:
     * May use SMB/CIFS (Microsoft Windows) or NFS (Unix/Linux)
     * File-based - transports only one byte of data at a time
@@ -108,8 +108,8 @@ Just a Bunch Of Disks (JBOD) is not configured as a RAID
     * Block level - transports an entire block of data
    
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236717167-df652b22-a8cd-4414-bbdb-9f4c4dd5d5b3.png" alt="Figure 3: Network Storage Comparison">
-  <figcaption>Figure 3: Network Storage Comparison</figcaption>
+  <img src="https://user-images.githubusercontent.com/31813625/236969264-29eb548c-824d-40bc-b295-32cce934f04a.svg" alt="Figure 3: 2000s Network Storage Comparison">
+  <figcaption>Figure 3: Network Storage Comparison (2000s)</figcaption>
 </figure>
 
 ### Storage Area Network (SAN)
