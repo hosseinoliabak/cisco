@@ -205,7 +205,7 @@ Fibre Channel architecture provides three topologies
     * For example if a Storage array has four FC ports, then four servers can connect to the Storage Array
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236722377-bbe25e33-cb6f-4b5c-88f9-b82c3bb68202.svg" alt="Figure 5: Point-to-Point Topology">
+  <img src="https://user-images.githubusercontent.com/31813625/236964371-01893f42-ad0b-4e6d-a4d5-cc2f7c361458.svg" alt="Figure 5: Point-to-Point Topology">
   <figcaption>Figure 5: Point-to-Point Topology</figcaption>
 </figure>
 
