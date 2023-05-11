@@ -556,6 +556,6 @@ With FCoE, any lost frames can be recovered only at the SCSI layer because it ha
 In this workshop, I am going to follow Cisco MDS (Multilayer Director Switch) Lab v1 lab onCisco dCloud portal. Here is the topology
 
 <figure>
-  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/69d69937-7793-4ec8-95a4-2a07c118bb14" alt="Figure 11: Storage Networking Workshop Topology">
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/69d69937-7793-4ec8-95a4-2a07c118bb14" alt="Figure 11: Storage Networking Workshop Topology" /><br/>
   <figcaption>Figure 11: Storage Networking Workshop Topology</figcaption>
 </figure>
