@@ -15,12 +15,12 @@ To simplify the network design as well as for scalability we moved to the phase 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/235387738-dc9e1834-6ca9-490b-8c1b-e7ece8b413c4.png" alt="Classic Three-Tier Architecture">
   <figcaption>Figure 1: Classic Three-Tier Architecture</figcaption>
-</figure>
+</figure><br />
 
 There is more into this topic but this is not in the scope of CCIE Datacenter. But here are some drawbacks with traditional network desing.
 
 * In STP-based network, when a link or a switch fails, the STP recalculates which impacts the convergence. Imagine, if the problem occurs at root bridge and new root needs to be elected.
-* STP-based networks, blocks the ports to prevent the Layer-2 loop. Imagine we are not using a 10+Gibps as STP blocked it to prevent the L2 loop.
+* STP-based networks, blocks the ports to prevent the Layer-2 loop.
 * Prune to traffic storm because there is no TTL field in L2 header.
 * In STP-based network, all the traffic for a particular VLAN forwards to the root bridge of that VLAN which might be a suboptimal path.
 * Dedicated network for LAN and a separate dedicated Fiber-Channel network for SAN.
@@ -44,7 +44,7 @@ We moved Layer 3 links down to the access layer in Clos topology.
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/235387900-2ff62971-d09d-4822-9b0b-f8d88acda48b.png" alt="Clos Spine-Leaf Network Architecture">
   <figcaption>Figure 2: Clos Spine-Leaf Network Architecture</figcaption>
-</figure>
+</figure><br />
 
 Leaf-and-spine topology scales very well. With one switch, this topology can handle 10K-200K of 10Gibps access ports. Next, let’s talk about the main components of these topology.
 
