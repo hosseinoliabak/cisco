@@ -15,7 +15,7 @@ To simplify the network design as well as for scalability we moved to the phase 
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/235387738-dc9e1834-6ca9-490b-8c1b-e7ece8b413c4.png" alt="Classic Three-Tier Architecture">
   <figcaption>Figure 1: Classic Three-Tier Architecture</figcaption>
-</figure><br />
+</figure>
 
 There is more into this topic but this is not in the scope of CCIE Datacenter. But here are some drawbacks with traditional network desing.
 
@@ -44,7 +44,7 @@ We moved Layer 3 links down to the access layer in Clos topology.
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/235387900-2ff62971-d09d-4822-9b0b-f8d88acda48b.png" alt="Clos Spine-Leaf Network Architecture">
   <figcaption>Figure 2: Clos Spine-Leaf Network Architecture</figcaption>
-</figure>&nbsp;<br />
+</figure>
 
 Leaf-and-spine topology scales very well. With one switch, this topology can handle 10K-200K of 10Gibps access ports. Next, let’s talk about the main components of these topology.
 
