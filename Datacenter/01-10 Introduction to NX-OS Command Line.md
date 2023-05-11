@@ -383,7 +383,7 @@ N9K01(config-if)# where
 In order you take a snapshot of the current startup config you can use `checkpoint` global configuration command along with choosing a snapshot name. To restore the configuration, you would use the `rollback` global command.
 
 <pre>
-N9K01(config)# <b><ins>show running-config interface ethernet 1/1</ins</b>>
+N9K01(config)# <b><ins>show running-config interface ethernet 1/1</ins></b>
 
 !Command: show running-config interface Ethernet1/1
 !Running configuration last done at: Sat Apr 23 01:34:36 2022
