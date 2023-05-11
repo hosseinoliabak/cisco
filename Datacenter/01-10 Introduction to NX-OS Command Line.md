@@ -161,7 +161,7 @@ To move in to global configuration mode, use `configure` command in the privileg
 
 To check the chassis host name and base MAC address use `show sprom backplane` followed by supervisor number command :
 
-</pre>
+<pre>
 N9K01# <strong><ins>show sprom backplane 1</strong></ins>
 DISPLAY backplane sprom contents:
 Common block:
@@ -383,7 +383,7 @@ N9K01(config-if)# where
 In order you take a snapshot of the current startup config you can use `checkpoint` global configuration command along with choosing a snapshot name. To restore the configuration, you would use the `rollback` global command.
 
 <pre>
-N9K01(config)# show running-config interface ethernet 1/1
+N9K01(config)# <b><ins>show running-config interface ethernet 1/1</ins</b>>
 
 !Command: show running-config interface Ethernet1/1
 !Running configuration last done at: Sat Apr 23 01:34:36 2022
