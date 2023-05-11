@@ -118,6 +118,7 @@ On IEEE 802.1Q trunk, there is one Native VLAN whose frames are untagged by defa
 
 #### Tag Native VLAN
 
+In order to tag native VLANs over the trunk:
 <pre>
 N9K01# <b><ins>configure</ins></b>
 N9K01(config)# <b><ins>vlan dot1Q tag native</ins></b>
