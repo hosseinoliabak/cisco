@@ -13,12 +13,12 @@ Disk drives are devices that store and retrieve data on a computer. They come in
 Disk drive interface which is part of the disk controller connects the disk drive to the computer with a physical connector. Disk drive interface provides a standard protocol for the hard disk drive to talk to the computer.
 There are many types of disk drive interfaces including:
 
-| Drive Interface Family | Host Communication Protocol              |
+| Drive Interface Family | Transfer Protocol                        |
 | ---------------------- | ---------------------------------------- |
 | SATA, eSATA, mSATA     | AHCI (Default mode), IDE                 |
 | SAS                    | iSCSI                                    |
 | FC, FCoE               | FCP, iSCSI, NVMEoFC                      |
-| PCIe NVMe              | NVMe, PCIe                               |
+| PCIe Gen3 or later     | NVMe                                     |
 
 *Table 1: Different Disk Drive Interfaces and Protocols*
 
@@ -35,7 +35,8 @@ Different Philosophies
   <figcaption>Figure 1: iSCSI</figcaption>
 </figure>
 
-* NVMe treats storage as memory
+* NVMe (Non-Volatile Memory express) treats storage as memory
+  * NVMe (Non-Volatile Memory Express) is a protocol designed to use the PCI Express (PCIe) bus to connect SSD (solid-state drive) storage to servers or CPUs.
   * CPU can talk to memory natively
   * Extend semantics using PCIe
   * No adapter needed
@@ -254,6 +255,20 @@ Each entity in a Fibre Channel network is uniquely identified by a 64-bit addres
       * Can be manually assigned, otherwise automatically assigned --> principal switch assigns automatically as soon as you no shut the link
     * Area ID: 1 Byte - unique for a group of ports
     * Port ID: 1 Byte - unique per port
+
+<pre>
+! The four Inter-Switch Links (ISLs) are listed here in the snippet example below:
+edge-1# <b><ins>show topology</ins></b>
+
+FC Topology for VSAN 1 :
+--------------------------------------------------------------------------------
+       Interface  Peer Domain Peer Interface     Peer IP Address(Switch Name)
+--------------------------------------------------------------------------------
+            fc1/3 0x67(103)            fc1/3  198.19.254.123(core-1)
+            fc1/4 0x67(103)            fc1/4  198.19.254.123(core-1)
+            fc1/5 0x67(103)            fc1/5  198.19.254.123(core-1)
+            fc1/6 0x67(103)            fc1/6  198.19.254.123(core-1)
+</pre>
 			
 ## Charactristics of FC switches
 
@@ -276,6 +291,24 @@ Each switch is ientified by a unique domain ID. Domain IDs are assigned to the s
       * Based on Domain ID part of FCID
       * ECMP is supported for equal SPT branches
     * No configuration required
+
+<pre>
+! Displaying Name Server Database Entries The name server stores name entries
+! for all hosts in the FCNS database. In a multiswitch fabric
+
+core-1(config-if)# <b><ins>show fcns database</ins></b>
+
+VSAN 1:
+--------------------------------------------------------------------------
+FCID        TYPE  PWWN                    (VENDOR)        FC4-TYPE:FEATURE
+--------------------------------------------------------------------------
+0x3f0000    N     10:00:00:10:9b:23:43:bb (Emulex)        scsi-fcp:init
+0x3f0020    N     10:00:00:10:9b:23:43:c1 (Emulex)        scsi-fcp:init
+0xc80000    N     52:4a:93:7e:47:1d:ce:01                 scsi-fcp:target
+0xc80020    N     52:4a:93:7e:47:1d:ce:10                 scsi-fcp:target
+
+Total number of entries = 4
+</pre>
 
 ### Fabric Registeration Process
 
@@ -300,6 +333,19 @@ Though a server or a storage device is physically connected to a fabric, the log
   * PLRI (Process Login)
   * Like SCSI registration - to read and write traffic
 
+<pre>
+! In a Fibre Channel fabric, each host or disk requires an Fibre Channel ID.
+! Use the show flogi database, to show the devices in the Fabric Login table
+core-1(config-if)# <b><ins>show flogi database</ins></b>
+--------------------------------------------------------------------------------
+INTERFACE        VSAN    FCID           PORT NAME               NODE NAME
+--------------------------------------------------------------------------------
+fc1/1            1     0xc80000  52:4a:93:7e:47:1d:ce:01 52:4a:93:7e:47:1d:ce:01
+fc1/2            1     0xc80020  52:4a:93:7e:47:1d:ce:10 52:4a:93:7e:47:1d:ce:10
+
+Total number of flogi = 2.
+```
+</pre>
 
 ### Zoning
 
@@ -332,10 +378,33 @@ A **zone set** is a collection of zones. There can be hundreds of zones in a zon
   <figcaption>Figure 7: Zone Set</figcaption>
 </figure>
 
+<pre>
+!Zone Database Section for vsan 1
+core-1(config)# <b><ins>zone name Zone1 vsan 1</ins></b>
+Enhanced zone session has been created. Please 'commit' the changes when done.
+core-1(config-zone)# <b><ins>member pwwn 52:4a:93:7e:47:1d:ce:01</ins></b>
+core-1(config-zone)# <b><ins>member pwwn 52:4a:93:7e:47:1d:ce:10</ins></b>
+core-1(config-zone)# <b><ins>member pwwn 10:00:00:10:9b:23:43:bb</ins></b>
+core-1(config-zone)# <b><ins>member pwwn 10:00:00:10:9b:23:43:c1</ins></b>
+core-1(config-zone)#
+core-1(config-zone)# <b><ins>zoneset name Zoneset1 vsan 1</ins></b>
+core-1(config-zoneset)# <b><ins>member Zone1</ins></b>
+core-1(config-zoneset)#
+core-1(config-zoneset)# <b><ins>zone commit vsan 1</ins></b>
+Commit operation initiated. Check zone status
+core-1(config)#
+
+core-1# <b><ins>show zoneset active vsan 1</ins></b>
+zoneset name Zoneset1 vsan 1
+  zone name Zone1 vsan 1
+  * fcid 0xc80000 [pwwn 52:4a:93:7e:47:1d:ce:01]
+  * fcid 0xc80020 [pwwn 52:4a:93:7e:47:1d:ce:10]
+  * fcid 0x3f0000 [pwwn 10:00:00:10:9b:23:43:bb]
+  * fcid 0x3f0020 [pwwn 10:00:00:10:9b:23:43:c1]
+</pre>
 
 A **zone alias** is the custom name that is assigned to a port address or WWN address in a zone.
   * This is because port addresses and WWN addresses are difficult to read and memorize.
-
 			
 <figure>
   <img src="https://user-images.githubusercontent.com/31813625/236979283-ee218207-7805-4418-913b-6cc9a1974771.svg" alt="Figure 8: Zone Alias">
@@ -401,6 +470,55 @@ Like Ethernet PortChannel. But If you don't do port channel, you are routing equ
   * Actice/Passive mode: takes care of only fail-over recovery
   * Active/Active mode: I/O requests are shared equally across all the available paths
 
+<pre>
+! core-1 configuration example
+core-1# <b><ins>configure</ins></b>
+core-1(config)# <b><ins>interface fc1/3-6</ins></b>
+core-1(config)# <b><ins>channel-group 12 force</ins></b>
+core-1(config)# <b><ins>no shut</ins></b>
+
+! edge-1 configuration example
+edge-1# <b><ins>configure</ins></b>
+edge-1(config)# <b><ins>interface fc1/3-6</ins></b>
+edge-1(config)# <b><ins>channel-group 11 force</ins></b>
+edge-1(config)# <b><ins>no shut</ins></b>
+
+! Verification on core-1 
+core-1(config)# <b><ins>show port-channel database</ins></b>
+port-channel112
+    Administrative channel mode is active
+    Operational channel mode is <b>active</b>
+    Last membership update succeeded
+    First operational port is fc1/3
+    <b>4 ports in total, 4 ports up</b>
+    Ports:   fc1/3    [up] *
+             fc1/4    [up]
+             fc1/5    [up]
+             fc1/6    [up]
+
+core-1(config)# <b><ins>show interface brief  | i edge|core</ins></b>
+fc1/1       1      auto   on      up           swl   F      16     --       edge
+fc1/2       1      auto   on      up           swl   F      16     --       edge
+fc1/3       1      E      auto    up           swl   E      16     112      core
+fc1/4       1      E      auto    up           swl   E      16     112      core
+fc1/5       1      E      auto    up           swl   E      16     112      core
+fc1/6       1      E      auto    up           swl   E      16     112      core
+port-channel112       1     auto   up             E    64      --              core
+
+! Verification on edge-1
+edge-1(config)# <b><ins>show port-channel database</ins></b>
+port-channel111
+    Administrative channel mode is active
+    Operational channel mode is active
+    Last membership update succeeded
+    First operational port is fc1/3
+    4 ports in total, 4 ports up
+    Ports:   fc1/3    [up] *
+             fc1/4    [up]
+             fc1/5    [up]
+             fc1/6    [up]
+</pre>
+
 ## Converged Networking
 
 Network convergence concerns combining an Ethrnet LAN and a Fibre Channel SAN into a single unified network that can carry both server trafic and storage traffic over a single network cable.
@@ -433,3 +551,11 @@ The FCoE infrastructure consists if three components:
 
 With FCoE, any lost frames can be recovered only at the SCSI layer because it has no TCP. Fortunately, a set of enhancements are available to the Ethernet to support the lossless behavior; that is called Data Center Bridging (DCB). DCB is also referred to as Converged Enhanced Ethernet.
 
+## Storage Networking Workshop
+
+In this workshop, I am going to follow Cisco MDS (Multilayer Director Switch) Lab v1 lab onCisco dCloud portal. Here is the topology
+
+<figure>
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/69d69937-7793-4ec8-95a4-2a07c118bb14" alt="Figure 11: Storage Networking Workshop Topology">
+  <figcaption>Figure 11: Storage Networking Workshop Topology</figcaption>
+</figure>
