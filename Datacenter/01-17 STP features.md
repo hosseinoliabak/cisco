@@ -24,11 +24,11 @@ This is equivalent of PortFast feature with Common Spanning-Tree. An Edge Port i
 
 BPDU guard is typically configured with all host-facing ports that are enabled with Edge port. This feature is a safety mechanism that shuts down ports configured with Edge port upon receipt of a BPDU
 
-```ru
-N9K01(config)# configure terminal
-N9K01(config-if)# interface ethernet 1/7
-N9K01(config-if)# spanning-tree bpduguard enable
-```
+<pre>
+N9K01(config)# <b><ins>configure terminal</ins></b>
+N9K01(config-if)# <b><ins>interface ethernet 1/7</ins></b>
+N9K01(config-if)# <b><ins>spanning-tree bpduguard enable</ins></b>
+</pre>
 
 #### Spanning-Tree BPDU Filter
 
