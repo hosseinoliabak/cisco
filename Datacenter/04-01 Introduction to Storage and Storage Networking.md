@@ -109,7 +109,7 @@ Just a Bunch Of Disks (JBOD) is not configured as a RAID
     * Block level - transports an entire block of data
    
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236969264-29eb548c-824d-40bc-b295-32cce934f04a.svg" alt="Figure 3: 2000s Network Storage Comparison">
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/2c2d9132-b46e-4aee-8686-7441ed61a613" alt="Figure 3: 2000s Network Storage Comparison">
   <figcaption>Figure 3: Network Storage Comparison (2000s)</figcaption>
 </figure>
 
