@@ -688,7 +688,6 @@ ip default-gateway 198.19.254.1
 <summary>edge-1</summary>
 
 ```elixir
-
 feature analytics
 ip host edge-1  198.19.253.228
 
@@ -784,5 +783,148 @@ interface fc1/6
   no shutdown
 
 ip default-gateway 198.19.253.1
+```
+</details>
+
+#### Verification
+
+<details>
+ 
+<summary>core-1</summary>
+
+```elixir
+core-1# show flogi database
+--------------------------------------------------------------------------------
+INTERFACE        VSAN    FCID           PORT NAME               NODE NAME
+--------------------------------------------------------------------------------
+fc1/1            1     0x670061  52:4a:93:7e:47:1d:ce:05 52:4a:93:7e:47:1d:ce:05
+fc1/2            1     0x670041  52:4a:93:7e:47:1d:ce:15 52:4a:93:7e:47:1d:ce:15
+
+Total number of flogi = 2.
+
+core-1# show fcns database
+
+VSAN 1:
+--------------------------------------------------------------------------
+FCID        TYPE  PWWN                    (VENDOR)        FC4-TYPE:FEATURE
+--------------------------------------------------------------------------
+0x200000    N     10:00:00:10:9b:23:43:df (Emulex)        scsi-fcp:init
+0x200020    N     10:00:00:10:9b:23:43:e5 (Emulex)        scsi-fcp:init
+0x670041    N     52:4a:93:7e:47:1d:ce:15                 scsi-fcp:target
+0x670061    N     52:4a:93:7e:47:1d:ce:05                 scsi-fcp:target
+
+Total number of entries = 4
+core-1# show fcns database local
+
+VSAN 1:
+--------------------------------------------------------------------------
+FCID        TYPE  PWWN                    (VENDOR)        FC4-TYPE:FEATURE
+--------------------------------------------------------------------------
+0x670041    N     52:4a:93:7e:47:1d:ce:15                 scsi-fcp:target
+0x670061    N     52:4a:93:7e:47:1d:ce:05                 scsi-fcp:target
+
+Total number of local entries = 2
+core-1#
+core-1#  show zone status vsan 1
+VSAN: 1 default-zone: deny distribute: active only Interop: default
+    mode: basic merge-control: allow
+    session:  none
+    hard-zoning: enabled broadcast: unsupported
+    smart-zoning: disabled
+    rscn-format: fabric-address
+    activation overwrite control: disabled
+Default zone:
+    qos: none broadcast: unsupported ronly: unsupported
+Full Zoning Database :
+    DB size: 124 bytes
+    Zonesets:  0 Zones: 0 Aliases: 0
+Active Zoning Database :
+    DB Size: 84 bytes
+    Name: Zoneset1 Zonesets: 1 Zones: 1
+Current Total Zone DB Usage: 208 / 4000000 bytes (0 % used)
+Pending (Session) DB size:
+    Full DB Copy size: n/a
+    Active DB Copy size: n/a
+SFC size: 208 / 4000000 bytes (0 % used)
+Status: Activation completed at 01:25:26 UTC May 14 2023
+
+core-1#  show zoneset active vsan 1
+zoneset name Zoneset1 vsan 1
+  zone name Zone1 vsan 1
+  * fcid 0x200000 [pwwn 10:00:00:10:9b:23:43:df]
+  * fcid 0x200020 [pwwn 10:00:00:10:9b:23:43:e5]
+  * fcid 0x670041 [pwwn 52:4a:93:7e:47:1d:ce:15]
+  * fcid 0x670061 [pwwn 52:4a:93:7e:47:1d:ce:05]
+```
+
+</details>
+
+<details>
+
+<summary>edge-1</summary>
+
+```elixir
+edge-1# show flogi database
+--------------------------------------------------------------------------------
+INTERFACE        VSAN    FCID           PORT NAME               NODE NAME
+--------------------------------------------------------------------------------
+fc1/1            1     0x200020  10:00:00:10:9b:23:43:e5 20:00:00:10:9b:23:43:e5
+fc1/2            1     0x200000  10:00:00:10:9b:23:43:df 20:00:00:10:9b:23:43:df
+
+Total number of flogi = 2.
+
+edge-1# show fcns database
+
+VSAN 1:
+--------------------------------------------------------------------------
+FCID        TYPE  PWWN                    (VENDOR)        FC4-TYPE:FEATURE
+--------------------------------------------------------------------------
+0x200000    N     10:00:00:10:9b:23:43:df (Emulex)        scsi-fcp:init
+0x200020    N     10:00:00:10:9b:23:43:e5 (Emulex)        scsi-fcp:init
+0x670041    N     52:4a:93:7e:47:1d:ce:15                 scsi-fcp:target
+0x670061    N     52:4a:93:7e:47:1d:ce:05                 scsi-fcp:target
+
+Total number of entries = 4
+edge-1# show fcns database local
+
+VSAN 1:
+--------------------------------------------------------------------------
+FCID        TYPE  PWWN                    (VENDOR)        FC4-TYPE:FEATURE
+--------------------------------------------------------------------------
+0x200000    N     10:00:00:10:9b:23:43:df (Emulex)        scsi-fcp:init
+0x200020    N     10:00:00:10:9b:23:43:e5 (Emulex)        scsi-fcp:init
+
+Total number of local entries = 2
+edge-1#
+edge-1# show zone status vsan 1
+VSAN: 1 default-zone: deny distribute: active only Interop: default
+    mode: basic merge-control: allow
+    session:  none
+    hard-zoning: enabled broadcast: unsupported
+    smart-zoning: disabled
+    rscn-format: fabric-address
+    activation overwrite control: disabled
+Default zone:
+    qos: none broadcast: unsupported ronly: unsupported
+Full Zoning Database :
+    DB size: 280 bytes
+    Zonesets:  1 Zones: 1 Aliases: 0
+Active Zoning Database :
+    DB Size: 84 bytes
+    Name: Zoneset1 Zonesets: 1 Zones: 1
+Current Total Zone DB Usage: 364 / 4000000 bytes (0 % used)
+Pending (Session) DB size:
+    Full DB Copy size: n/a
+    Active DB Copy size: n/a
+SFC size: 364 / 4000000 bytes (0 % used)
+Status: Activation completed at 01:25:19 UTC May 14 2023
+
+edge-1# show zoneset active vsan 1
+zoneset name Zoneset1 vsan 1
+  zone name Zone1 vsan 1
+  * fcid 0x200000 [pwwn 10:00:00:10:9b:23:43:df]
+  * fcid 0x200020 [pwwn 10:00:00:10:9b:23:43:e5]
+  * fcid 0x670041 [pwwn 52:4a:93:7e:47:1d:ce:15]
+  * fcid 0x670061 [pwwn 52:4a]
 ```
 </details>
