@@ -31,7 +31,7 @@ Let’s elaborate on our legacy trunk example. Now, remove the trunk link betwee
 The example above made it simpler to understand the Bridge-Route-Route-Bridge operation between VTEPs with a dedicated L3VNI (which plays a role like our L3 interface in the example above).
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/232263975-7bf783ba-354b-43de-98e1-16c04ae611d6.svg" alt="Symmetric IRB: bridge-route-route-bridge">
+  <img src="https://user-images.githubusercontent.com/31813625/232263975-7bf783ba-354b-43de-98e1-16c04ae611d6.svg" alt="Symmetric IRB: bridge-route-route-bridge" /> <br />
   <figcaption>Figure 2: Symmetric IRB: bridge-route-route-bridge</figcaption>
 </figure>
 

@@ -31,7 +31,7 @@ Different Philosophies
   * Requires an adapter that “speaks” SCSI to translate CPU desires into device capabilities
   * Creates 1:1 relationship between host and storage
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236951307-6c4838aa-8ffb-4d58-972a-2a747eb2c25d.png" alt="Figure 1: iSCSI Protocol">
+  <img src="https://user-images.githubusercontent.com/31813625/236951307-6c4838aa-8ffb-4d58-972a-2a747eb2c25d.png" alt="Figure 1: iSCSI Protocol"><br/>
   <figcaption>Figure 1: iSCSI</figcaption>
 </figure>
 
@@ -45,7 +45,7 @@ Different Philosophies
     * Simplified verbs (commands) reduce complexity
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236951374-ff617e15-8873-4f48-9190-724279b90510.png" alt="Figure 2: NVMe Protocol">
+  <img src="https://user-images.githubusercontent.com/31813625/236951374-ff617e15-8873-4f48-9190-724279b90510.png" alt="Figure 2: NVMe Protocol"><br/>
   <figcaption>Figure 2: NVMe</figcaption>
 </figure>
 
@@ -122,7 +122,7 @@ SAN is a dedicated network that is scalable and highly available with the primar
 The storage capacity if SAN storage array has to be shared among the hosts, so it is devided into logical disks assigned to the hosts. These logical disks appear to the host as local disks and are identified by a unique number called the logical unit number (LUN).
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236722377-bbe25e33-cb6f-4b5c-88f9-b82c3bb68202.svg" alt="Figure 4: LUN">
+  <img src="https://user-images.githubusercontent.com/31813625/236722377-bbe25e33-cb6f-4b5c-88f9-b82c3bb68202.svg" alt="Figure 4: LUN"><br/>
   <figcaption>Figure 4: Lugical Unit</figcaption>
 </figure>
 
@@ -210,7 +210,7 @@ Fibre Channel architecture provides three topologies
     * For example if a Storage array has four FC ports, then four servers can connect to the Storage Array
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236964371-01893f42-ad0b-4e6d-a4d5-cc2f7c361458.svg" alt="Figure 5: Point-to-Point Topology">
+  <img src="https://user-images.githubusercontent.com/31813625/236964371-01893f42-ad0b-4e6d-a4d5-cc2f7c361458.svg" alt="Figure 5: Point-to-Point Topology"><br />
   <figcaption>Figure 5: Point-to-Point Topology</figcaption>
 </figure>
 
@@ -226,7 +226,7 @@ Fibre Channel architecture provides three topologies
       * A dual-controller storage arrays
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236726695-f44ce53c-cfd6-470b-b159-144b2a439190.svg" alt="Figure 6: Storage Area Network">
+  <img src="https://user-images.githubusercontent.com/31813625/236726695-f44ce53c-cfd6-470b-b159-144b2a439190.svg" alt="Figure 6: Storage Area Network"><br />
   <figcaption>Figure 6: Storage Area Network: Switched Fabric</figcaption>
 </figure>
 
@@ -374,7 +374,7 @@ There are two types of zoning:
 A **zone set** is a collection of zones. There can be hundreds of zones in a zoneset. Only one zoneset including all those zones can be active in the fabric at a time.
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236979897-04ba4385-4c5a-44b7-8c48-221d7e27df58.svg" alt="Figure 7: Zone Set">
+  <img src="https://user-images.githubusercontent.com/31813625/236979897-04ba4385-4c5a-44b7-8c48-221d7e27df58.svg" alt="Figure 7: Zone Set"><br/>
   <figcaption>Figure 7: Zone Set</figcaption>
 </figure>
 
@@ -407,7 +407,7 @@ A **zone alias** is the custom name that is assigned to a port address or WWN ad
   * This is because port addresses and WWN addresses are difficult to read and memorize.
 			
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236979283-ee218207-7805-4418-913b-6cc9a1974771.svg" alt="Figure 8: Zone Alias">
+  <img src="https://user-images.githubusercontent.com/31813625/236979283-ee218207-7805-4418-913b-6cc9a1974771.svg" alt="Figure 8: Zone Alias"><br/>
   <figcaption>Figure 8: Zone Alias</figcaption>
 </figure>
 
@@ -431,7 +431,7 @@ The VSAN tachnology allows a large SAN to be logically partitioned into small SA
   * VSAN ID is important for native FC
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236982677-768328eb-46cb-49e0-a00f-2850cc270636.svg" alt="Figure 9: Virtual SAN">
+  <img src="https://user-images.githubusercontent.com/31813625/236982677-768328eb-46cb-49e0-a00f-2850cc270636.svg" alt="Figure 9: Virtual SAN"><br/>
   <figcaption>Figure 9: Virtual SAN</figcaption>
 </figure>
 
@@ -535,7 +535,7 @@ Most people assume FC and FCoE are either 1) totally different or 2) different e
 That means everything traditional FC offers (fabric services, zoning, etc) are identical between FC and FCoE.
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/236992198-ccdfb4e8-46f3-4def-9126-6870585abd07.svg" alt="Figure 10: FC vs FCoE">
+  <img src="https://user-images.githubusercontent.com/31813625/236992198-ccdfb4e8-46f3-4def-9126-6870585abd07.svg" alt="Figure 10: FC vs FCoE"><br/>
   <figcaption>Figure 10: FC vs FCoE</figcaption>
 </figure>
 
