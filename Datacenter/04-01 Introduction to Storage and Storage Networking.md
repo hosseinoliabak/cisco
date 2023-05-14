@@ -10,6 +10,7 @@ Disk drives are devices that store and retrieve data on a computer. They come in
     * Flash memory is also solid-state storage (int the family of SSDs)
 
 ### Drive interface families
+
 Disk drive interface which is part of the disk controller connects the disk drive to the computer with a physical connector. Disk drive interface provides a standard protocol for the hard disk drive to talk to the computer.
 There are many types of disk drive interfaces including:
 
@@ -139,6 +140,7 @@ FibreChannel is a set of standards that enable high-speed data transfer between 
   * Protocol stack primary used to send SCSI commands over the SAN
 
 #### Fibre Channel Terminologies
+
   * **Node:** Fibre Channel devices (server, storage) are called nodes
   * **Port:** A port is the interface in a node used for external communication. A node will have at least one port
 
@@ -175,6 +177,15 @@ A fibre Channel switch is a device that provides central connection points for s
 
 * MDS: Support for FC, FCoE, FCIP
 * Director: means bigger switch - more levels of redundancy
+
+Cisco N5K has support for both FC and FCoE. To convert an interface type from Ethernet to fc you need to change port type to fc, then reload the switch.
+
+<pre>
+N5K1(config)# <b><ins>slot 1</ins></b>
+N5K1(config-slot)# <b><ins>port 31-32 type fc</ins></b>
+N5K1(config-slot)# <b><ins>copy run start</ins></b>
+N5K1(config-slot)# <b><ins>reload</ins></b>
+</pre>
 
 #### Storage
 
@@ -469,6 +480,7 @@ Like Ethernet PortChannel. But If you don't do port channel, you are routing equ
 * Types of PO
   * Actice/Passive mode: takes care of only fail-over recovery
   * Active/Active mode: I/O requests are shared equally across all the available paths
+* On MDS, you can only define SAN port-channel, so if you need to configure the SAN portchannel, you only need to go in `interface port-cahnnel`. However, since N5K supports both Ethernet as well as SAN port Channels, you need to go under `interface san-port-cahnnel` when addressing any configuration under the SAN port-channel.
 
 <pre>
 ! core-1 configuration example
@@ -476,12 +488,24 @@ core-1# <b><ins>configure</ins></b>
 core-1(config)# <b><ins>interface fc1/3-6</ins></b>
 core-1(config)# <b><ins>channel-group 12 force</ins></b>
 core-1(config)# <b><ins>no shut</ins></b>
+core-1(config)# <b><ins>interface port-channel112</ins></b>
+core-1(config)# <b><ins>switchport mode E</ins></b>
+core-1(config)# <b><ins>switchport description To edge-1</ins></b>
+core-1(config)# <b><ins>switchport rate-mode dedicated</ins></b>
+core-1(config)# <b><ins>switchport trunk mode auto</ins></b>
+
 
 ! edge-1 configuration example
 edge-1# <b><ins>configure</ins></b>
 edge-1(config)# <b><ins>interface fc1/3-6</ins></b>
 edge-1(config)# <b><ins>channel-group 11 force</ins></b>
 edge-1(config)# <b><ins>no shut</ins></b>
+edge-1(config)# <b><ins>interface port-channel111</ins></b>
+edge-1(config)# <b><ins>switchport mode E</ins></b>
+edge-1(config)# <b><ins>switchport description To core-1</ins></b>
+edge-1(config)# <b><ins>switchport rate-mode dedicated</ins></b>
+edge-1(config)# <b><ins>switchport trunk mode auto</ins></b>
+
 
 ! Verification on core-1 
 core-1(config)# <b><ins>show port-channel database</ins></b>
@@ -559,3 +583,206 @@ In this workshop, I am going to follow Cisco MDS (Multilayer Director Switch) La
   <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/69d69937-7793-4ec8-95a4-2a07c118bb14" alt="Figure 11: Storage Networking Workshop Topology" /><br/>
   <figcaption>Figure 11: Storage Networking Workshop Topology</figcaption>
 </figure>
+
+#### Configuration
+
+<details>
+ 
+<summary>core-1</summary>
+
+```elixir
+feature analytics
+ip host core-1  198.19.254.123
+
+fcdomain fcid database
+  vsan 1 wwn 20:03:00:3a:9c:54:21:80 fcid 0x670000 dynamic
+  vsan 1 wwn 20:04:00:3a:9c:54:21:80 fcid 0x670020 dynamic
+  vsan 1 wwn 52:4a:93:7e:47:1d:ce:14 fcid 0x670040 dynamic
+  vsan 1 wwn 52:4a:93:7e:47:1d:ce:04 fcid 0x670060 dynamic
+  vsan 1 wwn 20:05:00:3a:9c:54:21:80 fcid 0x670080 dynamic
+  vsan 1 wwn 52:4a:93:7e:47:1d:ce:05 fcid 0x670061 dynamic
+  vsan 1 wwn 52:4a:93:7e:47:1d:ce:15 fcid 0x670041 dynamic
+!Active Zone Database Section for vsan 1
+zone name Zone1 vsan 1
+    member pwwn 10:00:00:10:9b:23:43:df
+    member pwwn 10:00:00:10:9b:23:43:e5
+    member pwwn 52:4a:93:7e:47:1d:ce:15
+    member pwwn 52:4a:93:7e:47:1d:ce:05
+
+zoneset name Zoneset1 vsan 1
+    member Zone1
+
+zoneset activate name Zoneset1 vsan 1
+do clear zone database vsan 1
+
+interface mgmt0
+  ip address 198.19.254.123 255.255.255.0
+
+interface port-channel112
+  switchport mode E
+  switchport description To edge-1
+  switchport rate-mode dedicated
+  switchport trunk mode auto
+switchname core-1
+
+interface fc1/3
+  switchport speed auto
+interface fc1/4
+  switchport speed auto
+interface fc1/5
+  switchport speed auto
+interface fc1/6
+  switchport speed auto
+interface fc1/3
+  switchport mode E
+interface fc1/4
+  switchport mode E
+interface fc1/5
+  switchport mode E
+interface fc1/6
+  switchport mode E
+
+interface fc1/1
+  port-license acquire
+  no shutdown
+
+interface fc1/2
+  port-license acquire
+  no shutdown
+
+interface fc1/3
+  analytics type fc-scsi
+  switchport trunk mode auto
+  port-license acquire
+  channel-group 112 force
+  no shutdown
+
+interface fc1/4
+  analytics type fc-scsi
+  switchport trunk mode auto
+  port-license acquire
+  channel-group 112 force
+  no shutdown
+
+interface fc1/5
+  analytics type fc-scsi
+  switchport trunk mode auto
+  port-license acquire
+  channel-group 112 force
+  no shutdown
+
+interface fc1/6
+  analytics type fc-scsi
+  switchport trunk mode auto
+  port-license acquire
+  channel-group 112 force
+  no shutdown
+
+ip default-gateway 198.19.254.1
+```
+
+</details>
+
+<details>
+
+<summary>edge-1</summary>
+
+```elixir
+
+feature analytics
+ip host edge-1  198.19.253.228
+
+fcdomain fcid database
+  vsan 1 wwn 10:00:00:10:9b:23:43:df fcid 0x200000 dynamic
+  vsan 1 wwn 10:00:00:10:9b:23:43:e5 fcid 0x200020 dynamic
+  vsan 1 wwn 20:05:00:de:fb:fd:db:90 fcid 0x200040 dynamic
+  vsan 1 wwn 20:03:00:de:fb:fd:db:90 fcid 0x200060 dynamic
+  vsan 1 wwn 20:04:00:de:fb:fd:db:90 fcid 0x200080 dynamic
+!Active Zone Database Section for vsan 1
+zone name Zone1 vsan 1
+    member pwwn 10:00:00:10:9b:23:43:df
+    member pwwn 10:00:00:10:9b:23:43:e5
+    member pwwn 52:4a:93:7e:47:1d:ce:15
+    member pwwn 52:4a:93:7e:47:1d:ce:05
+
+zoneset name Zoneset1 vsan 1
+    member Zone1
+
+zoneset activate name Zoneset1 vsan 1
+do clear zone database vsan 1
+!Full Zone Database Section for vsan 1
+zone name Zone1 vsan 1
+    member pwwn 10:00:00:10:9b:23:43:df
+    member pwwn 10:00:00:10:9b:23:43:e5
+    member pwwn 52:4a:93:7e:47:1d:ce:15
+    member pwwn 52:4a:93:7e:47:1d:ce:05
+
+zoneset name Zoneset1 vsan 1
+    member Zone1
+
+interface mgmt0
+  ip address 198.19.253.228 255.255.255.0
+
+interface port-channel111
+  switchport mode E
+  switchport description To core-1
+  switchport rate-mode dedicated
+  switchport trunk mode auto
+switchname edge-1
+
+interface fc1/3
+  switchport speed auto
+interface fc1/4
+  switchport speed auto
+interface fc1/5
+  switchport speed auto
+interface fc1/6
+  switchport speed auto
+interface fc1/3
+  switchport mode E
+interface fc1/4
+  switchport mode E
+interface fc1/5
+  switchport mode E
+interface fc1/6
+  switchport mode E
+
+interface fc1/1
+  port-license acquire
+  no shutdown
+
+interface fc1/2
+  port-license acquire
+  no shutdown
+
+interface fc1/3
+  analytics type fc-scsi
+  switchport trunk mode auto
+  port-license acquire
+  channel-group 111 force
+  no shutdown
+
+interface fc1/4
+  analytics type fc-scsi
+  switchport trunk mode auto
+  port-license acquire
+  channel-group 111 force
+  no shutdown
+
+interface fc1/5
+  analytics type fc-scsi
+  switchport trunk mode auto
+  port-license acquire
+  channel-group 111 force
+  no shutdown
+
+interface fc1/6
+  analytics type fc-scsi
+  switchport trunk mode auto
+  port-license acquire
+  channel-group 111 force
+  no shutdown
+
+ip default-gateway 198.19.253.1
+```
+</details>
