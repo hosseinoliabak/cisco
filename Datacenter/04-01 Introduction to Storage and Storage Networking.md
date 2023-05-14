@@ -480,7 +480,7 @@ Like Ethernet PortChannel. But If you don't do port channel, you are routing equ
 * Types of PO
   * Actice/Passive mode: takes care of only fail-over recovery
   * Active/Active mode: I/O requests are shared equally across all the available paths
-* On MDS, you can only define SAN port-channel, so if you need to configure the SAN portchannel, you only need to go in `interface port-cahnnel`. However, since N5K supports both Ethernet as well as SAN port Channels, you need to go under `interface san-port-cahnnel` when addressing any configuration under the SAN port-channel.
+* On MDS, you can only define SAN port-channel, so if you need to configure the SAN portchannel, you only need to go in `interface port-cahnnel`. However, since N5K supports both Ethernet as well as SAN port Channels, you need to enable `feature fport-channel-trunk` and go under `interface san-port-cahnnel` when addressing any configuration under the SAN port-channel.
 
 <pre>
 ! core-1 configuration example
@@ -574,6 +574,35 @@ The FCoE infrastructure consists if three components:
   * Losseless Ethernet links
 
 With FCoE, any lost frames can be recovered only at the SCSI layer because it has no TCP. Fortunately, a set of enhancements are available to the Ethernet to support the lossless behavior; that is called Data Center Bridging (DCB). DCB is also referred to as Converged Enhanced Ethernet.
+
+The configuration relative to native FC includes encapsulating FC inside FCoE.
+
+<pre>
+N5K1# <b><ins>configure terminal</ins></b>
+N5K1(config)# <b><ins>feature fcoe</ins></b>
+! Configure FCoE VLAN and VSAN. Here VLAN10 will carry VSAN10'a traffic
+N5K1(config)# <b><ins>vlan 10</ins></b>
+N5K1(config-vlan)# <b><ins>fcoe vsan 10</ins></b>
+N5K1(config-vlan)# <b><ins>exit</ins></b>
+N5K1(config)# <b><ins>vsan database</ins></b>
+N5K1(config-vsan-db)# <b><ins>vsan 10</ins></b>
+N5K1(config-vsan-db)# <b><ins>exit</ins></b>
+N5K1(config)# <b><ins>feature lacp</ins></b>
+N5K1(config)# <b><ins>interface ethernet 1/1 - 2</ins></b>
+N5K1(config-if)# <b><ins>description FCoE Uplink</ins></b>
+N5K1(config-if)# <b><ins>channel-group 10 mode active</ins></b>
+N5K1(config-if)# <b><ins>int po 10</ins></b>
+N5K1(config-if)# <b><ins>switchport</ins></b>
+N5K1(config-if)# <b><ins>switchport mode trunk</ins></b>
+N5K1(config-if)# <b><ins>switchport trunk allowed vlan 10</ins></b>
+N5K1(config-if)# <b><ins>no shut</ins></b>
+! Create the Virtual FibreChannel port which allows you to issue SAN commands under it
+N5K1(config)# <b><ins>interface vfc 10</ins></b>
+N5K1(config-if)# <b><ins>bind int po 10</ins></b>
+N5K1(config-if)# <b><ins>switchport mode E</ins></b>
+N5K1(config-if)# <b><ins>switchport trunk allowed vlan 10</ins></b>
+N5K1(config-if)# <b><ins>no shut</ins></b>
+</pre>
 
 ## Storage Networking Workshop
 
