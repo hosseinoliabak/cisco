@@ -5,30 +5,63 @@ Your endpoints still connect through classic ethernet to the leafs. In most prac
 
 1. Configure vPC. In this post, we previously talked about how we configure vPC.
 2. Configure each leaf as a single VTEP. As usual, each VTEP has a dedicated NVE interface (PIP).
-  * PIP is short for “Primary IP address.”
+  * PIP is short for “Primary IP address.”s
 3. Configure anycast VTEP:
   * Configure a common virtual IP for VTEPs – This address is the next hop advertised in VXLAN.
     * You can achieve this by assigning a secondary IP address on your NVE loopback interface
   * So far, every vPC member should have a unique PIP and a shared VIP
     * PIP is used for Type 5
     * VIP is used for Type 2
-4. Issue command advertise-pip under BGP L2VPN AFI and advertise virtual-rmac command under NVE interface.
+4. Issue command ‍`advertise-pip‍‍` under BGP L2VPN AFI and `advertise virtual-rmac` command under NVE interface.
   * Advertises the external prefixes with PIP of the individual VTEP as the next hop in route type 5.
     * Allows return traffic to reach that VTEP
   * Route type 2 (MAC/IP) continues using VIP.
   * PIP uses the switch Router MAC (non-transitive extended community).
   * VIP uses locally derived MAC based on VIP itself.
 
-![VXLAN-VPC](https://user-images.githubusercontent.com/31813625/232338537-1982c012-12d4-475f-8a84-1f399cf77366.svg)
-<br /> *vPC advertise-pip*
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/232338537-1982c012-12d4-475f-8a84-1f399cf77366.svg" alt="Figure 1: vPC advertise-pip"><br/>
+  <figcaption>Figure 1: vPC advertise-pip</figcaption>
+</figure>
+
+
+### Troubleshooting Commonly Seen vPC and VXLAN/EVPN Problems
+
+#### ip forward missing
+
+L3VNI requires ip forward command under the SVI that corresponds to that L3 VNI. Results in:
+  * pings within the same VLAN is successful
+  * pings between different VLANs will be unsuccessful
+
+To fix the issue:
+<pre>
+leaf01(config)# <b><ins>int Vlan3967</ins></b>
+leaf01(config-if)# <b><ins>ip forward</ins></b>
+</pre>
+
+#### Underlay sub-interfaces
+
+Subinterfaces for uplinks are not supported. VTEPs do not support VXLAN traffic over sub-interfaces. VXLAN encapsulated traffic can flow over a parent interface if subinterfaces are configured for CE traffic.
+
+#### ARP supression without anycast gateway
+
+If you have ARP supression, you have to have anycast gateway. ARP supression is only supported for a VNI if the VTEP hosts the first hop anycast gateway for this VNI. Both the VREP and the SVI need to be proprely configured for the Anycast Gateway MAC address configured.
+  * Global Anycast Gateway MAC address configured.
+  * Anycast Gateway feature with the virtual IP address on the SVI.
+
+#### MTU
+
+Due to VXLAN encapsulation, the MTU is requirement is larger and we need to avoid potential fragmentation.  VXLAN traffic does not support fragmentation.
 
 ## Workshop
 In this post, we are going to configure the leaf pairs as vPC.
 * vPC domain 11 includes leaf-1 and leaf-2
 * vPC domain 12 includes leaf-3 and leaf-4
 
-![vxlan vpc workshop](https://user-images.githubusercontent.com/31813625/232338536-b47e59a8-c115-4119-b1fa-2991b311eb55.jpg)
-<br /> *Workshop – vPC in VXLAN BGP EVPN*
+<figure>
+  <img src="https://user-images.githubusercontent.com/31813625/232338536-b47e59a8-c115-4119-b1fa-2991b311eb55.jpg" alt="Figure 2: vPC in VXLAN BGP EVPN"><br/>
+  <figcaption>Figure 2: vPC in VXLAN BGP EVPN</figcaption>
+</figure>
 
 #### Configuration
 
