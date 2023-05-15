@@ -94,7 +94,7 @@ Previously, we have discussed about the transition from campus network to leaf-a
 
 ### Onderlay and Overlay
 
-* The underlay
+* The Underlay
   * IP fabric is also known as the underlay.
   * The underlay consists of multiple equal cost L3 routed links that run between L2 endpoints.
   * The IP fabric can be combination of routing protocols.
