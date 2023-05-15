@@ -1,4 +1,4 @@
-# Traditional and Modern Architecture
+# Traditional and Modern Data Center Network Architecture
 
 In this post I am going to talk about different network architecture: the traditional then Spine-Leaf (AKA Leaf-and-spine) architecture and what problems the spine-leaf network design addresses.
 
