@@ -1,31 +1,43 @@
-# Campus LAN design, Spine-Leaf Network Design
+# Traditional and Modern Architecture
 
-In this post I am going to talk about different network architecture: the traditional campus design, then Spine-Leaf (AKA Leaf-and-spine architecture) and what problems the spine-leaf network design addresses.
+In this post I am going to talk about different network architecture: the traditional then Spine-Leaf (AKA Leaf-and-spine) architecture and what problems the spine-leaf network design addresses.
 
 ## Classic Three-Tier Architecture
 
-You can have a flat network design with a large broadcast domain wherein all network equipment, PCs, printers, APs, connects to each other by too many switches. On top of that, imagine you daisy-chain switches in turn together which increases the port numbers but also at the same time increases diameter of network.
+You can have a flat network design with a large broadcast domain wherein all network equipment, PCs, printers, APs, connects to each other by too many switches. On top of that, imagine you daisy-chain switches in turn together which increases the port numbers but also at the same time increases diameter of network. But this not how we design an enterprise or a data center network.
 
-To simplify the network design as well as for scalability we moved to the phase of hierarchical three-tier network design. Those layers include, Access layer, Distribution layer, and Core layer.
+Legacy data center networks are often hierarchical:
+  * Consists of Access, Aggregation, and Core layers
+  * Benefits of hierarchical network design include:
+    * Modularity: facilitating change, but is lacking scalability
+    * The ability to isolate faults in a specific layer can simplify troubleshooting efforts
 
 * **Access layer:** Provides Layer 2 connectivity of PCs, servers, APs, phones, and printers to the network.
 * **Distribution (aggregation) Layer:** This layer aggregates the access layers. Access layer terminate it layer 2 connectivity here. Optionally, this layer provides FHRP to the VLANs in the access layer. Distribution layer on the other hand, communicates with core layer over layer 3.
 * **Core (backbone) Layer:** This high speed switching switches packets as past as possible.
 
+
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/235387738-dc9e1834-6ca9-490b-8c1b-e7ece8b413c4.png" alt="Classic Three-Tier Architecture">
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/cdc4e68d-12a6-48f6-8d72-5d3441e656dd" alt="Classic Three-Tier Architecture">
   <figcaption>Figure 1: Classic Three-Tier Architecture</figcaption>
 </figure>
 
 There is more into this topic but this is not in the scope of CCIE Datacenter. But here are some drawbacks with traditional network desing.
 
+* Not all data paths are used.
+  * Almost half of the links are unused.
+  * Imagine thousand of fibre connections are not in use.
+    * Not only the fibre itself, but two tranceivers per connection is unused.
 * In STP-based network, when a link or a switch fails, the STP recalculates which impacts the convergence. Imagine, if the problem occurs at root bridge and new root needs to be elected.
 * STP-based networks, blocks the ports to prevent the Layer-2 loop.
 * Prune to traffic storm because there is no TTL field in L2 header.
 * In STP-based network, all the traffic for a particular VLAN forwards to the root bridge of that VLAN which might be a suboptimal path.
+  * Increased latency
+* Multiple protocols used for inter-connectivity.
+* Inefficient resource and power usage.
 * Dedicated network for LAN and a separate dedicated Fiber-Channel network for SAN.
 
-## Spine-Leaf Architecture
+## Modern Architecture
 
 In Data center network, traffic generally flows in three directions:
 
@@ -33,20 +45,46 @@ In Data center network, traffic generally flows in three directions:
 * East-West Traffic: the communication between servers and/or various applications within the datacenter. this is greatly facilitated by virtualization.
 * Inter-DC traffic: traffic between data centers.
 
-The modern workload of Data center traffic is server-server unlike the traditional client-server traffic.
+The modern workload of Data center traffic is server-server unlike the traditional client-server traffic. The Applications drive changes:
+  * Modern apploication flows
+    * Increased VM-to-VM traffic
+    * Additional east-west traffic
+   * Requires more flat topology
+  * Network virtualization
+    * Intoroduces network overlays
+    * Requires Physical-to-virtual integration for bare-metal servers
+    * Requires overlay visualization and management
+  * Everything as-a-service
+    * Must be easy to scale out and scale back as demands change
+    * Introduces multitenancy
 
-In 1953, Charles Clos came up with a concept (in BSTJ) which is multistage fabrics as the best mathematical way to interconnect two nodes from an ingress call to an egress call. Clos Spine-Leaf topology was then built on that mindset.
+### IP Fabric Infrastructure
+
+IP Fabric is based entirely on IP infrastructure
+
+In 1953, Charles Clos came up with a concept (in BSTJ) which is non-blocking, multistage, telephone switching architecture as the best mathematical way to interconnect two nodes from an ingress call to an egress call. Clos Spine-Leaf topology was then built on that mindset.
 
 In graph theory, This topology is a complete bipartite graph. A bipartite graph consists of two sets of disjoint vertices (here in networking sets of Spines and sets of Leafs). No vertex in the same set connects to another. (No Spine connects to another spine, no leaf connects to another leaf).
 
 We moved Layer 3 links down to the access layer in Clos topology.
 
+You refer to ingress and egress crossbar switches as leaf nodes. You also refer to the middle-stage crossbar switches as spine nodes. Any access ports on a leaf is three node away from another access port on another leaf. That is why the Clos network is called a three stache fabric. In a leaf-and-spine architecture, the goal is to share traffic over multiple paths throught he fabric.
+
 <figure>
-  <img src="https://user-images.githubusercontent.com/31813625/235387900-2ff62971-d09d-4822-9b0b-f8d88acda48b.png" alt="Clos Spine-Leaf Network Architecture">
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/69f29c87-d6a9-40d9-8a59-8ed3b3269af9" alt="Clos Spine-Leaf Network Architecture">
   <figcaption>Figure 2: Clos Spine-Leaf Network Architecture</figcaption>
 </figure>
 
 Leaf-and-spine topology scales very well. With one switch, this topology can handle 10K-200K of 10Gibps access ports. Next, let’s talk about the main components of these topology.
+
+### Five-stage fabric topology
+
+![campus design-5 stage drawio]()
+
+<figure>
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/ce2b5324-2286-461a-bf4a-96cbdf78e06e" alt="Figure 3: Five-Stage Architecture">
+  <figcaption>Figure 3: Five-Stage Architecture</figcaption>
+</figure>
 
 ### Spine-Leaf Switches
 
