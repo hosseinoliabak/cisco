@@ -100,7 +100,7 @@ Previously, we have discussed about the transition from campus network to leaf-a
   * The IP fabric can be combination of routing protocols.
     * OSPF is not routing protocol of choice for the fabric
     * Choose either eBGP or IS-IS
-* Overlay
+* The Overlay
   * Virtualizes L2 VLANs to carry Etherney frames across IP fabric
   * Two very critical technologies that compose the overlay are:
     * VXLAN - Encapsulates the frame in IP/UDP at the arriving L2 switchport
