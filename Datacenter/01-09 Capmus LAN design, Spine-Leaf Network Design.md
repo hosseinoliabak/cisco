@@ -20,7 +20,7 @@ Legacy data center networks are often hierarchical:
 <figure>
   <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/cdc4e68d-12a6-48f6-8d72-5d3441e656dd" alt="Classic Three-Tier Architecture" /><br />
   <figcaption>Figure 1: Classic Three-Tier Architecture</figcaption>
-</figure>
+</figure><p>&nbsp;</p>
 
 There is more into this topic but this is not in the scope of CCIE Datacenter. But here are some drawbacks with traditional network desing.
 
