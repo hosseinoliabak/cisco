@@ -68,7 +68,7 @@ In graph theory, This topology is a complete bipartite graph. A bipartite graph 
 
 We moved Layer 3 links down to the access layer in Clos topology.
 
-You refer to ingress and egress crossbar switches as leaf nodes. You also refer to the middle-stage crossbar switches as spine nodes. Any access ports on a leaf is three node away from another access port on another leaf. That is why the Clos network is called a three stache fabric. In a leaf-and-spine architecture, the goal is to share traffic over multiple paths throught he fabric.
+You designate the ingress and egress crossbar switches as leaf nodes, while the middle-stage crossbar switches are referred to as spine nodes. Each access port on a leaf is precisely three nodes away from any other access port on a different leaf. This characteristic is what gives the Clos network its name as a three-stage fabric. Within a leaf-and-spine architecture, the objective is to distribute traffic across numerous paths throughout the fabric in order to achieve optimal traffic sharing.
 
 <figure>
   <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/69f29c87-d6a9-40d9-8a59-8ed3b3269af9" alt="Clos Spine-Leaf Network Architecture">
@@ -78,8 +78,6 @@ You refer to ingress and egress crossbar switches as leaf nodes. You also refer 
 Leaf-and-spine topology scales very well. With one switch, this topology can handle 10K-200K of 10Gibps access ports. Next, let’s talk about the main components of these topology.
 
 ### Five-stage fabric topology
-
-![campus design-5 stage drawio]()
 
 <figure>
   <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/ce2b5324-2286-461a-bf4a-96cbdf78e06e" alt="Figure 3: Five-Stage Architecture">
@@ -92,3 +90,18 @@ Previously, we have discussed about the transition from campus network to leaf-a
 
 * Leaf or top-of-rack (ToR) switch provides the connectivity to the servers. The upstream interfaces are layer-3 and the downstream towards the servers is a layer 2 classical ethernet.
 * Spine (Backbone): This is the seconds stage in the fabric where leafs connect to.
+* All spines must adhere to a single model, while all leafs must also conform to a uniform model. Nevertheless, it is imperative that the models assigned to leafs and spines remain distinct from one another. :)
+
+### Onderlay and Overlay
+
+* The underlay
+  * IP fabric is also known as the underlay.
+  * The underlay consists of multiple equal cost L3 routed links that run between L2 endpoints.
+  * The IP fabric can be combination of routing protocols.
+    * OSPF is not routing protocol of choice for the fabric
+    * Choose either eBGP or IS-IS
+* Overlay
+  * Virtualizes L2 VLANs to carry Etherney frames across IP fabric
+  * Two very critical technologies that compose the overlay are:
+    * VXLAN - Encapsulates the frame in IP/UDP at the arriving L2 switchport
+    * EVPN - Runs as part of the overlay to coordinate VXLAN endpoint
