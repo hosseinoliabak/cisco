@@ -75,7 +75,7 @@ You designate the ingress and egress crossbar switches as leaf nodes, while the 
   <figcaption>Figure 2: Clos Spine-Leaf Network Architecture</figcaption>
 </figure>
 
-Leaf-and-spine topology scales very well. With one switch, this topology can handle 10K-200K of 10Gibps access ports. Next, let’s talk about the main components of these topology.
+<p>Leaf-and-spine topology scales very well. With one switch, this topology can handle 10K-200K of 10Gibps access ports. Next, let’s talk about the main components of these topology.</p>
 
 ### Five-stage fabric topology
 
@@ -92,7 +92,7 @@ Previously, we have discussed about the transition from campus network to leaf-a
 * Spine (Backbone): This is the seconds stage in the fabric where leafs connect to.
 * All spines must adhere to a single model, while all leafs must also conform to a uniform model. Nevertheless, it is imperative that the models assigned to leafs and spines remain distinct from one another. :)
 
-### Onderlay and Overlay
+### Underlay and Overlay
 
 * The Underlay
   * IP fabric is also known as the underlay.
