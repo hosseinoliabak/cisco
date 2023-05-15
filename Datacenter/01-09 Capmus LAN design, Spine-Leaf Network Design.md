@@ -74,8 +74,8 @@ You designate the ingress and egress crossbar switches as leaf nodes, while the 
   <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/69f29c87-d6a9-40d9-8a59-8ed3b3269af9" alt="Clos Spine-Leaf Network Architecture" /> <br />
   <figcaption>Figure 2: Clos Spine-Leaf Network Architecture</figcaption>
 </figure>
-
-<p>Leaf-and-spine topology scales very well. With one switch, this topology can handle 10K-200K of 10Gibps access ports. Next, let’s talk about the main components of these topology.</p>
+<p>&nbsp;</p>
+Leaf-and-spine topology scales very well. With one switch, this topology can handle 10K-200K of 10Gibps access ports. Next, let’s talk about the main components of these topology.
 
 ### Five-stage fabric topology
 
