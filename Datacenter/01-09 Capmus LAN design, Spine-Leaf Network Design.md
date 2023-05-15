@@ -18,7 +18,7 @@ Legacy data center networks are often hierarchical:
 
 
 <figure>
-  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/cdc4e68d-12a6-48f6-8d72-5d3441e656dd" alt="Classic Three-Tier Architecture">
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/cdc4e68d-12a6-48f6-8d72-5d3441e656dd" alt="Classic Three-Tier Architecture" /><br />
   <figcaption>Figure 1: Classic Three-Tier Architecture</figcaption>
 </figure>
 
@@ -71,7 +71,7 @@ We moved Layer 3 links down to the access layer in Clos topology.
 You designate the ingress and egress crossbar switches as leaf nodes, while the middle-stage crossbar switches are referred to as spine nodes. Each access port on a leaf is precisely three nodes away from any other access port on a different leaf. This characteristic is what gives the Clos network its name as a three-stage fabric. Within a leaf-and-spine architecture, the objective is to distribute traffic across numerous paths throughout the fabric in order to achieve optimal traffic sharing.
 
 <figure>
-  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/69f29c87-d6a9-40d9-8a59-8ed3b3269af9" alt="Clos Spine-Leaf Network Architecture">
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/69f29c87-d6a9-40d9-8a59-8ed3b3269af9" alt="Clos Spine-Leaf Network Architecture" /> <br />
   <figcaption>Figure 2: Clos Spine-Leaf Network Architecture</figcaption>
 </figure>
 
@@ -80,7 +80,7 @@ Leaf-and-spine topology scales very well. With one switch, this topology can han
 ### Five-stage fabric topology
 
 <figure>
-  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/ce2b5324-2286-461a-bf4a-96cbdf78e06e" alt="Figure 3: Five-Stage Architecture">
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/ce2b5324-2286-461a-bf4a-96cbdf78e06e" alt="Figure 3: Five-Stage Architecture" /><br />
   <figcaption>Figure 3: Five-Stage Architecture</figcaption>
 </figure>
 
