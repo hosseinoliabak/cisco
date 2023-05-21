@@ -2,9 +2,11 @@
 
  In this article, we'll provide an introduction to IP routing and VRF Lite, explaining what they are, how they work, and why they're important for building scalable and secure networks. Whether you're new to networking or looking to expand your knowledge, this post will give you a solid foundation for understanding these fundamental concepts.
 
- # Network Layer Jobs
+## Network Layer Jobs
 
- IP Routing One of the main roles of the Network layer is to forward packets between hosts. A host can send a packet to:
+### IP Routing
+
+One of the main roles of the Network layer is to forward packets between hosts. A host can send a packet to:
 
 * **Itself:** Host can use it’s own interface IP or its loopback address to send a packet to itself.
 * **Same local network:** When a host wants to send a packet to someone else, it checks if the destination is in the different network or in the same network (how? with its IP/Mask parameters). If the destination is in the same network, host sends an ARP request to find the destination MAC.
@@ -38,7 +40,7 @@ How does a router do classless routing?
   * OSPF: 110
   * IS-IS: 115
   * iBGP 200
-3.Metric: If there is a tie: then load-share the traffic.
+3. Metric: If there is a tie: then load-share the traffic.
 
 ### IP Routing: Static Route and Default route
 You can configure a static route by specifying next-hop value and local outgoing interface (although both are not required together).
