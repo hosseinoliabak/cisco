@@ -1,6 +1,6 @@
 # Advanced vPC Topics
 
-n this post, we will explore advanced topics related to vPC, including its interaction with Spanning Tree Protocol (STP), Bridge Assurance, First Hop Redundancy Protocol (FHRP), and Peer Gateway. Let's dive in:
+In this post, we will explore advanced topics related to vPC, including its interaction with Spanning Tree Protocol (STP), Bridge Assurance, First Hop Redundancy Protocol (FHRP), and Peer Gateway. Let's dive in:
 
 ### vPC and STP
 
