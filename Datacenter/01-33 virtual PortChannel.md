@@ -9,7 +9,7 @@ The two peers use a unique **vPC domain** – which does not exists anywhere els
 Picture below depicts all the jargons above:
 
 <figure>
-  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/783f61a0-b8c5-4b7a-b85c-066f13bf6d4e" alt="vPC Components" /> <br />
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/02d2c337-ad21-4de6-ac9d-4ce209e22914" alt="vPC Components" /> <br />
   <figcaption>Figure 1: vPC Components</figcaption>
 </figure>
 
