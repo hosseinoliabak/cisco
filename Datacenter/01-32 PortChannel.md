@@ -135,8 +135,8 @@ N9K01(config)# port-channel load-balance src-dst ?
 Let’s see how src-dst ip hashing algorithm works. First, we need to discuss what XOR operation is:
 
 <figure>
-  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/75c7e85d-2581-49aa-a710-e69a06d03d2c" alt="XOR Logic Gate">
-  <figcaption>Figure 1: XOR Logic Gate</figcaption>
+  <img src="https://github.com/hosseinoliabak/cisco/assets/31813625/75c7e85d-2581-49aa-a710-e69a06d03d2c" alt="XOR Logic Gate"><br />
+  <figcaption>Figure 1: XOR Logic Gate</figcaption><br />
 </figure>
 
 Altogether, a LAG with 2 interfaces, the switch performs an XOR operation on the last bit of the IPs. Similarly, a switch with 4 interfaces in the LAG XORs the last 2 bits of source and destination IP addresses.
